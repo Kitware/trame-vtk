@@ -1,0 +1,2 @@
+graft trame_vtk/modules/common/serve
+include trame_vtk/LICENSE
