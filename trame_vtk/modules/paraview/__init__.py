@@ -1,5 +1,5 @@
 try:
-    from paraview import servermanager
+    from paraview import servermanager  # noqa: F401
 
     has_pv = True
 except ImportError:
@@ -16,10 +16,10 @@ class Helper:
         self._hybrid_views = {}
 
         try:  # defer need to paraview to support --www usecase
-            from paraview import servermanager
+            from paraview import servermanager  # noqa: F811
             from paraview.modules.vtkPVClientWeb import vtkPVWebApplication
             from vtkmodules.web.utils import mesh as mesh_vtk
-        except:
+        except ImportError:
             print("ParaView is not available")
         else:
             self._pv_core = vtkPVWebApplication()
@@ -38,7 +38,7 @@ class Helper:
     def object(self, pv_id):
         try:
             pv_id = int(pv_id)
-        except:
+        except ValueError:
             return None
         if pv_id <= 0:
             return None

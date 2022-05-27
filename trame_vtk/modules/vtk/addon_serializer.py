@@ -16,7 +16,7 @@ def extractRequiredFields(
             colorArrayName = (
                 mapper.GetArrayName() if arrayAccessMode == 1 else mapper.GetArrayId()
             )
-            colorMode = mapper.GetColorMode()
+            # colorMode = mapper.GetColorMode()
             scalarMode = mapper.GetScalarMode()
             if scalarVisibility and scalarMode in (1, 3):
                 array_to_export = dataset.GetPointData().GetArray(colorArrayName)
