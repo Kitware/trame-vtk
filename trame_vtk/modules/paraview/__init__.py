@@ -1,11 +1,3 @@
-try:
-    from paraview import servermanager  # noqa: F401
-
-    has_pv = True
-except ImportError:
-    print("> ParaView is not available inside your Python environment")
-    has_pv = False
-
 from ..vtk.core import HybridView
 
 
@@ -16,7 +8,7 @@ class Helper:
         self._hybrid_views = {}
 
         try:  # defer need to paraview to support --www usecase
-            from paraview import servermanager  # noqa: F811
+            from paraview import servermanager
             from paraview.modules.vtkPVClientWeb import vtkPVWebApplication
             from vtkmodules.web.utils import mesh as mesh_vtk
         except ImportError:
@@ -185,8 +177,7 @@ HELPER = None
 
 def setup(app, **kwargs):
     global HELPER
-    if has_pv:
-        HELPER = Helper(app)
+    HELPER = Helper(app)
 
 
 # -----------------------------------------------------------------------------
