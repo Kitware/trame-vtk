@@ -32,8 +32,25 @@ class HtmlElement(AbstractElement):
 
 class VtkAlgorithm(HtmlElement):
     def __init__(self, children=None, **kwargs):
+        """
+        VtkAlgorithm will create a vtk.js object from its vtkClass and state
+
+
+        :param vtk_class: Name of vtk.js class to instantiate from `here <https://github.com/Kitware/vue-vtk-js/blob/master/src/AvailableClasses.js>`_
+        :type vtk_class: str
+
+        :param state: JS object listing all the value to override
+        :type state: str/obj
+
+        :param port: Port to bind into parent VtkAlgorithm or VtkRepresentation
+        :type port: int
+        """
         super().__init__("vtk-algorithm", children, **kwargs)
-        self._attr_names += ["port", "vtk_class", "state"]
+        self._attr_names += [
+            ("vtk_class", "vtkClass"),
+            "state",
+            "port",
+        ]
 
 
 class VtkCellData(HtmlElement):
@@ -43,6 +60,24 @@ class VtkCellData(HtmlElement):
 
 class VtkDataArray(HtmlElement):
     def __init__(self, **kwargs):
+        """
+        VtkDataArray
+
+        :param name:
+        :type name: str
+
+        :param registration:
+        :type registration: str
+
+        :param type:
+        :type type: str
+
+        :param values:
+        :type values: Array/TypedArray
+
+        :param number_of_components:
+        :type number_of_components: int
+        """
         super().__init__("vtk-data-array", **kwargs)
         self._attr_names += [
             "name",
@@ -60,6 +95,27 @@ class VtkFieldData(HtmlElement):
 
 class VtkGeometryRepresentation(HtmlElement):
     def __init__(self, children=None, **kwargs):
+        """
+        VtkGeometryRepresentation
+
+        :param id: Identifier used in picking
+        :type id: str
+
+        :param color_map_preset: Name of a vtk.js color preset
+        :type color_map_preset: str
+
+        :param color_data_range:
+        :type color_data_range: [min, max]
+
+        :param actor: Properties to edit on actor
+        :type values: {}
+
+        :param mapper: Properties to edit on mapper
+        :type mapper: {}
+
+        :param property: Properties to edit on property
+        :type property: {}
+        """
         super().__init__("vtk-geometry-representation", children, **kwargs)
         self._attr_names += [
             "id",
@@ -73,6 +129,24 @@ class VtkGeometryRepresentation(HtmlElement):
 
 class VtkGlyphRepresentation(HtmlElement):
     def __init__(self, children=None, **kwargs):
+        """
+        VtkGlyphRepresentation
+
+        :param color_map_preset: Name of a vtk.js color preset
+        :type color_map_preset: str
+
+        :param color_data_range:
+        :type color_data_range: [min, max]
+
+        :param actor: Properties to edit on actor
+        :type values: {}
+
+        :param mapper: Properties to edit on mapper
+        :type mapper: {}
+
+        :param property: Properties to edit on property
+        :type property: {}
+        """
         super().__init__("vtk-glyph-representation", children, **kwargs)
         self._attr_names += [
             "color_map_preset",
@@ -131,11 +205,38 @@ class VtkPointData(HtmlElement):
 
 class VtkPolyData(HtmlElement):
     def __init__(self, name, children=None, dataset=None, **kwargs):
+        """
+        VtkPolyData
+
+        :param port: Port to bind into parent VtkAlgorithm or VtkRepresentation
+        :type port: int
+
+        :param points: Points (xyz array)
+        :type points: Array
+
+        :param verts: CellArray to use for verts
+        :type verts: Array
+
+        :param lines: CellArray to use for lines
+        :type lines: Array
+
+        :param polys: CellArray to use for polys
+        :type polys: Array
+
+        :param strips: CellArray to use for strips
+        :type strips: Array
+
+        :param connectivity: One of 'manual', 'points', 'triangles', 'strips'.
+            When 'manual' is used we expect the user to provide cells.
+            For the other options, the JS code will generate the cells automatically.
+        :type connectivity: str
+        """
         super().__init__("vtk-polydata", children, **kwargs)
         self.__name = name
         self.__dataset = dataset
         self._attr_names += [
             "port",
+            "points",
             "verts",
             "lines",
             "polys",
@@ -164,15 +265,39 @@ class VtkPolyData(HtmlElement):
 
 class VtkReader(HtmlElement):
     def __init__(self, **kwargs):
+        """
+        VtkReader
+
+        :param port: Port to bind into parent VtkAlgorithm or VtkRepresentation
+        :type port: int
+
+        :param parse_as_array_buffer: base64 strings
+        :type parse_as_array_buffer: str
+
+        :param parse_as_text: text content to parse
+        :type parse_as_text: str
+
+        :param render_on_update: Once ready trigger a render
+        :type render_on_update: bool
+
+        :param reset_camera_on_update: Once ready trigger a resetCamera
+        :type reset_camera_on_update: bool
+
+        :param url: url to download data from
+        :type url: str
+
+        :param vtk_class: Class name to use as reader
+        :type vtk_class: str
+        """
         super().__init__("vtk-reader", **kwargs)
         self._attr_names += [
-            "parse_as_array_buffer",
-            "parse_as_text",
+            ("parse_as_array_buffer", "parseAsArrayBuffer"),
+            ("parse_as_text", "parseAsText"),
             "port",
-            "render_on_update",
-            "reset_camera_on_update",
+            ("render_on_update", "renderOnUpdate"),
+            ("reset_camera_on_update", "resetCameraOnUpdate"),
             "url",
-            "vtk_class",
+            ("vtk_class", "vtkClass"),
         ]
 
 
@@ -245,6 +370,12 @@ class VtkRemoteLocalView(HtmlElement):
             ("box_selection", "boxSelection"),
         ]
         self._event_names += [
+            "resize",
+            ("reset_camera", "resetCamera"),
+            ("view_state_change", "viewStateChange"),
+            ("before_scene_loaded", "beforeSceneLoaded"),
+            ("after_scene_loaded", "afterSceneLoaded"),
+            ("on_ready", "onReady"),
             ("box_selection_change", "BoxSelection"),
             "StartAnimation",
             "Animation",
@@ -484,6 +615,12 @@ class VtkLocalView(HtmlElement):
             ("box_selection", "boxSelection"),
         ]
         self._event_names += [
+            "resize",
+            ("reset_camera", "resetCamera"),
+            ("view_state_change", "viewStateChange"),
+            ("before_scene_loaded", "beforeSceneLoaded"),
+            ("after_scene_loaded", "afterSceneLoaded"),
+            ("on_ready", "onReady"),
             ("box_selection_change", "BoxSelection"),
             "StartAnimation",
             "Animation",
