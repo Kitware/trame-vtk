@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.5 (2022-06-01)
+### Fix
+* **paraview:** Replace invalid import path ([`bd33f2a`](https://github.com/Kitware/trame-vtk/commit/bd33f2a2c71f80792a3039271d70b32f100aeed0))
+
 ## v2.0.4 (2022-05-31)
 ### Fix
 * **widgets:** Expose more props ([`2fa0156`](https://github.com/Kitware/trame-vtk/commit/2fa01565461f62f96d3a18b2f649b5484981e5bf))
