@@ -111,7 +111,7 @@ class Helper:
             ParaViewWebPublishImageDelivery,
             ParaViewWebLocalRendering,
         )
-        from pywebvue.modules.VTK.addon_serializer import registerAddOnSerializers
+        from ..vtk.addon_serializer import registerAddOnSerializers
 
         # Initialize vtk application helper
         self._root_protocol.setSharedObject("app", self._pv_core)
@@ -130,7 +130,7 @@ class Helper:
         registerAddOnSerializers()
 
         # Mimic client interactor on server side
-        from pywebvue.modules.ParaView.core import apply_default_interaction_settings
+        from .core import apply_default_interaction_settings
 
         apply_default_interaction_settings()
 
