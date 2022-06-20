@@ -1,6 +1,10 @@
 VTK/ParaView widgets for trame
 ===========================================================
 
+.. image:: https://github.com/Kitware/trame-vtk/actions/workflows/test_and_release.yml/badge.svg
+    :target: https://github.com/Kitware/trame-vtk/actions/workflows/test_and_release.yml
+    :alt: Test and Release
+
 trame-vtk extend trame **widgets** with components that can interface with VTK and/or ParaView.
 
 VTK integration in trame allows you to create rich visualization and data processing applications by leveraging the Python wrapping of the VTK library.
