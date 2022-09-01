@@ -30,6 +30,33 @@ class HtmlElement(AbstractElement):
             self.server.enable_module(common)
 
 
+class VtkPiecewiseEditor(HtmlElement):
+    def __init__(self, children=None, **kwargs):
+        """
+        VtkPiecewiseEditor will create a UI to view and edit opacity function
+        """
+        super().__init__("vtk-piecewise-editor", children, **kwargs)
+        self._attr_names += [
+            "value",
+            ("max_zoom", "maxZoom"),
+            "padding",
+            ("content_rectangle_style", "contentRectangleStyle"),
+            ("result_opacity_line_style", "resultOpacityLineStyle"),
+            ("inside_zoom_style", "insideZoomStyle"),
+            ("gaussian_opacity_style", "gaussianOpacityStyle"),
+            ("active_gaussian_opacity_style", "activeGaussianOpacityStyle"),
+            ("active_linear_opacity_style", "activeLinearOpacityStyle"),
+            ("linear_opacity_style", "linearOpacityStyle"),
+            ("linear_opacity_control_style", "linearOpacityControlStyle"),
+            ("active_linear_opacity_control_style", "activeLinearOpacityControlStyle"),
+            ("zoom_control_style", "zoomControlStyle"),
+        ]
+        self._event_names += [
+            "opacities",
+            "input",
+        ]
+
+
 class VtkAlgorithm(HtmlElement):
     def __init__(self, children=None, **kwargs):
         """
