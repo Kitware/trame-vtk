@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.6 (2022-09-01)
+### Fix
+* **VtkPiecewiseEditor:** Expose piecewise editor widget ([`1e44b6d`](https://github.com/Kitware/trame-vtk/commit/1e44b6d71f511d19dc95ee42e0d9c981258259b1))
+
+### Documentation
+* **coverage:** Remove codecov PR comment ([`5cce2fe`](https://github.com/Kitware/trame-vtk/commit/5cce2fe064625de02d6c590b65c925e31e0b36be))
+* **coverage:** Add .coveragerc ([`6dd5e1d`](https://github.com/Kitware/trame-vtk/commit/6dd5e1d2ab44ff42ea5510db9aab736e49104b41))
+* **ci:** Add coverage and codecov upload ([`b4d7c6e`](https://github.com/Kitware/trame-vtk/commit/b4d7c6ee53917e94ef0a9f5ae27db7cb8af430b6))
+* **readme:** Add CI badge ([`214e1bf`](https://github.com/Kitware/trame-vtk/commit/214e1bfb4419a83c6390f1b8bf3cafa75fb3d1c7))
+* **contributing:** Add CONTRIBUTING.rst ([`4bb579d`](https://github.com/Kitware/trame-vtk/commit/4bb579de9779b735f7517d5e47bff15dc6182066))
+
 ## v2.0.5 (2022-06-01)
 ### Fix
 * **paraview:** Replace invalid import path ([`bd33f2a`](https://github.com/Kitware/trame-vtk/commit/bd33f2a2c71f80792a3039271d70b32f100aeed0))
