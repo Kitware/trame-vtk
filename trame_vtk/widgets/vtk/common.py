@@ -687,6 +687,7 @@ class VtkLocalView(HtmlElement):
             "EndInteraction",
         ]
         self.update()
+        self._server.controller.on_server_ready.add(self.update)
 
     def update(self, **kwargs):
         """
