@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.7 (2022-10-05)
+### Fix
+* **VtkLocalView:** Automatically register update on_server_ready ([`5b5d296`](https://github.com/Kitware/trame-vtk/commit/5b5d296cc67518801c5ebff9397d55f99461c822))
+
 ## v2.0.6 (2022-09-01)
 ### Fix
 * **VtkPiecewiseEditor:** Expose piecewise editor widget ([`1e44b6d`](https://github.com/Kitware/trame-vtk/commit/1e44b6d71f511d19dc95ee42e0d9c981258259b1))
