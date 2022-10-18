@@ -1,20 +1,42 @@
+import warnings
+
+from .core import HybridView
+
+try:
+    import vtkmodules  # noqa
+
+    HAS_VTK = True
+except ImportError:
+    warnings.warn("VTK is not installed.")
+    HAS_VTK = False
+
 try:
     from vtkmodules.vtkWebCore import vtkWebApplication
     from vtkmodules.web.utils import mesh as vtk_mesh
 
-    has_vtk = True
+    HAS_VTK_WEB = True
 except ImportError:
-    print("> VTK is not available inside your Python environment")
-    has_vtk = False
+    HAS_VTK_WEB = False
 
-from .core import HybridView
+IMPROPER_VTK_MSG = """Your build of VTK does not have the proper web modules enabled.
+These modules are typically enabled by default with the
+`-DVTK_GROUP_ENABLE_Web:STRING=WANT` build flag.
+
+Conda users: This is a known issue with the conda-forge VTK feedstock.
+See https://github.com/conda-forge/vtk-feedstock/pull/258
+"""
+
+
+def has_capabilities(*features):
+    if not HAS_VTK_WEB:
+        raise ImportError(IMPROPER_VTK_MSG)
 
 
 class Helper:
     def __init__(self, app):
         self._root_protocol = None
         self._app = app
-        if has_vtk:
+        if HAS_VTK_WEB:
             self._vtk_core = vtkWebApplication()
             self._vtk_core.SetImageEncoding(0)
             self._hybrid_views = {}
@@ -157,7 +179,7 @@ HELPER = None
 
 def setup(app, **kwargs):
     global HELPER
-    if has_vtk:
+    if HAS_VTK_WEB:
         HELPER = Helper(app)
 
 
