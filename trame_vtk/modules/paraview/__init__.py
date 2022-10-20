@@ -1,6 +1,10 @@
 from ..vtk.core import HybridView
 
 
+def has_capabilities(*features):
+    pass
+
+
 class Helper:
     def __init__(self, app):
         self._root_protocol = None

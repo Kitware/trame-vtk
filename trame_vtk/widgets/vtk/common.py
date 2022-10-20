@@ -353,6 +353,8 @@ class VtkRemoteLocalView(HtmlElement):
 
         activate_module_for(self.server, view)
 
+        MODULE.has_capabilities("web", "rendering")
+
         __ns = kwargs.get("namespace", "view")
         self.__mode_key = f"{__ns}Mode"
         self.__scene_id = f"{__ns}Scene"
@@ -525,6 +527,8 @@ class VtkRemoteView(HtmlElement):
 
         activate_module_for(self.server, view)
 
+        MODULE.has_capabilities("web", "rendering")
+
         self.__view = view
         self.__ref = ref
         self.__view_key_id = f"{ref}Id"
@@ -629,6 +633,8 @@ class VtkLocalView(HtmlElement):
         super().__init__("vtk-local-view", **kwargs)
 
         activate_module_for(self.server, view)
+
+        MODULE.has_capabilities("web")
 
         self.__scene_id = f"scene_{ref}"
         self.__view = view
