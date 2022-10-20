@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.8 (2022-10-20)
+### Fix
+* Improve VTK mapper and scalar bar serializers ([`fb94e81`](https://github.com/Kitware/trame-vtk/commit/fb94e81ef86c152f207e4fd442747c0d318a8dde))
+* Improve VTK error reporting capabilities ([`58b71d3`](https://github.com/Kitware/trame-vtk/commit/58b71d330d0ba8e1afba2c3d3ef918d6090dc193))
+
 ## v2.0.7 (2022-10-05)
 ### Fix
 * **VtkLocalView:** Automatically register update on_server_ready ([`5b5d296`](https://github.com/Kitware/trame-vtk/commit/5b5d296cc67518801c5ebff9397d55f99461c822))
