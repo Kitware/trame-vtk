@@ -1,4 +1,5 @@
 from vtkmodules.web import render_window_serializer
+from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 
 def extractRequiredFields(
@@ -64,6 +65,196 @@ def extractRequiredFields(
                     extractedFields.append(arrayMeta)
 
 
+def genericMapperSerializer(parent, mapper, mapperId, context, depth):
+    # This kind of mapper requires us to get 2 items: input data and lookup
+    # table
+    dataObject = None
+    dataObjectInstance = None
+    lookupTableInstance = None
+    calls = []
+    dependencies = []
+
+    if hasattr(mapper, "GetInputDataObject"):
+        mapper.GetInputAlgorithm().Update()
+        dataObject = mapper.GetInputDataObject(0, 0)
+    else:
+        if context.debugAll:
+            print("This mapper does not have GetInputDataObject method")
+
+    if dataObject:
+        if dataObject.IsA("vtkDataSet"):
+            alg = vtkDataSetSurfaceFilter()
+            alg.SetInputData(dataObject)
+            alg.Update()
+            dataObject = alg.GetOutput()
+
+        dataObjectId = "%s-dataset" % mapperId
+        dataObjectInstance = render_window_serializer.serializeInstance(
+            mapper, dataObject, dataObjectId, context, depth + 1
+        )
+
+        if dataObjectInstance:
+            dependencies.append(dataObjectInstance)
+            calls.append(
+                ["setInputData", [render_window_serializer.wrapId(dataObjectId)]]
+            )
+
+    lookupTable = None
+
+    if hasattr(mapper, "GetLookupTable"):
+        lookupTable = mapper.GetLookupTable()
+    else:
+        if context.debugAll:
+            print("This mapper does not have GetLookupTable method")
+
+    if lookupTable:
+        lookupTableId = render_window_serializer.getReferenceId(lookupTable)
+        lookupTableInstance = render_window_serializer.serializeInstance(
+            mapper, lookupTable, lookupTableId, context, depth + 1
+        )
+        if lookupTableInstance:
+            dependencies.append(lookupTableInstance)
+            calls.append(
+                ["setLookupTable", [render_window_serializer.wrapId(lookupTableId)]]
+            )
+
+    if dataObjectInstance:
+        colorArrayName = (
+            mapper.GetArrayName()
+            if mapper.GetArrayAccessMode() == 1
+            else mapper.GetArrayId()
+        )
+        return {
+            "parent": render_window_serializer.getReferenceId(parent),
+            "id": mapperId,
+            "type": render_window_serializer.class_name(mapper),
+            "properties": {
+                "resolveCoincidentTopology": mapper.GetResolveCoincidentTopology(),
+                "renderTime": mapper.GetRenderTime(),
+                "arrayAccessMode": mapper.GetArrayAccessMode(),
+                "scalarRange": mapper.GetScalarRange(),
+                "useLookupTableScalarRange": 1
+                if mapper.GetUseLookupTableScalarRange()
+                else 0,
+                "scalarVisibility": mapper.GetScalarVisibility(),
+                "colorByArrayName": colorArrayName,
+                "colorMode": mapper.GetColorMode(),
+                "scalarMode": mapper.GetScalarMode(),
+                "interpolateScalarsBeforeMapping": 1
+                if mapper.GetInterpolateScalarsBeforeMapping()
+                else 0,
+            },
+            "calls": calls,
+            "dependencies": dependencies,
+        }
+
+    return None
+
+
+def scalarBarActorSerializer(parent, actor, actorId, context, depth):
+    dependencies = []
+    calls = []
+    lut = actor.GetLookupTable()
+    if not lut:
+        return None
+
+    lutId = render_window_serializer.getReferenceId(lut)
+    lutInstance = render_window_serializer.serializeInstance(
+        actor, lut, lutId, context, depth + 1
+    )
+    if not lutInstance:
+        return None
+
+    dependencies.append(lutInstance)
+    calls.append(["setScalarsToColors", [render_window_serializer.wrapId(lutId)]])
+
+    prop = None
+    if hasattr(actor, "GetProperty"):
+        prop = actor.GetProperty()
+    else:
+        if context.debugAll:
+            print("This scalarBarActor does not have a GetProperty method")
+
+        if prop:
+            propId = render_window_serializer.getReferenceId(prop)
+            propertyInstance = render_window_serializer.serializeInstance(
+                actor, prop, propId, context, depth + 1
+            )
+            if propertyInstance:
+                dependencies.append(propertyInstance)
+                calls.append(["setProperty", [render_window_serializer.wrapId(propId)]])
+
+    axisLabel = actor.GetTitle()
+    width = actor.GetWidth()
+    height = actor.GetHeight()
+
+    return {
+        "parent": render_window_serializer.getReferenceId(parent),
+        "id": actorId,
+        "type": "vtkScalarBarActor",
+        "properties": {
+            # vtkProp
+            "visibility": actor.GetVisibility(),
+            "pickable": actor.GetPickable(),
+            "dragable": actor.GetDragable(),
+            "useBounds": actor.GetUseBounds(),
+            # vtkActor2D
+            # "position": actor.GetPosition(),
+            # "position2": actor.GetPosition2(),
+            # "width": actor.GetWidth(),
+            # "height": actor.GetHeight(),
+            # vtkScalarBarActor
+            "automated": True,
+            "axisLabel": axisLabel,
+            # 'barPosition': [0, 0],
+            # 'barSize': [0, 0],
+            "boxPosition": [0.88, -0.92],
+            "boxSize": [width, height],
+            "axisTitlePixelOffset": 36.0,
+            "axisTextStyle": {
+                "fontColor": actor.GetTitleTextProperty().GetColor(),
+                "fontStyle": "normal",
+                "fontSize": 18,
+                "fontFamily": "serif",
+            },
+            "tickLabelPixelOffset": 14.0,
+            "tickTextStyle": {
+                "fontColor": actor.GetTitleTextProperty().GetColor(),
+                "fontStyle": "normal",
+                "fontSize": 14,
+                "fontFamily": "serif",
+            },
+            "drawNanAnnotation": actor.GetDrawNanAnnotation(),
+            "drawBelowRangeSwatch": actor.GetDrawBelowRangeSwatch(),
+            "drawAboveRangeSwatch": actor.GetDrawAboveRangeSwatch(),
+        },
+        "calls": calls,
+        "dependencies": dependencies,
+    }
+
+
 def registerAddOnSerializers():
     # Override extractRequiredFields to fix handling of Normals/TCoords
     setattr(render_window_serializer, "extractRequiredFields", extractRequiredFields)
+    setattr(
+        render_window_serializer, "genericMapperSerializer", genericMapperSerializer
+    )
+    setattr(
+        render_window_serializer, "scalarBarActorSerializer", scalarBarActorSerializer
+    )
+
+    for name in [
+        "vtkMapper",
+        "vtkDataSetMapper",
+        "vtkPolyDataMapper",
+        "vtkImageDataMapper",
+        "vtkOpenGLPolyDataMapper",
+        "vtkCompositePolyDataMapper2",
+    ]:
+        render_window_serializer.registerInstanceSerializer(
+            name, genericMapperSerializer
+        )
+
+    render_window_serializer.registerInstanceSerializer(
+        "vtkScalarBarActor", scalarBarActorSerializer
+    )
