@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.9 (2022-11-05)
+### Fix
+* **LocalView:** Properly handle add/remove actor ([`85ee285`](https://github.com/Kitware/trame-vtk/commit/85ee285f67cf08438d37bae0bfd8d84ffe34db35))
+
 ## v2.0.8 (2022-10-20)
 ### Fix
 * Improve VTK mapper and scalar bar serializers ([`fb94e81`](https://github.com/Kitware/trame-vtk/commit/fb94e81ef86c152f207e4fd442747c0d318a8dde))
