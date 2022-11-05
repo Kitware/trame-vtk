@@ -636,6 +636,7 @@ class VtkLocalView(HtmlElement):
 
         MODULE.has_capabilities("web")
 
+        self._progressive_state = False
         self.__scene_id = f"scene_{ref}"
         self.__view = view
         self.__ref = ref
@@ -693,13 +694,25 @@ class VtkLocalView(HtmlElement):
             "EndInteraction",
         ]
         self.update()
-        self._server.controller.on_server_ready.add(self.update)
+        self._server.controller.on_server_ready.add(self._ready)
+
+    def _ready(self, **kwargs):
+        self.progressive_state(False)
+        self.progressive_state(True)
 
     def update(self, **kwargs):
         """
         Force geometry to be pushed
         """
-        self.server.state[self.__scene_id] = MODULE.scene(self.__view)
+        self.server.state[self.__scene_id] = MODULE.scene(
+            self.__view,
+            new_state=not self._progressive_state,
+        )
+
+    def progressive_state(self, value=True):
+        self._progressive_state = value
+        if not value:
+            self.update()
 
     def reset_camera(self, **kwargs):
         """
