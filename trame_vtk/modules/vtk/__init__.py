@@ -63,9 +63,9 @@ class Helper:
             cell_arrays=cell_arrays,
         )
 
-    def scene(self, render_window):
+    def scene(self, render_window, new_state=False):
         return self._app.protocol_call(
-            "viewport.geometry.view.get.state", self.id(render_window), True
+            "viewport.geometry.view.get.state", self.id(render_window), new_state
         )
 
     def push_image(self, render_window, reset_camera=False):
@@ -205,8 +205,8 @@ def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
     return HELPER.mesh(dataset, field_to_keep, point_arrays, cell_arrays)
 
 
-def scene(render_window, reset_camera=False):
-    scene_state = HELPER.scene(render_window)
+def scene(render_window, reset_camera=False, new_state=True):
+    scene_state = HELPER.scene(render_window, new_state)
     if reset_camera:
         scene_state.setdefault("extra", {})["resetCamera"] = 1
     return scene_state

@@ -53,7 +53,7 @@ class Helper:
             cell_arrays=cell_arrays,
         )
 
-    def scene(self, view_proxy):
+    def scene(self, view_proxy, new_state=False):
         # flush data without requiring a render/picture
         tmp = view_proxy.SuppressRendering
         view_proxy.SuppressRendering = 1
@@ -63,7 +63,7 @@ class Helper:
             view_proxy.SuppressRendering = tmp
 
         return self._app.protocol_call(
-            "viewport.geometry.view.get.state", self.id(view_proxy), True
+            "viewport.geometry.view.get.state", self.id(view_proxy), new_state
         )
 
     def push_image(self, view_proxy, reset_camera=False):
@@ -201,8 +201,8 @@ def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
     return HELPER.mesh(dataset, field_to_keep, point_arrays, cell_arrays)
 
 
-def scene(render_window, reset_camera=False):
-    scene_state = HELPER.scene(render_window)
+def scene(render_window, reset_camera=False, new_state=True):
+    scene_state = HELPER.scene(render_window, new_state)
     if reset_camera:
         scene_state.setdefault("extra", {})["resetCamera"] = 1
     return scene_state
