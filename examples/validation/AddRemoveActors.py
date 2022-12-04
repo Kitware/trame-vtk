@@ -13,6 +13,9 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
 
+# for remote view
+import vtkmodules.vtkRenderingOpenGL2  # noqa
+
 # -----------------------------------------------------------------------------
 # Trame initialization
 # -----------------------------------------------------------------------------
@@ -117,9 +120,21 @@ with SinglePageLayout(server) as layout:
             dense=True,
             style="max-width: 300px",
         )
-        vuetify.VDivider(vertical=True, classes="mx-2")
+
         with vuetify.VBtn(icon=True, click=update_reset_resolution):
             vuetify.VIcon("mdi-undo-variant")
+
+        vuetify.VDivider(vertical=True, classes="mx-2")
+
+        vuetify.VSwitch(
+            v_model=("use_local", True),
+            dense=True,
+            hide_details=True,
+        )
+        with vuetify.VBtn(icon=True, click=ctrl.view_update):
+            vuetify.VIcon("mdi-database-refresh-outline")
+
+        vuetify.VDivider(vertical=True, classes="mx-2")
 
         vuetify.VCheckbox(
             v_model=("show_cone", True), label="Cone", dense=True, hide_details=True
@@ -133,9 +148,17 @@ with SinglePageLayout(server) as layout:
             fluid=True,
             classes="pa-0 fill-height",
         ):
-            view = vtk_widgets.VtkLocalView(renderWindow, ref="view")
+            view = vtk_widgets.VtkLocalView(
+                renderWindow, ref="view_local", v_if="use_local"
+            )
             ctrl.view_update = view.update
             ctrl.view_reset_camera = view.reset_camera
+
+            view_remote = vtk_widgets.VtkRemoteView(
+                renderWindow, ref="view_remote", v_if="!use_local"
+            )
+            ctrl.view_reset_camera.add(view_remote.reset_camera)
+            ctrl.view_update.add(view_remote.update)
 
 
 # -----------------------------------------------------------------------------
