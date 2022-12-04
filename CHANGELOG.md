@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.10 (2022-12-04)
+### Fix
+* **LocalView:** Add multi-view + delta update handling ([`06b6a07`](https://github.com/Kitware/trame-vtk/commit/06b6a0713e91e92ed165f3ec71e4684b988c4d58))
+
+### Documentation
+* **example:** Fix flake8 issue ([`f80d982`](https://github.com/Kitware/trame-vtk/commit/f80d982011d5b1f9b7e60c1b3b38efba7cab6a80))
+* **examples:** Add validation examples ([`209914a`](https://github.com/Kitware/trame-vtk/commit/209914ab142fe6bf2f7459a83c4f533d32157212))
+
 ## v2.0.9 (2022-11-05)
 ### Fix
 * **LocalView:** Properly handle add/remove actor ([`85ee285`](https://github.com/Kitware/trame-vtk/commit/85ee285f67cf08438d37bae0bfd8d84ffe34db35))
