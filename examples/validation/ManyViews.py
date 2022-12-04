@@ -122,7 +122,7 @@ def active_view_change(active_view, **kwargs):
 
 
 @state.change("widget_on")
-def update_resolution(widget_on, active_view, **kwargs):
+def toggle_view(widget_on, active_view, **kwargs):
     state[f"widget_on_{active_view}"] = widget_on
 
 
