@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.11 (2022-12-09)
+### Fix
+* **vue-vtk-js:** Update to 2.1.2 ([`3cf8913`](https://github.com/Kitware/trame-vtk/commit/3cf8913158e36496e564c4a544f07a2f2cf6c630))
+
 ## v2.0.10 (2022-12-04)
 ### Fix
 * **LocalView:** Add multi-view + delta update handling ([`06b6a07`](https://github.com/Kitware/trame-vtk/commit/06b6a0713e91e92ed165f3ec71e4684b988c4d58))
