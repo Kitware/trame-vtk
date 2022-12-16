@@ -392,8 +392,11 @@ class VtkRemoteLocalView(HtmlElement):
         self._attr_names += [
             # "mode", # <--- Managed by hand above
             "context_name",
-            "interactive_quality",
-            "interactive_ratio",
+            ("enable_picking", "enablePicking"),
+            ("interactive_quality", "interactiveQuality"),
+            ("interactive_ratio", "interactiveRatio"),
+            ("still_ratio", "stillRatio"),
+            ("still_quality", "stillQuality"),
             ("interactor_events", "interactorEvents"),
             "interactor_settings",
             ("box_selection", "boxSelection"),
@@ -536,11 +539,14 @@ class VtkRemoteView(HtmlElement):
         self._attributes["ref"] = f'ref="{ref}"'
         self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
         self._attr_names += [
-            "enable_picking",
-            "interactive_quality",
-            "interactive_ratio",
+            ("enable_picking", "enablePicking"),
+            ("interactive_quality", "interactiveQuality"),
+            ("interactive_ratio", "interactiveRatio"),
+            ("still_ratio", "stillRatio"),
+            ("still_quality", "stillQuality"),
             ("interactor_events", "interactorEvents"),
             ("box_selection", "boxSelection"),
+            "visible",
         ]
         self._event_names += [
             ("box_selection_change", "BoxSelection"),
@@ -644,7 +650,7 @@ class VtkLocalView(HtmlElement):
         self._attr_names += [
             ("interactor_events", "interactorEvents"),
             "interactor_settings",
-            "context_name",
+            ("context_name", "contextName"),
             ("box_selection", "boxSelection"),
         ]
         self._event_names += [
