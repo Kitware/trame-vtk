@@ -720,6 +720,28 @@ class VtkLocalView(HtmlElement):
     def resize(self, **kwargs):
         self.server.js_call(ref=self.__ref, method="resize")
 
+    def push_camera(self, camera=None, center_of_rotation=None, **kwargs):
+        if camera is None:
+            camera = self.__view.GetRenderers().GetFirstRenderer().GetActiveCamera()
+
+        camera_params = dict(
+            position=camera.GetPosition(),
+            focalPoint=camera.GetFocalPoint(),
+            viewUp=camera.GetViewUp(),
+            parallelProjection=camera.GetParallelProjection(),
+            parallelScale=camera.GetParallelScale(),
+            viewAngle=camera.GetViewAngle(),
+        )
+
+        if center_of_rotation is not None:
+            camera_params["centerOfRotation"] = center_of_rotation
+
+        self.server.js_call(
+            self.__ref,
+            "setCamera",
+            camera_params,
+        )
+
 
 class VtkView(HtmlElement):
     def __init__(self, children=None, ref="view", **kwargs):
