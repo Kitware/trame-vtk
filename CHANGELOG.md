@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.12 (2022-12-16)
+### Fix
+* **RemoteView:** Expose still_ratio/quality properties ([`7278d5e`](https://github.com/Kitware/trame-vtk/commit/7278d5ed7b8872167a9e9c653792b1b8543ac5ab))
+* **LocalView:** Add push_camera ([`a9e4513`](https://github.com/Kitware/trame-vtk/commit/a9e4513e43fea443ee02d2de002270d666515913))
+
 ## v2.0.11 (2022-12-09)
 ### Fix
 * **vue-vtk-js:** Update to 2.1.2 ([`3cf8913`](https://github.com/Kitware/trame-vtk/commit/3cf8913158e36496e564c4a544f07a2f2cf6c630))
