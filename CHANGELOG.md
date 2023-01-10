@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.13 (2023-01-10)
+### Fix
+* **vue-vtk-js:** Bump version to 2.1.3 to support delta ([`8f1d569`](https://github.com/Kitware/trame-vtk/commit/8f1d569e3329ea2a8f7285e06d2083c932bcac10))
+* **RemoteLocal:** Fix API call to use delta ([`781c282`](https://github.com/Kitware/trame-vtk/commit/781c282b1c812309b1f28ac7c24c69e0506628dd))
+
 ## v2.0.12 (2022-12-16)
 ### Fix
 * **RemoteView:** Expose still_ratio/quality properties ([`7278d5e`](https://github.com/Kitware/trame-vtk/commit/7278d5ed7b8872167a9e9c653792b1b8543ac5ab))
