@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.14 (2023-01-10)
+### Fix
+* Convert RGB colors to hex ([`0be279e`](https://github.com/Kitware/trame-vtk/commit/0be279e6190bcc7c54b9fc725da6df014376656a))
+
 ## v2.0.13 (2023-01-10)
 ### Fix
 * **vue-vtk-js:** Bump version to 2.1.3 to support delta ([`8f1d569`](https://github.com/Kitware/trame-vtk/commit/8f1d569e3329ea2a8f7285e06d2083c932bcac10))
