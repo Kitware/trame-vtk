@@ -188,6 +188,9 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
     width = actor.GetWidth()
     height = actor.GetHeight()
 
+    def rgb_float_to_hex(r, g, b):
+        return f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
+
     return {
         "parent": render_window_serializer.getReferenceId(parent),
         "id": actorId,
@@ -212,14 +215,14 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
             "boxSize": [width, height],
             "axisTitlePixelOffset": 36.0,
             "axisTextStyle": {
-                "fontColor": actor.GetTitleTextProperty().GetColor(),
+                "fontColor": rgb_float_to_hex(*actor.GetTitleTextProperty().GetColor()),
                 "fontStyle": "normal",
                 "fontSize": 18,
                 "fontFamily": "serif",
             },
             "tickLabelPixelOffset": 14.0,
             "tickTextStyle": {
-                "fontColor": actor.GetTitleTextProperty().GetColor(),
+                "fontColor": rgb_float_to_hex(*actor.GetTitleTextProperty().GetColor()),
                 "fontStyle": "normal",
                 "fontSize": 14,
                 "fontFamily": "serif",
