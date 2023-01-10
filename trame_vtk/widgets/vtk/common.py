@@ -385,6 +385,7 @@ class VtkRemoteLocalView(HtmlElement):
 
         # Provide mandatory attributes
         self._attributes["ref"] = f'ref="{self.__ref}"'
+        self._attributes["refprefix"] = f'refPrefix="{self.__ref}"'
         self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
         self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
         self._attributes["namespace"] = f'namespace="{__ns}"'
@@ -451,7 +452,12 @@ class VtkRemoteLocalView(HtmlElement):
         """
         Force update to geometry
         """
-        self.server.state[self.__scene_id] = MODULE.scene(self.__view, reset_camera)
+        if self.server.protocol:
+            delta_state = MODULE.scene(self.__view, new_state=False)
+            self.server.protocol.publish("trame.vtk.delta", delta_state)
+
+        full_state = MODULE.scene(self.__view, new_state=True)
+        self.server.state[self.__scene_id] = full_state
 
     def update_image(self, reset_camera=False):
         """
@@ -469,7 +475,36 @@ class VtkRemoteLocalView(HtmlElement):
         # need to do both to keep things in sync
         if self.__rendering:
             self.update_image(reset_camera)
-        self.update_geometry(reset_camera)
+        self.update_geometry()
+
+        if reset_camera:
+            self.server.js_call(
+                self.__ref,
+                "setCamera",
+                MODULE.camera(self.__view),
+            )
+
+    def push_camera(self, camera=None, center_of_rotation=None, **kwargs):
+        if camera is None:
+            camera = self.__view.GetRenderers().GetFirstRenderer().GetActiveCamera()
+
+        camera_params = dict(
+            position=camera.GetPosition(),
+            focalPoint=camera.GetFocalPoint(),
+            viewUp=camera.GetViewUp(),
+            parallelProjection=camera.GetParallelProjection(),
+            parallelScale=camera.GetParallelScale(),
+            viewAngle=camera.GetViewAngle(),
+        )
+
+        if center_of_rotation is not None:
+            camera_params["centerOfRotation"] = center_of_rotation
+
+        self.server.js_call(
+            self.__ref,
+            "setCamera",
+            camera_params,
+        )
 
     def replace_view(self, new_view, **kwargs):
         self.server.state[self.__view_key_id] = MODULE.id(new_view)
