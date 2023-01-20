@@ -268,7 +268,7 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
     color = rgb_float_to_hex(*actor.GetXAxesGridlinesProperty().GetColor())
 
     return {
-        "parent": getReferenceId(parent),
+        "parent": render_window_serializer.getReferenceId(parent),
         "id": actorId,
         "type": "vtkCubeAxesActor",
         "properties": {
@@ -305,7 +305,16 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
                 "fontFamily": "serif",
             },
         },
-        "calls": [["setCamera", [wrapId(getReferenceId(actor.GetCamera()))]]],
+        "calls": [
+            [
+                "setCamera",
+                [
+                    render_window_serializer.wrapId(
+                        render_window_serializer.getReferenceId(actor.GetCamera())
+                    )
+                ],
+            ]
+        ],
         "dependencies": [],
     }
 
@@ -319,9 +328,7 @@ def registerAddOnSerializers():
     setattr(
         render_window_serializer, "scalarBarActorSerializer", scalarBarActorSerializer
     )
-    setattr(
-        render_window_serializer, "cubeAxesSerializer", cubeAxesSerializer
-    )
+    setattr(render_window_serializer, "cubeAxesSerializer", cubeAxesSerializer)
 
     for name in [
         "vtkMapper",
