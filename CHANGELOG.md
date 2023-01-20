@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.15 (2023-01-20)
+### Fix
+* **vtk:** Handle CubeAxes grid color + light + disable_auto_switch ([`d89c04e`](https://github.com/Kitware/trame-vtk/commit/d89c04e265a28234cd3467866c016247fc5d6e36))
+* CubeAxesSerializer colors ([`3ea17a4`](https://github.com/Kitware/trame-vtk/commit/3ea17a44f431a0cf8afe4949e7d52c4d631eb4fb))
+
 ## v2.0.14 (2023-01-10)
 ### Fix
 * Convert RGB colors to hex ([`0be279e`](https://github.com/Kitware/trame-vtk/commit/0be279e6190bcc7c54b9fc725da6df014376656a))
