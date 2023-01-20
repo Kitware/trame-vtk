@@ -265,7 +265,36 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
     if actor.GetZAxisLabelVisibility():
         axisLabels[2] = actor.GetZTitle()
 
-    color = rgb_float_to_hex(*actor.GetXAxesGridlinesProperty().GetColor())
+    text_color = rgb_float_to_hex(*actor.GetXAxesGridlinesProperty().GetColor())
+
+    dependencies = []
+    calls = [
+        [
+            "setCamera",
+            [
+                render_window_serializer.wrapId(
+                    render_window_serializer.getReferenceId(actor.GetCamera())
+                )
+            ],
+        ]
+    ]
+
+    prop = None
+    if hasattr(actor, "GetXAxesLinesProperty"):
+        prop = actor.GetXAxesLinesProperty()
+    else:
+        render_window_serializer.logger.debug(
+            "This actor does not have a GetXAxesLinesProperty method"
+        )
+
+    if prop:
+        propId = render_window_serializer.getReferenceId(prop)
+        propertyInstance = render_window_serializer.serializeInstance(
+            actor, prop, propId, context, depth + 1
+        )
+        if propertyInstance:
+            dependencies.append(propertyInstance)
+            calls.append(["setProperty", [render_window_serializer.wrapId(propId)]])
 
     return {
         "parent": render_window_serializer.getReferenceId(parent),
@@ -290,32 +319,22 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
             "gridLines": True,
             "axisLabels": axisLabels,
             "axisTitlePixelOffset": 35.0,
-            # TODO: set the color of the grid lines
             "axisTextStyle": {
-                "fontColor": color,
+                "fontColor": text_color,
                 "fontStyle": "normal",
                 "fontSize": 18,
                 "fontFamily": "serif",
             },
             "tickLabelPixelOffset": 12.0,
             "tickTextStyle": {
-                "fontColor": color,
+                "fontColor": text_color,
                 "fontStyle": "normal",
                 "fontSize": 14,
                 "fontFamily": "serif",
             },
         },
-        "calls": [
-            [
-                "setCamera",
-                [
-                    render_window_serializer.wrapId(
-                        render_window_serializer.getReferenceId(actor.GetCamera())
-                    )
-                ],
-            ]
-        ],
-        "dependencies": [],
+        "calls": calls,
+        "dependencies": dependencies,
     }
 
 
