@@ -2,6 +2,10 @@ from vtkmodules.web import render_window_serializer
 from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 
+def rgb_float_to_hex(r, g, b):
+    return f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
+
+
 def extractRequiredFields(
     extractedFields, parent, dataset, context, requestedFields=["Normals", "TCoords"]
 ):
@@ -188,9 +192,6 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
     width = actor.GetWidth()
     height = actor.GetHeight()
 
-    def rgb_float_to_hex(r, g, b):
-        return f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
-
     return {
         "parent": render_window_serializer.getReferenceId(parent),
         "id": actorId,
@@ -236,6 +237,107 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
     }
 
 
+def cubeAxesSerializer(parent, actor, actorId, context, depth):
+    """
+    Possible add-on properties for vtk.js:
+        gridLines: True,
+        axisLabels: None,
+        axisTitlePixelOffset: 35.0,
+        axisTextStyle: {
+            fontColor: 'white',
+            fontStyle: 'normal',
+            fontSize: 18,
+            fontFamily: 'serif',
+        },
+        tickLabelPixelOffset: 12.0,
+        tickTextStyle: {
+            fontColor: 'white',
+            fontStyle: 'normal',
+            fontSize: 14,
+            fontFamily: 'serif',
+        },
+    """
+    axisLabels = ["", "", ""]
+    if actor.GetXAxisLabelVisibility():
+        axisLabels[0] = actor.GetXTitle()
+    if actor.GetYAxisLabelVisibility():
+        axisLabels[1] = actor.GetYTitle()
+    if actor.GetZAxisLabelVisibility():
+        axisLabels[2] = actor.GetZTitle()
+
+    text_color = rgb_float_to_hex(*actor.GetXAxesGridlinesProperty().GetColor())
+
+    dependencies = []
+    calls = [
+        [
+            "setCamera",
+            [
+                render_window_serializer.wrapId(
+                    render_window_serializer.getReferenceId(actor.GetCamera())
+                )
+            ],
+        ]
+    ]
+
+    prop = None
+    if hasattr(actor, "GetXAxesLinesProperty"):
+        prop = actor.GetXAxesLinesProperty()
+    else:
+        render_window_serializer.logger.debug(
+            "This actor does not have a GetXAxesLinesProperty method"
+        )
+
+    if prop:
+        propId = render_window_serializer.getReferenceId(prop)
+        propertyInstance = render_window_serializer.serializeInstance(
+            actor, prop, propId, context, depth + 1
+        )
+        if propertyInstance:
+            dependencies.append(propertyInstance)
+            calls.append(["setProperty", [render_window_serializer.wrapId(propId)]])
+
+    return {
+        "parent": render_window_serializer.getReferenceId(parent),
+        "id": actorId,
+        "type": "vtkCubeAxesActor",
+        "properties": {
+            # vtkProp
+            "visibility": actor.GetVisibility(),
+            "pickable": actor.GetPickable(),
+            "dragable": actor.GetDragable(),
+            "useBounds": actor.GetUseBounds(),
+            # vtkProp3D
+            "origin": actor.GetOrigin(),
+            "position": actor.GetPosition(),
+            "scale": actor.GetScale(),
+            # vtkActor
+            "forceOpaque": actor.GetForceOpaque(),
+            "forceTranslucent": actor.GetForceTranslucent(),
+            # vtkCubeAxesActor
+            "dataBounds": actor.GetBounds(),
+            "faceVisibilityAngle": 8,
+            "gridLines": True,
+            "axisLabels": axisLabels,
+            "axisTitlePixelOffset": 35.0,
+            "axisTextStyle": {
+                "fontColor": text_color,
+                "fontStyle": "normal",
+                "fontSize": 18,
+                "fontFamily": "serif",
+            },
+            "tickLabelPixelOffset": 12.0,
+            "tickTextStyle": {
+                "fontColor": text_color,
+                "fontStyle": "normal",
+                "fontSize": 14,
+                "fontFamily": "serif",
+            },
+        },
+        "calls": calls,
+        "dependencies": dependencies,
+    }
+
+
 def registerAddOnSerializers():
     # Override extractRequiredFields to fix handling of Normals/TCoords
     setattr(render_window_serializer, "extractRequiredFields", extractRequiredFields)
@@ -245,6 +347,7 @@ def registerAddOnSerializers():
     setattr(
         render_window_serializer, "scalarBarActorSerializer", scalarBarActorSerializer
     )
+    setattr(render_window_serializer, "cubeAxesSerializer", cubeAxesSerializer)
 
     for name in [
         "vtkMapper",
@@ -260,4 +363,7 @@ def registerAddOnSerializers():
 
     render_window_serializer.registerInstanceSerializer(
         "vtkScalarBarActor", scalarBarActorSerializer
+    )
+    render_window_serializer.registerInstanceSerializer(
+        "vtkCubeAxesActor", cubeAxesSerializer
     )

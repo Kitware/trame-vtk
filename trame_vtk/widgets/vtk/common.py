@@ -339,6 +339,7 @@ class VtkRemoteLocalView(HtmlElement):
     ...   # Just VtkRemoteLocalView params
     ...   namespace=...,           # Prefix for variables and triggers. See below. (required)
     ...   mode="local",            # Decide between local or remote. See below.
+    ...   disable_auto_switch=True # Skip automatic remote rendering switch while local rendering is pending
     ...
     ...   # VtkRemoteView params
     ...   **remote_view_params,
@@ -401,6 +402,7 @@ class VtkRemoteLocalView(HtmlElement):
             ("interactor_events", "interactorEvents"),
             "interactor_settings",
             ("box_selection", "boxSelection"),
+            ("disable_auto_switch", "disableAutoSwitch"),
         ]
         self._event_names += [
             "resize",
