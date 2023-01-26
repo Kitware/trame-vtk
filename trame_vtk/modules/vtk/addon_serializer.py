@@ -338,6 +338,33 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
     }
 
 
+def imagedataSerializer(
+    parent, dataset, datasetId, context, depth, requested_fields=["Normals", "TCoords"]
+):
+    if hasattr(dataset, "GetDirectionMatrix"):
+        direction = [dataset.GetDirectionMatrix().GetElement(0, i) for i in range(9)]
+    else:
+        direction = [1, 0, 0, 0, 1, 0, 0, 0, 1]
+
+    # Extract dataset fields
+    fields = []
+    extractRequiredFields(fields, parent, dataset, context, "*")
+
+    return {
+        "parent": render_window_serializer.getReferenceId(parent),
+        "id": datasetId,
+        "type": render_window_serializer.class_name(dataset),
+        "properties": {
+            "spacing": dataset.GetSpacing(),
+            "origin": dataset.GetOrigin(),
+            "dimensions": dataset.GetDimensions(),
+            "direction": direction,
+            "fields": fields,
+            "extent": dataset.GetExtent(),
+        },
+    }
+
+
 def registerAddOnSerializers():
     # Override extractRequiredFields to fix handling of Normals/TCoords
     setattr(render_window_serializer, "extractRequiredFields", extractRequiredFields)
@@ -348,6 +375,7 @@ def registerAddOnSerializers():
         render_window_serializer, "scalarBarActorSerializer", scalarBarActorSerializer
     )
     setattr(render_window_serializer, "cubeAxesSerializer", cubeAxesSerializer)
+    setattr(render_window_serializer, "imagedataSerializer", imagedataSerializer)
 
     for name in [
         "vtkMapper",
@@ -366,4 +394,7 @@ def registerAddOnSerializers():
     )
     render_window_serializer.registerInstanceSerializer(
         "vtkCubeAxesActor", cubeAxesSerializer
+    )
+    render_window_serializer.registerInstanceSerializer(
+        "vtkImageData", imagedataSerializer
     )
