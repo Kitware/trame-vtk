@@ -364,6 +364,62 @@ def imagedataSerializer(
     }
 
 
+def genericVolumeMapperSerializer(parent, mapper, mapperId, context, depth):
+    # This kind of mapper requires us to get 2 items: input data and lookup
+    # table
+    dataObject = None
+    dataObjectInstance = None
+    lookupTableInstance = None
+    calls = []
+    dependencies = []
+
+    if hasattr(mapper, "GetInputDataObject"):
+        mapper.GetInputAlgorithm().Update()
+        dataObject = mapper.GetInputDataObject(0, 0)
+    else:
+        render_window_serializer.logger.debug(
+            "This mapper does not have GetInputDataObject method"
+        )
+
+    if dataObject:
+        dataObjectId = "%s-dataset" % mapperId
+        dataObjectInstance = render_window_serializer.serializeInstance(
+            mapper, dataObject, dataObjectId, context, depth + 1
+        )
+
+        if dataObjectInstance:
+            dependencies.append(dataObjectInstance)
+            calls.append(
+                ["setInputData", [render_window_serializer.wrapId(dataObjectId)]]
+            )
+
+    if dataObjectInstance:
+        if hasattr(mapper, "GetImageSampleDistance"):
+            imageSampleDistance = mapper.GetImageSampleDistance()
+        else:
+            imageSampleDistance = 1.0
+        return {
+            "parent": render_window_serializer.getReferenceId(parent),
+            "id": mapperId,
+            "type": render_window_serializer.class_name(mapper),
+            "properties": {
+                # VolumeMapper
+                "sampleDistance": mapper.GetSampleDistance(),
+                "imageSampleDistance": imageSampleDistance,
+                # "maximumSamplesPerRay": mapper.GetMaximumSamplesPerRay(),
+                "autoAdjustSampleDistances": mapper.GetAutoAdjustSampleDistances(),
+                "blendMode": mapper.GetBlendMode(),
+                # "ipScalarRange": mapper.GetIpScalarRange(),
+                # "filterMode": mapper.GetFilterMode(),
+                # "preferSizeOverAccuracy": mapper.Get(),
+            },
+            "calls": calls,
+            "dependencies": dependencies,
+        }
+
+    return None
+
+
 def registerAddOnSerializers():
     # Override extractRequiredFields to fix handling of Normals/TCoords
     setattr(render_window_serializer, "extractRequiredFields", extractRequiredFields)
@@ -375,6 +431,11 @@ def registerAddOnSerializers():
     )
     setattr(render_window_serializer, "cubeAxesSerializer", cubeAxesSerializer)
     setattr(render_window_serializer, "imagedataSerializer", imagedataSerializer)
+    setattr(
+        render_window_serializer,
+        "genericVolumeMapperSerializer",
+        genericVolumeMapperSerializer,
+    )
 
     for name in [
         "vtkMapper",
@@ -386,6 +447,17 @@ def registerAddOnSerializers():
     ]:
         render_window_serializer.registerInstanceSerializer(
             name, genericMapperSerializer
+        )
+    for name in [
+        "vtkVolumeMapper",
+        "vtkFixedPointVolumeRayCastMapper",
+        "vtkGPUVolumeRayCastMapper",
+        "vtkOpenGLGPUVolumeRayCastMapper",
+        "vtkSmartVolumeMapper",
+    ]:
+
+        render_window_serializer.registerInstanceSerializer(
+            name, genericVolumeMapperSerializer
         )
 
     render_window_serializer.registerInstanceSerializer(
