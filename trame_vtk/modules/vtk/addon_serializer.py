@@ -369,7 +369,7 @@ def genericVolumeMapperSerializer(parent, mapper, mapperId, context, depth):
     # table
     dataObject = None
     dataObjectInstance = None
-    lookupTableInstance = None
+    # lookupTableInstance = None
     calls = []
     dependencies = []
 
