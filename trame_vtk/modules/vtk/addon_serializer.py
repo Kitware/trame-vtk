@@ -357,10 +357,9 @@ def imagedataSerializer(
         "properties": {
             "spacing": dataset.GetSpacing(),
             "origin": dataset.GetOrigin(),
-            "dimensions": dataset.GetDimensions(),
+            "extent": dataset.GetExtent(),
             "direction": direction,
             "fields": fields,
-            "extent": dataset.GetExtent(),
         },
     }
 
