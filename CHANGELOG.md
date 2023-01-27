@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.16 (2023-01-27)
+### Fix
+* ImageData extent and vtkSmartVolumeMapper ([`fc096c0`](https://github.com/Kitware/trame-vtk/commit/fc096c0e0190bfef2127aef2f46e3aa9ccdd8893))
+
 ## v2.0.15 (2023-01-20)
 ### Fix
 * **vtk:** Handle CubeAxes grid color + light + disable_auto_switch ([`d89c04e`](https://github.com/Kitware/trame-vtk/commit/d89c04e265a28234cd3467866c016247fc5d6e36))
