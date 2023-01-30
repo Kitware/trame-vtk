@@ -4,7 +4,7 @@ from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 # Patch support for BigInt64 (VTK_LONG_LONG)
 # This requires the latest VTK.js
-if len(web.arrayTypesMapping) < 17:
+if len(web.arrayTypesMapping) == 16:
     # Mapping is done by index of the list
     web.arrayTypesMapping.append("ll")  # VTK_LONG_LONG            16
     web.arrayTypesMapping.append("LL")  # VTK_UNSIGNED_LONG_LONG   17
