@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.17 (2023-02-01)
+### Fix
+* **BigInt:** Add support for LocalView ([`aa34620`](https://github.com/Kitware/trame-vtk/commit/aa34620642c64ceb5fd625c83b22fc7f50e823ff))
+
 ## v2.0.16 (2023-01-27)
 ### Fix
 * ImageData extent and vtkSmartVolumeMapper ([`fc096c0`](https://github.com/Kitware/trame-vtk/commit/fc096c0e0190bfef2127aef2f46e3aa9ccdd8893))
