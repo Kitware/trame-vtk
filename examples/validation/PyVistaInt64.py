@@ -5,7 +5,7 @@ import numpy as np
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify
-from trame.widgets.vtk import VtkLocalView
+from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 server = get_server()
 state, ctrl = server.state, server.controller
@@ -38,9 +38,12 @@ with SinglePageLayout(server) as layout:
             fluid=True,
             classes="pa-0 fill-height",
         ):
-            view = VtkLocalView(plotter.ren_win)
-            ctrl.view_update = view.update
-            ctrl.view_reset_camera = view.reset_camera
+            with vuetify.VCol(classes="fill-height"):
+                view = VtkLocalView(plotter.ren_win)
+                ctrl.view_update = view.update
+                ctrl.view_reset_camera = view.reset_camera
+            with vuetify.VCol(classes="fill-height"):
+                VtkRemoteView(plotter.ren_win)
 
     # hide footer
     layout.footer.hide()
