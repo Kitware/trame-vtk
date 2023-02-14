@@ -1,0 +1,36 @@
+{
+  "name": "vue-vtk-js",
+  "version": "0.0.0",
+  "description": "Vue.js based declarative vtk.js visualization pipeline",
+  "main": "../trame_vtk/modules/common/serve/trame-vtk.umd.js",
+  "module": "../trame_vtk/modules/common/serve/trame-vtk.mjs",
+  "exports": {
+    ".": {
+      "import": "../trame_vtk/modules/common/serve/trame-vtk.mjs",
+      "require": "../trame_vtk/modules/common/serve/trame-vtk.umd.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore --ignore-pattern public"
+  },
+  "dependencies": {
+    "@kitware/vtk.js": "26.5.3",
+    "@vitejs/plugin-vue": "^4.0.0"
+  },
+  "peerDependencies": {
+    "vue": "^2.7.0 || >=3.0.0"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.1.4",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "eslint": "^8.33.0",
+    "eslint-plugin-vue": "^9.3.0",
+    "prettier": "^2.7.1",
+    "vite": "^4.1.0",
+    "vue": "^3.0.0"
+  },
+  "author": "Kitware Inc",
+  "license": "BSD-3-Clause"
+}
