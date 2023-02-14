@@ -203,7 +203,10 @@ class VtkMesh(HtmlElement):
         self._attr_names += ["port", "state"]
         if dataset:
             activate_module_for(self.server, dataset)
-            self._attributes["state"] = f':state="{name}"'
+            if self.server.client_type == "vue2":
+                self._attributes["state"] = f':state="{name}"'
+            else:
+                self._attributes["state"] = f':state="{name}.value"'
             self.update()
 
     def set_dataset(self, dataset):
@@ -272,7 +275,10 @@ class VtkPolyData(HtmlElement):
         ]
         if dataset:
             activate_module_for(self.server, dataset)
-            self._attributes["bind"] = f'v-bind="{name}.mesh"'
+            if self.server.client_type == "vue2":
+                self._attributes["bind"] = f'v-bind="{name}.mesh"'
+            else:
+                self._attributes["bind"] = f'v-bind="state.{name}.mesh"'
             self.update()
 
     def set_dataset(self, dataset):
@@ -377,7 +383,10 @@ class VtkRemoteLocalView(HtmlElement):
             __mode_start = __mode_expression
             __mode_expression = self.__mode_key
 
-        self._attributes["mode"] = f':mode="{__mode_expression}"'
+        if self.server.client_type == "vue2":
+            self._attributes["mode"] = f':mode="{__mode_expression}"'
+        else:
+            self._attributes["mode"] = f':mode="state.{__mode_expression}"'
         # !!! HACK !!!
 
         self.server.state[self.__view_key_id] = MODULE.id(view)
@@ -387,9 +396,15 @@ class VtkRemoteLocalView(HtmlElement):
         # Provide mandatory attributes
         self._attributes["ref"] = f'ref="{self.__ref}"'
         self._attributes["refprefix"] = f'refPrefix="{self.__ref}"'
-        self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
-        self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
         self._attributes["namespace"] = f'namespace="{__ns}"'
+
+        # vue2/3 compatibility
+        if self.server.client_type == "vue2":
+            self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
+            self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
+        else:
+            self._attributes["view_id"] = f':viewId="{self.__view_key_id}.value"'
+            self._attributes["view_state"] = f':viewState="{self.__scene_id}.value"'
 
         self._attr_names += [
             # "mode", # <--- Managed by hand above
@@ -449,8 +464,9 @@ class VtkRemoteLocalView(HtmlElement):
             "Interaction",
             "EndInteraction",
         ]
+        self._server.controller.on_server_ready.add(self.update_geometry)
 
-    def update_geometry(self, reset_camera=False):
+    def update_geometry(self, reset_camera=False, **kwargs):
         """
         Force update to geometry
         """
@@ -574,7 +590,13 @@ class VtkRemoteView(HtmlElement):
         self.__view_key_id = f"{ref}Id"
         self.server.state[self.__view_key_id] = MODULE.id(view)
         self._attributes["ref"] = f'ref="{ref}"'
-        self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
+
+        # vue2/3 handling
+        if self.server.client_type == "vue2":
+            self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
+        else:
+            self._attributes["view_id"] = f':viewId="{self.__view_key_id}.value"'
+
         self._attr_names += [
             ("enable_picking", "enablePicking"),
             ("interactive_quality", "interactiveQuality"),
@@ -683,7 +705,13 @@ class VtkLocalView(HtmlElement):
         self.__view = view
         self.__ref = ref
         self._attributes["ref"] = f'ref="{ref}"'
-        self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
+
+        # Handle vue2/3
+        if self.server.client_type == "vue2":
+            self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
+        else:
+            self._attributes["view_state"] = f':viewState="{self.__scene_id}.value"'
+
         self._attr_names += [
             ("interactor_events", "interactorEvents"),
             "interactor_settings",
