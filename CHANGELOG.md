@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.18 (2023-02-23)
+### Fix
+* **version:** Add __version__ ([`c9ab451`](https://github.com/Kitware/trame-vtk/commit/c9ab451d9e397f2a9c64b488d957915086a81ddc))
+
 ## v2.0.17 (2023-02-01)
 ### Fix
 * **BigInt:** Add support for LocalView ([`aa34620`](https://github.com/Kitware/trame-vtk/commit/aa34620642c64ceb5fd625c83b22fc7f50e823ff))
