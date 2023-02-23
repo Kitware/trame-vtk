@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.0 (2023-02-23)
+### Feature
+* **vue23:** Update client code to work with vue2/3 ([`7a8f546`](https://github.com/Kitware/trame-vtk/commit/7a8f546de013f61f7973118b992fec5889c35690))
+
+### Fix
+* **web:** Migrate JS into vue-vtk-js>=3 ([`9cd279a`](https://github.com/Kitware/trame-vtk/commit/9cd279a3dee3e88aeb0891f370eb65a6a1e3aa1c))
+
 ## v2.0.18 (2023-02-23)
 ### Fix
 * **version:** Add __version__ ([`c9ab451`](https://github.com/Kitware/trame-vtk/commit/c9ab451d9e397f2a9c64b488d957915086a81ddc))
