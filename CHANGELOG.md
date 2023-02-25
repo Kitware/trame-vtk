@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.0 (2023-02-25)
+### Feature
+* **LocalRemote:** Allow full camera sync with helper method ([`a750af2`](https://github.com/Kitware/trame-vtk/commit/a750af248c5d7025491bca1a8ff6cd0a9bab441b))
+
+### Fix
+* **vue-vtk-js:** Update to latest version ([`672e887`](https://github.com/Kitware/trame-vtk/commit/672e88787c5a3c5cbc15b1858291c4131f2f1e50))
+
+### Documentation
+* **example:** Support toggle camera sync ([`fb9ab41`](https://github.com/Kitware/trame-vtk/commit/fb9ab41eaf7d9ee25eea3cae98ddab75c00e3611))
+
 ## v2.1.0 (2023-02-23)
 ### Feature
 * **vue23:** Update client code to work with vue2/3 ([`7a8f546`](https://github.com/Kitware/trame-vtk/commit/7a8f546de013f61f7973118b992fec5889c35690))
