@@ -466,6 +466,12 @@ class VtkRemoteLocalView(HtmlElement):
         ]
         self._server.controller.on_server_ready.add(self.update_geometry)
 
+    def push_remote_camera_on_end_interaction(self):
+        # vtkCommand.EndInteractionEvent 45
+        # from vtkmodules.vtkCommonCore import vtkCommand
+        # print("vtkCommand.EndInteractionEvent", vtkCommand.EndInteractionEvent)
+        self.__view.GetInteractor().AddObserver(45, self._push_camera)
+
     def update_geometry(self, reset_camera=False, **kwargs):
         """
         Force update to geometry
@@ -502,9 +508,18 @@ class VtkRemoteLocalView(HtmlElement):
                 MODULE.camera(self.__view),
             )
 
+    def _push_camera(self, *args, **kwargs):
+        self.push_camera()
+
     def push_camera(self, camera=None, center_of_rotation=None, **kwargs):
         if camera is None:
-            camera = self.__view.GetRenderers().GetFirstRenderer().GetActiveCamera()
+            if hasattr(self.__view, "GetRenderers"):  # VTK
+                camera = self.__view.GetRenderers().GetFirstRenderer().GetActiveCamera()
+            elif hasattr(self.__view, "GetActiveCamera"):  # ParaView
+                camera = self.__view.GetActiveCamera()
+
+        if camera is None:
+            return
 
         camera_params = dict(
             position=camera.GetPosition(),
