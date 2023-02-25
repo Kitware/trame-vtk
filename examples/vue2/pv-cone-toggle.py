@@ -1,4 +1,4 @@
-import paraview.web.venv
+import paraview.web.venv  # noqa
 from trame.app import get_server
 from trame.widgets import html, vuetify, vtk as vtk_widgets
 from trame.ui.vuetify import SinglePageLayout
