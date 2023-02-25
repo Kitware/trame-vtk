@@ -1,19 +1,9 @@
+import paraview.web.venv
 from trame.app import get_server
 from trame.widgets import html, vuetify, vtk as vtk_widgets
 from trame.ui.vuetify import SinglePageLayout
 
-from vtkmodules.vtkFiltersSources import vtkConeSource
-from vtkmodules.vtkRenderingCore import (
-    vtkRenderer,
-    vtkRenderWindow,
-    vtkRenderWindowInteractor,
-    vtkPolyDataMapper,
-    vtkActor,
-)
-
-# VTK factory initialization
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+from paraview import simple
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -28,31 +18,17 @@ state.trame__title = "VTK Remote rendering"
 DEFAULT_RESOLUTION = 6
 
 # -----------------------------------------------------------------------------
-# VTK code
+# PV code
 # -----------------------------------------------------------------------------
 
-renderer = vtkRenderer()
-renderWindow = vtkRenderWindow()
-renderWindow.AddRenderer(renderer)
-renderWindow.OffScreenRenderingOn()  # Prevent popup window
-
-renderWindowInteractor = vtkRenderWindowInteractor()
-renderWindowInteractor.SetRenderWindow(renderWindow)
-renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
-
-cone_source = vtkConeSource()
-mapper = vtkPolyDataMapper()
-actor = vtkActor()
-mapper.SetInputConnection(cone_source.GetOutputPort())
-actor.SetMapper(mapper)
-renderer.AddActor(actor)
-renderer.ResetCamera()
-renderWindow.Render()
+cone = simple.Cone()
+rep = simple.Show()
+view = simple.Render()
 
 
 @state.change("resolution")
 def update_cone(resolution=DEFAULT_RESOLUTION, **kwargs):
-    cone_source.SetResolution(resolution)
+    cone.Resolution = resolution
     ctrl.view_update()
 
 
@@ -94,10 +70,10 @@ with SinglePageLayout(server) as layout:
             fluid=True,
             classes="pa-0 fill-height",
         ):
-            view = vtk_widgets.VtkRemoteLocalView(renderWindow, mode=("mode",))
-            ctrl.view_update = view.update
-            ctrl.view_reset_camera = view.reset_camera
-            view.push_remote_camera_on_end_interaction()
+            html_view = vtk_widgets.VtkRemoteLocalView(view, mode=("mode",))
+            ctrl.view_update = html_view.update
+            ctrl.view_reset_camera = html_view.reset_camera
+            html_view.push_remote_camera_on_end_interaction()
 
 
 server.start()

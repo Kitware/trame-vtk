@@ -99,6 +99,6 @@ with SinglePageLayout(server) as layout:
             view = vtk_widgets.VtkRemoteLocalView(renderWindow, mode=("mode",))
             ctrl.view_update = view.update
             ctrl.view_reset_camera = view.reset_camera
-            print(view.html)
+            view.push_remote_camera_on_end_interaction()
 
 server.start()
