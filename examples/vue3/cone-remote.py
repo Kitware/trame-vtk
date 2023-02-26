@@ -70,7 +70,7 @@ with SinglePageLayout(server) as layout:
             density="compact",
             thumb_size=15,
             track_size=2,
-            v_model=("resolution.value", DEFAULT_RESOLUTION),
+            v_model=("resolution", DEFAULT_RESOLUTION),
             min=3,
             max=60,
             step=1,

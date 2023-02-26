@@ -28,7 +28,7 @@ with SinglePageLayout(server) as layout:
             density="compact",
             thumb_size=15,
             track_size=2,
-            v_model=("resolution.value", DEFAULT_RESOLUTION),
+            v_model=("resolution", DEFAULT_RESOLUTION),
             min=3,
             max=60,
             step=1,
@@ -50,13 +50,13 @@ with SinglePageLayout(server) as layout:
                 with vtk_widgets.VtkGeometryRepresentation():
                     vtk_widgets.VtkAlgorithm(
                         vtk_class="vtkConeSource",
-                        state=("{ resolution: resolution.value }",),
+                        state=("{ resolution }",),
                     )
                 with vtk_widgets.VtkGeometryRepresentation():
                     with vtk_widgets.VtkAlgorithm(
                         vtk_class="vtkTubeFilter",
                         state=(
-                            "{ radius: 0.005 * resolution.value, numberOfSides: 24, capping: resolution.value < 10 }",
+                            "{ radius: 0.005 * resolution, numberOfSides: 24, capping: resolution < 10 }",
                         ),
                     ):
                         vtk_widgets.VtkPolyData(
@@ -70,9 +70,7 @@ with SinglePageLayout(server) as layout:
                     vtk_widgets.VtkAlgorithm(
                         port=0,
                         vtk_class="vtkPlaneSource",
-                        state=(
-                            "{ XResolution: resolution.value, YResolution: resolution.value }",
-                        ),
+                        state=("{ XResolution: resolution, YResolution: resolution }",),
                     )
                     vtk_widgets.VtkReader(
                         port=1,

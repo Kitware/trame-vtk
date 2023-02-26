@@ -69,7 +69,7 @@ with SinglePageLayout(server) as layout:
         vuetify3.VSpacer()
         vuetify3.VCheckbox(
             density="compact",
-            v_model=("mode.value", "remote"),
+            v_model=("mode", "remote"),
             false_icon="mdi-image",
             true_icon="mdi-rotate-3d",
             true_value="local",
@@ -80,7 +80,7 @@ with SinglePageLayout(server) as layout:
             density="compact",
             thumb_size=15,
             track_size=2,
-            v_model=("resolution.value", DEFAULT_RESOLUTION),
+            v_model=("resolution", DEFAULT_RESOLUTION),
             min=3,
             max=60,
             step=1,

@@ -68,7 +68,7 @@ with SinglePageLayout(server) as layout:
         vuetify3.VSpacer()
         vuetify3.VSlider(
             density="compact",
-            v_model=("resolution.value", DEFAULT_RESOLUTION),
+            v_model=("resolution", DEFAULT_RESOLUTION),
             min=3,
             max=60,
             step=1,

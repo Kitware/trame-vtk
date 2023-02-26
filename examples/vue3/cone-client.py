@@ -26,7 +26,7 @@ with SinglePageLayout(server) as layout:
     with layout.toolbar:
         vuetify3.VSpacer()
         vuetify3.VSlider(
-            v_model=("resolution.value", DEFAULT_RESOLUTION),
+            v_model=("resolution", DEFAULT_RESOLUTION),
             density="compact",
             min=3,
             max=60,
@@ -50,7 +50,7 @@ with SinglePageLayout(server) as layout:
                 with vtk_widgets.VtkGeometryRepresentation():
                     vtk_widgets.VtkAlgorithm(
                         vtk_class="vtkConeSource",
-                        state=("{ resolution: resolution.value }",),
+                        state=("{ resolution }",),
                     )
 
 
