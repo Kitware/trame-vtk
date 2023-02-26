@@ -203,10 +203,7 @@ class VtkMesh(HtmlElement):
         self._attr_names += ["port", "state"]
         if dataset:
             activate_module_for(self.server, dataset)
-            if self.server.client_type == "vue2":
-                self._attributes["state"] = f':state="{name}"'
-            else:
-                self._attributes["state"] = f':state="{name}.value"'
+            self._attributes["state"] = f':state="{name}"'
             self.update()
 
     def set_dataset(self, dataset):
@@ -275,10 +272,7 @@ class VtkPolyData(HtmlElement):
         ]
         if dataset:
             activate_module_for(self.server, dataset)
-            if self.server.client_type == "vue2":
-                self._attributes["bind"] = f'v-bind="{name}.mesh"'
-            else:
-                self._attributes["bind"] = f'v-bind="state.{name}.mesh"'
+            self._attributes["bind"] = f'v-bind="{name}.mesh"'
             self.update()
 
     def set_dataset(self, dataset):
@@ -383,10 +377,7 @@ class VtkRemoteLocalView(HtmlElement):
             __mode_start = __mode_expression
             __mode_expression = self.__mode_key
 
-        if self.server.client_type == "vue2":
-            self._attributes["mode"] = f':mode="{__mode_expression}"'
-        else:
-            self._attributes["mode"] = f':mode="state.{__mode_expression}"'
+        self._attributes["mode"] = f':mode="{__mode_expression}"'
         # !!! HACK !!!
 
         self.server.state[self.__view_key_id] = MODULE.id(view)
@@ -399,12 +390,8 @@ class VtkRemoteLocalView(HtmlElement):
         self._attributes["namespace"] = f'namespace="{__ns}"'
 
         # vue2/3 compatibility
-        if self.server.client_type == "vue2":
-            self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
-            self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
-        else:
-            self._attributes["view_id"] = f':viewId="{self.__view_key_id}.value"'
-            self._attributes["view_state"] = f':viewState="{self.__scene_id}.value"'
+        self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
+        self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
 
         self._attr_names += [
             # "mode", # <--- Managed by hand above
@@ -605,12 +592,7 @@ class VtkRemoteView(HtmlElement):
         self.__view_key_id = f"{ref}Id"
         self.server.state[self.__view_key_id] = MODULE.id(view)
         self._attributes["ref"] = f'ref="{ref}"'
-
-        # vue2/3 handling
-        if self.server.client_type == "vue2":
-            self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
-        else:
-            self._attributes["view_id"] = f':viewId="{self.__view_key_id}.value"'
+        self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
 
         self._attr_names += [
             ("enable_picking", "enablePicking"),
@@ -720,12 +702,7 @@ class VtkLocalView(HtmlElement):
         self.__view = view
         self.__ref = ref
         self._attributes["ref"] = f'ref="{ref}"'
-
-        # Handle vue2/3
-        if self.server.client_type == "vue2":
-            self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
-        else:
-            self._attributes["view_state"] = f':viewState="{self.__scene_id}.value"'
+        self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
 
         self._attr_names += [
             ("interactor_events", "interactorEvents"),
