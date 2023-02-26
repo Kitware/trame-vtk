@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.1 (2023-02-26)
+### Fix
+* **vue3:** Unify template generation ([`c13934e`](https://github.com/Kitware/trame-vtk/commit/c13934e20dc5815645ba7f20dd61f831b96d0cd2))
+
+### Documentation
+* **example:** Update latest vue3 syntax ([`5b64088`](https://github.com/Kitware/trame-vtk/commit/5b64088d05ad5b596758324204092404b8a33f00))
+
 ## v2.2.0 (2023-02-25)
 ### Feature
 * **LocalRemote:** Allow full camera sync with helper method ([`a750af2`](https://github.com/Kitware/trame-vtk/commit/a750af248c5d7025491bca1a8ff6cd0a9bab441b))
