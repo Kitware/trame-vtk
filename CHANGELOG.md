@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.2 (2023-02-28)
+### Fix
+* **widget:** Add a class to wrap vtkAbstractWidgets and make them easier to use ([`29e39d4`](https://github.com/Kitware/trame-vtk/commit/29e39d42b7115c6c1df82f7be38c7ecc456aedf5))
+
 ## v2.2.1 (2023-02-26)
 ### Fix
 * **vue3:** Unify template generation ([`c13934e`](https://github.com/Kitware/trame-vtk/commit/c13934e20dc5815645ba7f20dd61f831b96d0cd2))
