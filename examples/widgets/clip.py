@@ -121,6 +121,7 @@ with SinglePageLayout(server) as layout:
             hide_details=True,
             off_icon="mdi-paper-cut-vertical",
             on_icon="mdi-paper-cut-vertical",
+            classes="mt-0",
         )
         vuetify.VCheckbox(
             v_model=("live_update", False),
@@ -128,6 +129,7 @@ with SinglePageLayout(server) as layout:
             hide_details=True,
             off_icon="mdi-link-off",
             on_icon="mdi-link",
+            classes="mt-0",
         )
         with vuetify.VBtn(icon=True, click=ctrl.view_reset_camera):
             vuetify.VIcon("mdi-crop-free")
