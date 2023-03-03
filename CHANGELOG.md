@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.3 (2023-03-03)
+### Fix
+* **LocalView:** Allow view update ([`034c142`](https://github.com/Kitware/trame-vtk/commit/034c142c17987a28adf30c99b1c72258c8ce6e5b))
+
+### Documentation
+* **widget:** Simple plane/clip ([`bb95910`](https://github.com/Kitware/trame-vtk/commit/bb9591020966a889885e8a7816c8bd53cfb4a3fc))
+* **widget:** Simple plane/clip ([`1365d51`](https://github.com/Kitware/trame-vtk/commit/1365d510ebffe0589e3579cbe6b25e8b349626cc))
+
 ## v2.2.2 (2023-02-28)
 ### Fix
 * **widget:** Add a class to wrap vtkAbstractWidgets and make them easier to use ([`29e39d4`](https://github.com/Kitware/trame-vtk/commit/29e39d42b7115c6c1df82f7be38c7ecc456aedf5))
