@@ -1,6 +1,7 @@
 from vtkmodules import web
 from vtkmodules.web import render_window_serializer
 from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
+from vtkmodules.vtkCommonMath import vtkMatrix4x4
 
 # Patch support for BigInt64 (VTK_LONG_LONG)
 # This requires the latest VTK.js
@@ -430,6 +431,93 @@ def genericVolumeMapperSerializer(parent, mapper, mapperId, context, depth):
     return None
 
 
+def axesActorSerializer(parent, actor, actorId, context, depth):
+    actorVisibility = actor.GetVisibility()
+
+    if not actorVisibility:
+        return None
+
+    # C++ extract
+    label_show = actor.GetAxisLabels()
+    # label_position = actor.GetNormalizedLabelPosition()
+
+    # shaft_length = actor.GetNormalizedShaftLength()
+    shaft_type = actor.GetShaftType()  # int [line/cylinder]
+    print("shaft_type", shaft_type)
+
+    tip_length = actor.GetNormalizedTipLength()
+    # tip_type = actor.GetTipType() # int [cone/sphere]
+
+    cone_resolution = actor.GetConeResolution()
+    cone_radius = actor.GetConeRadius()
+
+    cylinder_resolution = actor.GetCylinderResolution()
+    cylinder_radius = actor.GetCylinderRadius()
+
+    # sphere_radius = actor.GetSphereRadius()
+    # sphere_resolution = actor.GetSphereResolution()
+
+    # XYZ...
+    # actor.GetXAxisCaptionActor2D()
+    # actor.GetXAxisTipProperty()
+    # actor.GetXAxisShaftProperty()
+    # actor.GetXAxisLabelText()
+
+    print("Z color", actor.GetZAxisTipProperty().GetColor())
+
+    # Apply transform
+    matrix = vtkMatrix4x4()
+    actor.GetUserTransform().GetTranspose(matrix)
+    user_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for i in range(4):
+        for j in range(4):
+            idx = i + 4 * j
+            user_matrix[idx] = matrix.GetElement(j, i)
+
+    return {
+        "parent": render_window_serializer.getReferenceId(parent),
+        "id": actorId,
+        "type": "vtkAxesActor",
+        "properties": {
+            # vtkProp
+            "visibility": actorVisibility,
+            "pickable": actor.GetPickable(),
+            "dragable": actor.GetDragable(),
+            "useBounds": actor.GetUseBounds(),
+            # vtkProp3D
+            "origin": actor.GetOrigin(),
+            "position": actor.GetPosition(),
+            "scale": actor.GetScale(),
+            "userMatrix": user_matrix,
+            # vtkAxesActor
+            "labels": {
+                "show": label_show,
+                "x": actor.GetXAxisLabelText(),
+                "y": actor.GetYAxisLabelText(),
+                "z": actor.GetZAxisLabelText(),
+            },
+            "config": {
+                "recenter": 0,
+                "tipResolution": cone_resolution,  # 60,
+                "tipRadius": 0.2 * cone_radius,  # 0.1,
+                "tipLength": tip_length[0],  # 0.2,
+                "shaftResolution": cylinder_resolution,  # 60,
+                "shaftRadius": 0.01 if shaft_type else cylinder_radius,  # 0.03,
+                "invert": 0,
+            },
+            "xAxisColor": list(
+                map(lambda x: int(x * 255), actor.GetXAxisTipProperty().GetColor())
+            ),
+            "yAxisColor": list(
+                map(lambda x: int(x * 255), actor.GetYAxisTipProperty().GetColor())
+            ),
+            "zAxisColor": list(
+                map(lambda x: int(x * 255), actor.GetZAxisTipProperty().GetColor())
+            ),
+        },
+    }
+
+
 def registerAddOnSerializers():
     # Override extractRequiredFields to fix handling of Normals/TCoords
     setattr(render_window_serializer, "extractRequiredFields", extractRequiredFields)
@@ -465,7 +553,6 @@ def registerAddOnSerializers():
         "vtkOpenGLGPUVolumeRayCastMapper",
         "vtkSmartVolumeMapper",
     ]:
-
         render_window_serializer.registerInstanceSerializer(
             name, genericVolumeMapperSerializer
         )
@@ -478,4 +565,7 @@ def registerAddOnSerializers():
     )
     render_window_serializer.registerInstanceSerializer(
         "vtkImageData", imagedataSerializer
+    )
+    render_window_serializer.registerInstanceSerializer(
+        "vtkAxesActor", axesActorSerializer
     )
