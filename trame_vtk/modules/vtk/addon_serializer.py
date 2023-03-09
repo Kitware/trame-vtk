@@ -2,6 +2,7 @@ from vtkmodules import web
 from vtkmodules.web import render_window_serializer
 from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 from vtkmodules.vtkCommonMath import vtkMatrix4x4
+from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
 
 # Patch support for BigInt64 (VTK_LONG_LONG)
 # This requires the latest VTK.js
@@ -563,6 +564,28 @@ def colorTransferFunctionSerializer(parent, instance, objId, context, depth):
     }
 
 
+def lookupTableToColorTransferFunction(lookupTable):
+    dataTable = lookupTable.GetTable()
+    table = render_window_serializer.dataTableToList(dataTable)
+
+    if not table:
+        lookupTable.Build()
+        table = render_window_serializer.dataTableToList(dataTable)
+
+    if table:
+        ctf = vtkColorTransferFunction()
+        ctf.DeepCopy(lookupTable)  # <== needed to capture vector props
+
+        tableRange = lookupTable.GetTableRange()
+        points = render_window_serializer.linspace(*tableRange, num=len(table))
+        for x, rgba in zip(points, table):
+            ctf.AddRGBPoint(x, *[x / 255 for x in rgba[:3]])
+
+        return ctf
+
+    return None
+
+
 def registerAddOnSerializers():
     # Override extractRequiredFields to fix handling of Normals/TCoords
     setattr(render_window_serializer, "extractRequiredFields", extractRequiredFields)
@@ -583,6 +606,11 @@ def registerAddOnSerializers():
         render_window_serializer,
         "colorTransferFunctionSerializer",
         colorTransferFunctionSerializer,
+    )
+    setattr(
+        render_window_serializer,
+        "lookupTableToColorTransferFunction",
+        lookupTableToColorTransferFunction,
     )
 
     for name in [
