@@ -407,6 +407,8 @@ class VtkRemoteLocalView(HtmlElement):
             ("disable_auto_switch", "disableAutoSwitch"),
         ]
         self._event_names += [
+            ("on_local_image_capture", "onLocalImageCapture"),
+            ("on_remote_image_capture", "onRemoteImageCapture"),
             "resize",
             ("reset_camera", "resetCamera"),
             ("view_state_change", "viewStateChange"),
@@ -549,6 +551,14 @@ class VtkRemoteLocalView(HtmlElement):
         """
         return self.__wrapped_view
 
+    def capture_image(self, format="image/png", opts={}):
+        self.server.js_call(
+            self.__ref,
+            "captureImage",
+            format,
+            opts,
+        )
+
 
 class VtkRemoteView(HtmlElement):
     """
@@ -605,6 +615,7 @@ class VtkRemoteView(HtmlElement):
             "visible",
         ]
         self._event_names += [
+            ("on_image_capture", "onImageCapture"),
             ("box_selection_change", "BoxSelection"),
             "StartAnimation",
             "Animation",
@@ -662,6 +673,14 @@ class VtkRemoteView(HtmlElement):
     def resize(self, **kwargs):
         self.server.js_call(ref=self.__ref, method="resize")
 
+    def capture_image(self, format="image/png", opts={}):
+        self.server.js_call(
+            self.__ref,
+            "captureImage",
+            format,
+            opts,
+        )
+
 
 class VtkShareDataset(HtmlElement):
     def __init__(self, children=None, **kwargs):
@@ -711,6 +730,7 @@ class VtkLocalView(HtmlElement):
             ("box_selection", "boxSelection"),
         ]
         self._event_names += [
+            ("on_image_capture", "onImageCapture"),
             "resize",
             ("reset_camera", "resetCamera"),
             ("view_state_change", "viewStateChange"),
@@ -803,6 +823,14 @@ class VtkLocalView(HtmlElement):
             self.__ref,
             "setCamera",
             camera_params,
+        )
+
+    def capture_image(self, format="image/png", opts={}):
+        self.server.js_call(
+            self.__ref,
+            "captureImage",
+            format,
+            opts,
         )
 
 
