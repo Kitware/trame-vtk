@@ -515,6 +515,54 @@ def axesActorSerializer(parent, actor, actorId, context, depth):
     }
 
 
+def colorTransferFunctionSerializer(parent, instance, objId, context, depth):
+    nodes = []
+    for i in range(instance.GetSize()):
+        # x, r, g, b, midpoint, sharpness
+        node = [0, 0, 0, 0, 0, 0]
+        instance.GetNodeValue(i, node)
+        nodes.append(node)
+
+    discretize = 0
+    numberOfValues = instance.GetSize()
+    if hasattr(instance, "GetDiscretize"):
+        discretize = (
+            instance.GetDiscretize() if hasattr(instance, "GetDiscretize") else 0
+        )
+        numberOfValues = (
+            instance.GetNumberOfValues()
+            if hasattr(instance, "GetNumberOfValues")
+            else 256
+        )
+    elif numberOfValues < 256:
+        discretize = 1
+
+    return {
+        "parent": render_window_serializer.getReferenceId(parent),
+        "id": objId,
+        "type": render_window_serializer.class_name(instance),
+        "properties": {
+            "clamping": 1 if instance.GetClamping() else 0,
+            "colorSpace": instance.GetColorSpace(),
+            "hSVWrap": 1 if instance.GetHSVWrap() else 0,
+            # 'nanColor': instance.GetNanColor(),                  # Breaks client
+            # 'belowRangeColor': instance.GetBelowRangeColor(),    # Breaks client
+            # 'aboveRangeColor': instance.GetAboveRangeColor(),    # Breaks client
+            # 'useAboveRangeColor': 1 if instance.GetUseAboveRangeColor() else 0,
+            # 'useBelowRangeColor': 1 if instance.GetUseBelowRangeColor() else 0,
+            "allowDuplicateScalars": 1 if instance.GetAllowDuplicateScalars() else 0,
+            "alpha": instance.GetAlpha(),
+            "vectorComponent": instance.GetVectorComponent(),
+            "vectorSize": instance.GetVectorSize(),
+            "vectorMode": instance.GetVectorMode(),
+            "indexedLookup": instance.GetIndexedLookup(),
+            "nodes": nodes,
+            "numberOfValues": numberOfValues,
+            "discretize": discretize,
+        },
+    }
+
+
 def registerAddOnSerializers():
     # Override extractRequiredFields to fix handling of Normals/TCoords
     setattr(render_window_serializer, "extractRequiredFields", extractRequiredFields)
@@ -530,6 +578,11 @@ def registerAddOnSerializers():
         render_window_serializer,
         "genericVolumeMapperSerializer",
         genericVolumeMapperSerializer,
+    )
+    setattr(
+        render_window_serializer,
+        "colorTransferFunctionSerializer",
+        colorTransferFunctionSerializer,
     )
 
     for name in [
