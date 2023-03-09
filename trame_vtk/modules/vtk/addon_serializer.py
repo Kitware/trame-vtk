@@ -443,7 +443,6 @@ def axesActorSerializer(parent, actor, actorId, context, depth):
 
     # shaft_length = actor.GetNormalizedShaftLength()
     shaft_type = actor.GetShaftType()  # int [line/cylinder]
-    print("shaft_type", shaft_type)
 
     tip_length = actor.GetNormalizedTipLength()
     # tip_type = actor.GetTipType() # int [cone/sphere]
@@ -462,8 +461,6 @@ def axesActorSerializer(parent, actor, actorId, context, depth):
     # actor.GetXAxisTipProperty()
     # actor.GetXAxisShaftProperty()
     # actor.GetXAxisLabelText()
-
-    print("Z color", actor.GetZAxisTipProperty().GetColor())
 
     # Apply transform
     matrix = vtkMatrix4x4()
