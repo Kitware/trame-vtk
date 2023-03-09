@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.0 (2023-03-09)
+### Feature
+* **screenshot:** Allow screenshot extract ([`8db1f08`](https://github.com/Kitware/trame-vtk/commit/8db1f0845206fc65ec02f7169aa40ab63bb4d792))
+
+### Fix
+* **vue-vtk-js:** Update to 3.1 to get AxesActor + screenshot ([`cfe0b19`](https://github.com/Kitware/trame-vtk/commit/cfe0b19bd22f11ff061031dd2b1ac1980f837d8b))
+* **LocalView:** Add support for vtkAxesActor ([`7d21817`](https://github.com/Kitware/trame-vtk/commit/7d21817e7a39f6168081584bf62c81139c6b99d9))
+
 ## v2.2.3 (2023-03-03)
 ### Fix
 * **LocalView:** Allow view update ([`034c142`](https://github.com/Kitware/trame-vtk/commit/034c142c17987a28adf30c99b1c72258c8ce6e5b))
