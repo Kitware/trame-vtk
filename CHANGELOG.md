@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.1 (2023-03-09)
+### Fix
+* **Serializer:** Properly handle LookupTable size ([`95cfd2d`](https://github.com/Kitware/trame-vtk/commit/95cfd2d196bb00e28648f698a63a219e553b54cf))
+
 ## v2.3.0 (2023-03-09)
 ### Feature
 * **screenshot:** Allow screenshot extract ([`8db1f08`](https://github.com/Kitware/trame-vtk/commit/8db1f0845206fc65ec02f7169aa40ab63bb4d792))
