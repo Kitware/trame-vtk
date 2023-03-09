@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.2 (2023-03-09)
+### Fix
+* **serializer:** Add support for LUT components ([`3ace3f5`](https://github.com/Kitware/trame-vtk/commit/3ace3f5ffa6e0af6d9db029e0a5ca6fb3f4a7174))
+
 ## v2.3.1 (2023-03-09)
 ### Fix
 * **Serializer:** Properly handle LookupTable size ([`95cfd2d`](https://github.com/Kitware/trame-vtk/commit/95cfd2d196bb00e28648f698a63a219e553b54cf))
