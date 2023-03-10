@@ -60,7 +60,7 @@ To update the client code, run the following command line while updating the tar
 .. code-block:: console
 
     mkdir -p ./trame_vtk/modules/common/serve
-    curl https://unpkg.com/vue-vtk-js@3.1.0 -Lo ./trame_vtk/modules/common/serve/trame-vtk.js
+    curl https://unpkg.com/vue-vtk-js@3.1.1 -Lo ./trame_vtk/modules/common/serve/trame-vtk.js
 
 
 Trame widgets
