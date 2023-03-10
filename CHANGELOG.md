@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.4 (2023-03-10)
+### Fix
+* **RemoteView:** Support no size at startup ([`29c5587`](https://github.com/Kitware/trame-vtk/commit/29c5587f0ca72c78972d6304a48d469231d523e6))
+
 ## v2.3.3 (2023-03-10)
 ### Fix
 * **RemoteView:** Initial still_ratio ([`130ff9a`](https://github.com/Kitware/trame-vtk/commit/130ff9a0c146e91ac2230f8cc81fc5eb468d6b73))
