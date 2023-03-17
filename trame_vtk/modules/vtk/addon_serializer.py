@@ -464,13 +464,14 @@ def axesActorSerializer(parent, actor, actorId, context, depth):
     # actor.GetXAxisLabelText()
 
     # Apply transform
-    matrix = vtkMatrix4x4()
-    actor.GetUserTransform().GetTranspose(matrix)
-    user_matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    for i in range(4):
-        for j in range(4):
-            idx = i + 4 * j
-            user_matrix[idx] = matrix.GetElement(j, i)
+    user_matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    if actor.GetUserTransform():
+        matrix = vtkMatrix4x4()
+        actor.GetUserTransform().GetTranspose(matrix)
+        for i in range(4):
+            for j in range(4):
+                idx = i + 4 * j
+                user_matrix[idx] = matrix.GetElement(j, i)
 
     return {
         "parent": render_window_serializer.getReferenceId(parent),
