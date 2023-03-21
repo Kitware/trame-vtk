@@ -3,8 +3,6 @@ protocols that can be combined together to provide a flexible way to define
 very specific web application.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import base64
 import os
 import re
