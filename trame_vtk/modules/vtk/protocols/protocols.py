@@ -5,7 +5,10 @@ very specific web application.
 
 from __future__ import absolute_import, division, print_function
 
-import os, sys, logging, types, inspect, traceback, re, base64, time
+import base64
+import os
+import re
+import time
 
 from vtkmodules.vtkWebCore import vtkWebInteractionEvent
 
@@ -508,7 +511,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
 
         realViewId = str(self.getGlobalId(sView))
 
-        if not realViewId in self.trackingViews:
+        if realViewId not in self.trackingViews:
             observerCallback = lambda *args, **kwargs: self.pushRender(realViewId)
             startCallback = lambda *args, **kwargs: self.startViewAnimation(realViewId)
             stopCallback = lambda *args, **kwargs: self.stopViewAnimation(realViewId)
@@ -772,7 +775,7 @@ class vtkWebLocalRendering(vtkWebProtocol):
             self.mtime += 1
             return stateToReturn
 
-        if not realViewId in self.trackingViews:
+        if realViewId not in self.trackingViews:
             observerCallback = lambda *args, **kwargs: self.publish(
                 "viewport.geometry.view.subscription", pushGeometry()
             )

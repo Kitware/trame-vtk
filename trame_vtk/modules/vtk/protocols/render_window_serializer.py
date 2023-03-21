@@ -25,6 +25,7 @@ logger.setLevel(logging.DEBUG)
 # Array helpers
 # -----------------------------------------------------------------------------
 
+
 def zipCompression(name, data):
     with io.BytesIO() as in_memory:
         with zipfile.ZipFile(in_memory, mode="w") as zf:
@@ -159,9 +160,11 @@ def registerInstanceSerializer(name, method):
     global SERIALIZERS
     SERIALIZERS[name] = method
 
+
 def registerJSClass(vtk_class, js_class):
     global JS_CLASS_MAPPING
     JS_CLASS_MAPPING[vtk_class] = js_class
+
 
 def class_name(vtk_obj):
     vtk_class = vtk_obj.GetClassName()
@@ -211,13 +214,16 @@ def initializeSerializers():
     registerJSClass("vtkCompositePolyDataMapper2", "vtkMapper")
 
     registerInstanceSerializer("vtkVolumeMapper", genericVolumeMapperSerializer)
-    registerInstanceSerializer("vtkFixedPointVolumeRayCastMapper", genericVolumeMapperSerializer)
+    registerInstanceSerializer(
+        "vtkFixedPointVolumeRayCastMapper", genericVolumeMapperSerializer
+    )
     registerJSClass("vtkFixedPointVolumeRayCastMapper", "vtkVolumeMapper")
 
     # LookupTables/TransferFunctions
     registerInstanceSerializer("vtkLookupTable", lookupTableSerializer2)
     registerInstanceSerializer(
-        "vtkPVDiscretizableColorTransferFunction", discretizableColorTransferFunctionSerializer
+        "vtkPVDiscretizableColorTransferFunction",
+        discretizableColorTransferFunctionSerializer,
     )
     registerInstanceSerializer(
         "vtkColorTransferFunction", colorTransferFunctionSerializer
@@ -242,7 +248,6 @@ def initializeSerializers():
     registerInstanceSerializer("vtkMultiBlockDataSet", mergeToPolydataSerializer)
     registerInstanceSerializer("vtkStructuredPoints", imagedataSerializer)
     registerJSClass("vtkStructuredPoints", "vtkImageData")
-
 
     # RenderWindows
     registerInstanceSerializer("vtkRenderWindow", renderWindowSerializer)
@@ -424,6 +429,7 @@ def extractRequiredFields(
                     )
                     extractedFields.append(arrayMeta)
 
+
 # -----------------------------------------------------------------------------
 # Concrete instance serializers
 # -----------------------------------------------------------------------------
@@ -576,6 +582,7 @@ def genericVolumeSerializer(parent, actor, actorId, context, depth):
 
     return None
 
+
 # -----------------------------------------------------------------------------
 
 
@@ -666,9 +673,7 @@ def genericMapperSerializer(parent, mapper, mapperId, context, depth):
         )
         if lookupTableInstance:
             dependencies.append(lookupTableInstance)
-            calls.append(
-                ["setLookupTable", [wrapId(lookupTableId)]]
-            )
+            calls.append(["setLookupTable", [wrapId(lookupTableId)]])
 
     if dataObjectInstance:
         colorArrayName = (
@@ -711,7 +716,6 @@ def genericVolumeMapperSerializer(parent, mapper, mapperId, context, depth):
     # table
     dataObject = None
     dataObjectInstance = None
-    lookupTableInstance = None
     calls = []
     dependencies = []
 
@@ -753,6 +757,7 @@ def genericVolumeMapperSerializer(parent, mapper, mapperId, context, depth):
 
     return None
 
+
 # -----------------------------------------------------------------------------
 
 
@@ -766,11 +771,10 @@ def lookupTableSerializer(parent, lookupTable, lookupTableId, context, depth):
     if hasattr(lookupTable, "GetHueRange"):
         try:
             lookupTable.GetHueRange(lookupTableHueRange)
-        except Exception as inst:
+        except Exception:
             pass
 
     lutSatRange = lookupTable.GetSaturationRange()
-    lutAlphaRange = lookupTable.GetAlphaRange()
 
     return {
         "parent": getReferenceId(parent),
@@ -867,6 +871,7 @@ def propertySerializer(parent, propObj, propObjId, context, depth):
         },
     }
 
+
 def volumePropertySerializer(parent, propObj, propObjId, context, depth):
     calls = []
     dependencies = []
@@ -887,9 +892,7 @@ def volumePropertySerializer(parent, propObj, propObjId, context, depth):
     pwf = propObj.GetScalarOpacity()
     if pwf:
         pwfId = getReferenceId(pwf)
-        pwfInstance = serializeInstance(
-            propObj, pwf, pwfId, context, depth + 1
-        )
+        pwfInstance = serializeInstance(propObj, pwf, pwfId, context, depth + 1)
 
         if pwfInstance:
             dependencies.append(pwfInstance)
@@ -914,10 +917,13 @@ def volumePropertySerializer(parent, propObj, propObjId, context, depth):
         "dependencies": dependencies,
     }
 
+
 # -----------------------------------------------------------------------------
 
 
-def imagedataSerializer(parent, dataset, datasetId, context, depth, requested_fields = ["Normals", "TCoords"]):
+def imagedataSerializer(
+    parent, dataset, datasetId, context, depth, requested_fields=["Normals", "TCoords"]
+):
     if hasattr(dataset, "GetDirectionMatrix"):
         direction = [dataset.GetDirectionMatrix().GetElement(0, i) for i in range(9)]
     else:
@@ -944,7 +950,9 @@ def imagedataSerializer(parent, dataset, datasetId, context, depth, requested_fi
 # -----------------------------------------------------------------------------
 
 
-def polydataSerializer(parent, dataset, datasetId, context, depth, requested_fields = ["Normals", "TCoords"]):
+def polydataSerializer(
+    parent, dataset, datasetId, context, depth, requested_fields=["Normals", "TCoords"]
+):
     if dataset and dataset.GetPoints():
         properties = {}
 
@@ -982,7 +990,9 @@ def polydataSerializer(parent, dataset, datasetId, context, depth, requested_fie
 
         # Fields
         properties["fields"] = []
-        extractRequiredFields(properties["fields"], parent, dataset, context, requested_fields)
+        extractRequiredFields(
+            properties["fields"], parent, dataset, context, requested_fields
+        )
 
         return {
             "parent": getReferenceId(parent),
@@ -998,7 +1008,14 @@ def polydataSerializer(parent, dataset, datasetId, context, depth, requested_fie
 # -----------------------------------------------------------------------------
 
 
-def mergeToPolydataSerializer(parent, dataObject, dataObjectId, context, depth, requested_fields=["Normals", "TCoords"]):
+def mergeToPolydataSerializer(
+    parent,
+    dataObject,
+    dataObjectId,
+    context,
+    depth,
+    requested_fields=["Normals", "TCoords"],
+):
     dataset = None
 
     if dataObject.IsA("vtkCompositeDataSet"):
@@ -1012,9 +1029,13 @@ def mergeToPolydataSerializer(parent, dataObject, dataObjectId, context, depth, 
         gf.Update()
         dataset = gf.GetOutput()
     else:
-        dataset = mapper.GetInput()
+        # FIXME: how are we supposed to get 'mapper' here?
+        # dataset = mapper.GetInput()
+        dataset = None
 
-    return polydataSerializer(parent, dataset, dataObjectId, context, depth, requested_fields)
+    return polydataSerializer(
+        parent, dataset, dataObjectId, context, depth, requested_fields
+    )
 
 
 # -----------------------------------------------------------------------------
@@ -1052,13 +1073,18 @@ def colorTransferFunctionSerializer(parent, instance, objId, context, depth):
         },
     }
 
-def discretizableColorTransferFunctionSerializer(parent, instance, objId, context, depth):
+
+def discretizableColorTransferFunctionSerializer(
+    parent, instance, objId, context, depth
+):
     ctf = colorTransferFunctionSerializer(parent, instance, objId, context, depth)
     ctf["properties"]["discretize"] = instance.GetDiscretize()
     ctf["properties"]["numberOfValues"] = instance.GetNumberOfValues()
     return ctf
 
+
 # -----------------------------------------------------------------------------
+
 
 def pwfSerializer(parent, instance, objId, context, depth):
     nodes = []
@@ -1081,7 +1107,9 @@ def pwfSerializer(parent, instance, objId, context, depth):
         },
     }
 
+
 # -----------------------------------------------------------------------------
+
 
 def cubeAxesSerializer(parent, actor, actorId, context, depth):
     """
@@ -1152,7 +1180,9 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
         "dependencies": [],
     }
 
+
 # -----------------------------------------------------------------------------
+
 
 def scalarBarActorSerializer(parent, actor, actorId, context, depth):
     dependencies = []
@@ -1231,6 +1261,7 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
         "calls": calls,
         "dependencies": dependencies,
     }
+
 
 # -----------------------------------------------------------------------------
 
