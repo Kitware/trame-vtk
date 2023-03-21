@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.5 (2023-03-21)
+### Fix
+* Axes serializer ([`cc2136d`](https://github.com/Kitware/trame-vtk/commit/cc2136df0d4ff850f25f791ffc76f3ae2ba10a92))
+
 ## v2.3.4 (2023-03-10)
 ### Fix
 * **RemoteView:** Support no size at startup ([`29c5587`](https://github.com/Kitware/trame-vtk/commit/29c5587f0ca72c78972d6304a48d469231d523e6))
