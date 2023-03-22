@@ -1,7 +1,7 @@
 import warnings
 
 from .core import HybridView
-from .protocols.utils import mesh as vtk_mesh
+from .protocols.serializers import mesh as vtk_mesh
 
 try:
     import vtkmodules  # noqa

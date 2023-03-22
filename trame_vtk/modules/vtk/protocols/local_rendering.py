@@ -1,10 +1,10 @@
 from wslink import register as exportRpc
 
 from .serializers import (
-    serializeInstance,
-    SynchronizationContext,
     getReferenceId,
     initializeSerializers,
+    serialize,
+    SynchronizationContext,
 )
 from .web_protocol import vtkWebProtocol
 
@@ -97,9 +97,7 @@ class vtkWebLocalRendering(vtkWebProtocol):
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         camera = renderer.GetActiveCamera()
         renderWindowId = self.getApplication().GetObjectIdMap().GetGlobalId(sView)
-        viewInstance = serializeInstance(
-            None, renderWindow, renderWindowId, self.context, 1
-        )
+        viewInstance = serialize(None, renderWindow, renderWindowId, self.context, 1)
         viewInstance["extra"] = {
             "vtkRefId": getReferenceId(renderWindow),
             "centerOfRotation": camera.GetFocalPoint(),
