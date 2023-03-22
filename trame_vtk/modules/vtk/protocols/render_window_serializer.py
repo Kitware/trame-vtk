@@ -198,102 +198,89 @@ def serializeInstance(parent, instance, instanceId, context, depth):
 
 
 def initializeSerializers():
-    # Actors/viewProps
-    registerInstanceSerializer("vtkActor", genericActorSerializer)
-    registerInstanceSerializer("vtkOpenGLActor", genericActorSerializer)
-    registerInstanceSerializer("vtkPVLODActor", genericActorSerializer)
+    instance_serializers = {
+        # Actors/viewProps
+        "vtkActor": genericActorSerializer,
+        "vtkOpenGLActor": genericActorSerializer,
+        "vtkPVLODActor": genericActorSerializer,
+        # Volume/viewProps
+        "vtkVolume": genericVolumeSerializer,
+        # Mappers
+        "vtkMapper": genericMapperSerializer,
+        "vtkDataSetMapper": genericMapperSerializer,
+        "vtkPolyDataMapper": genericMapperSerializer,
+        "vtkImageDataMapper": genericMapperSerializer,
+        "vtkOpenGLPolyDataMapper": genericMapperSerializer,
+        "vtkCompositePolyDataMapper2": genericMapperSerializer,
+        # Volume mappers
+        "vtkVolumeMapper": genericVolumeMapperSerializer,
+        "vtkFixedPointVolumeRayCastMapper": genericVolumeMapperSerializer,
+        "vtkGPUVolumeRayCastMapper": genericVolumeMapperSerializer,
+        "vtkOpenGLGPUVolumeRayCastMapper": genericVolumeMapperSerializer,
+        "vtkSmartVolumeMapper": genericVolumeMapperSerializer,
+        # LookupTables/TransferFunctions
+        "vtkLookupTable": lookupTableSerializer2,
+        "vtkPVDiscretizableColorTransferFunction": discretizableColorTransferFunctionSerializer,
+        "vtkColorTransferFunction": colorTransferFunctionSerializer,
+        "vtkPiecewiseFunction": pwfSerializer,
+        # Textures
+        "vtkTexture": textureSerializer,
+        "vtkOpenGLTexture": textureSerializer,
+        # Property
+        "vtkProperty": propertySerializer,
+        "vtkOpenGLProperty": propertySerializer,
+        # VolumeProperty
+        "vtkVolumeProperty": volumePropertySerializer,
+        # Datasets
+        "vtkPolyData": polydataSerializer,
+        "vtkImageData": imagedataSerializer,
+        "vtkUnstructuredGrid": mergeToPolydataSerializer,
+        "vtkMultiBlockDataSet": mergeToPolydataSerializer,
+        "vtkStructuredPoints": imagedataSerializer,
+        # RenderWindows
+        "vtkRenderWindow": renderWindowSerializer,
+        "vtkCocoaRenderWindow": renderWindowSerializer,
+        "vtkXOpenGLRenderWindow": renderWindowSerializer,
+        "vtkWin32OpenGLRenderWindow": renderWindowSerializer,
+        "vtkEGLRenderWindow": renderWindowSerializer,
+        "vtkOpenVRRenderWindow": renderWindowSerializer,
+        "vtkOpenXRRenderWindow": renderWindowSerializer,
+        "vtkGenericOpenGLRenderWindow": renderWindowSerializer,
+        "vtkOSOpenGLRenderWindow": renderWindowSerializer,
+        "vtkOpenGLRenderWindow": renderWindowSerializer,
+        "vtkIOSRenderWindow": renderWindowSerializer,
+        "vtkExternalOpenGLRenderWindow": renderWindowSerializer,
+        "vtkOffscreenOpenGLRenderWindow": renderWindowSerializer,
+        # Renderers
+        "vtkRenderer": rendererSerializer,
+        "vtkOpenGLRenderer": rendererSerializer,
+        # Cameras
+        "vtkCamera": cameraSerializer,
+        "vtkOpenGLCamera": cameraSerializer,
+        # Lights
+        "vtkLight": lightSerializer,
+        "vtkPVLight": lightSerializer,
+        "vtkOpenGLLight": lightSerializer,
+        # Annotations (ScalarBar/Axes)
+        "vtkCubeAxesActor": cubeAxesSerializer,
+        "vtkScalarBarActor": scalarBarActorSerializer,
+        "vtkAxesActor": axesActorSerializer,
+    }
 
-    # Volume/viewProps
-    registerInstanceSerializer("vtkVolume", genericVolumeSerializer)
+    js_classes = {
+        "vtkPolyDataMapper": "vtkMapper",
+        "vtkDataSetMapper": "vtkMapper",
+        "vtkOpenGLPolyDataMapper": "vtkMapper",
+        "vtkCompositePolyDataMapper2": "vtkMapper",
+        "vtkFixedPointVolumeRayCastMapper": "vtkVolumeMapper",
+        "vtkStructuredPoints": "vtkImageData",
+    }
 
-    # Mappers
-    registerInstanceSerializer("vtkMapper", genericMapperSerializer)
-    registerInstanceSerializer("vtkDataSetMapper", genericMapperSerializer)
-    registerInstanceSerializer("vtkPolyDataMapper", genericMapperSerializer)
-    registerInstanceSerializer("vtkImageDataMapper", genericMapperSerializer)
-    registerInstanceSerializer("vtkOpenGLPolyDataMapper", genericMapperSerializer)
-    registerInstanceSerializer("vtkCompositePolyDataMapper2", genericMapperSerializer)
-    registerJSClass("vtkPolyDataMapper", "vtkMapper")
-    registerJSClass("vtkDataSetMapper", "vtkMapper")
-    registerJSClass("vtkOpenGLPolyDataMapper", "vtkMapper")
-    registerJSClass("vtkCompositePolyDataMapper2", "vtkMapper")
+    for name, serializer in instance_serializers.items():
+        registerInstanceSerializer(name, serializer)
 
-    registerInstanceSerializer("vtkVolumeMapper", genericVolumeMapperSerializer)
-    registerInstanceSerializer(
-        "vtkFixedPointVolumeRayCastMapper", genericVolumeMapperSerializer
-    )
-    registerInstanceSerializer(
-        "vtkGPUVolumeRayCastMapper", genericVolumeMapperSerializer
-    )
-    registerInstanceSerializer(
-        "vtkOpenGLGPUVolumeRayCastMapper", genericVolumeMapperSerializer
-    )
-    registerInstanceSerializer("vtkSmartVolumeMapper", genericVolumeMapperSerializer)
-
-    registerJSClass("vtkFixedPointVolumeRayCastMapper", "vtkVolumeMapper")
-
-    # LookupTables/TransferFunctions
-    registerInstanceSerializer("vtkLookupTable", lookupTableSerializer2)
-    registerInstanceSerializer(
-        "vtkPVDiscretizableColorTransferFunction",
-        discretizableColorTransferFunctionSerializer,
-    )
-    registerInstanceSerializer(
-        "vtkColorTransferFunction", colorTransferFunctionSerializer
-    )
-    registerInstanceSerializer("vtkPiecewiseFunction", pwfSerializer)
-
-    # Textures
-    registerInstanceSerializer("vtkTexture", textureSerializer)
-    registerInstanceSerializer("vtkOpenGLTexture", textureSerializer)
-
-    # Property
-    registerInstanceSerializer("vtkProperty", propertySerializer)
-    registerInstanceSerializer("vtkOpenGLProperty", propertySerializer)
-
-    # VolumeProperty
-    registerInstanceSerializer("vtkVolumeProperty", volumePropertySerializer)
-
-    # Datasets
-    registerInstanceSerializer("vtkPolyData", polydataSerializer)
-    registerInstanceSerializer("vtkImageData", imagedataSerializer)
-    registerInstanceSerializer("vtkUnstructuredGrid", mergeToPolydataSerializer)
-    registerInstanceSerializer("vtkMultiBlockDataSet", mergeToPolydataSerializer)
-    registerInstanceSerializer("vtkStructuredPoints", imagedataSerializer)
-    registerJSClass("vtkStructuredPoints", "vtkImageData")
-
-    # RenderWindows
-    registerInstanceSerializer("vtkRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkCocoaRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkXOpenGLRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkWin32OpenGLRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkEGLRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkOpenVRRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkOpenXRRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkGenericOpenGLRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkOSOpenGLRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkOpenGLRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkIOSRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkExternalOpenGLRenderWindow", renderWindowSerializer)
-    registerInstanceSerializer("vtkOffscreenOpenGLRenderWindow", renderWindowSerializer)
-
-    # Renderers
-    registerInstanceSerializer("vtkRenderer", rendererSerializer)
-    registerInstanceSerializer("vtkOpenGLRenderer", rendererSerializer)
-
-    # Cameras
-    registerInstanceSerializer("vtkCamera", cameraSerializer)
-    registerInstanceSerializer("vtkOpenGLCamera", cameraSerializer)
-
-    # Lights
-    registerInstanceSerializer("vtkLight", lightSerializer)
-    registerInstanceSerializer("vtkPVLight", lightSerializer)
-    registerInstanceSerializer("vtkOpenGLLight", lightSerializer)
-
-    # Annotations (ScalarBar/Axes)
-    registerInstanceSerializer("vtkCubeAxesActor", cubeAxesSerializer)
-    registerInstanceSerializer("vtkScalarBarActor", scalarBarActorSerializer)
-    registerInstanceSerializer("vtkAxesActor", axesActorSerializer)
+    for vtk_class, js_class in js_classes.items():
+        registerJSClass(vtk_class, js_class)
 
 
 # -----------------------------------------------------------------------------
