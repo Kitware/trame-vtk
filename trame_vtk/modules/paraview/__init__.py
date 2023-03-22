@@ -14,7 +14,7 @@ class Helper:
         try:  # defer need to paraview to support --www usecase
             from paraview import servermanager
             from paraview.modules.vtkPVClientWeb import vtkPVWebApplication
-            from vtkmodules.web.utils import mesh as mesh_vtk
+            from ..vtk.protocols.utils import mesh as mesh_vtk
         except ImportError:
             print("ParaView is not available")
         else:

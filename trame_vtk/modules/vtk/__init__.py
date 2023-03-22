@@ -12,7 +12,7 @@ except ImportError:
 
 try:
     from vtkmodules.vtkWebCore import vtkWebApplication
-    from vtkmodules.web.utils import mesh as vtk_mesh
+    from .protocols.utils import mesh as vtk_mesh
 
     HAS_VTK_WEB = True
 except ImportError:
