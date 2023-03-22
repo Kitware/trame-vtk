@@ -215,22 +215,24 @@ def volume(dataset):
 # Below is code copied directly from vtkmodules.web.__init__
 
 arrayTypesMapping = [
-    " ",  # VTK_VOID            0
-    " ",  # VTK_BIT             1
-    "b",  # VTK_CHAR            2
-    "B",  # VTK_UNSIGNED_CHAR   3
-    "h",  # VTK_SHORT           4
-    "H",  # VTK_UNSIGNED_SHORT  5
-    "i",  # VTK_INT             6
-    "I",  # VTK_UNSIGNED_INT    7
-    "l",  # VTK_LONG            8
-    "L",  # VTK_UNSIGNED_LONG   9
-    "f",  # VTK_FLOAT          10
-    "d",  # VTK_DOUBLE         11
-    "L",  # VTK_ID_TYPE        12
-    " ",  # unspecified        13
-    " ",  # unspecified        14
-    "b",  # signed_char        15
+    " ",  # VTK_VOID                   0
+    " ",  # VTK_BIT                    1
+    "b",  # VTK_CHAR                   2
+    "B",  # VTK_UNSIGNED_CHAR          3
+    "h",  # VTK_SHORT                  4
+    "H",  # VTK_UNSIGNED_SHORT         5
+    "i",  # VTK_INT                    6
+    "I",  # VTK_UNSIGNED_INT           7
+    "l",  # VTK_LONG                   8
+    "L",  # VTK_UNSIGNED_LONG          9
+    "f",  # VTK_FLOAT                 10
+    "d",  # VTK_DOUBLE                11
+    "L",  # VTK_ID_TYPE               12
+    " ",  # unspecified               13
+    " ",  # unspecified               14
+    "b",  # signed_char               15
+    "ll",  # VTK_LONG_LONG            16
+    "LL",  # VTK_UNSIGNED_LONG_LONG   17
 ]
 
 javascriptMapping = {
@@ -244,6 +246,8 @@ javascriptMapping = {
     "L": "Uint32Array",
     "f": "Float32Array",
     "d": "Float64Array",
+    "ll": "BigInt64Array",
+    "LL": "BigUint64Array",
 }
 
 

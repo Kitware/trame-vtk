@@ -115,7 +115,6 @@ class Helper:
             ParaViewWebPublishImageDelivery,
             ParaViewWebLocalRendering,
         )
-        from ..vtk.addon_serializer import registerAddOnSerializers
 
         # Initialize vtk application helper
         self._root_protocol.setSharedObject("app", self._pv_core)
@@ -129,9 +128,6 @@ class Helper:
 
         # Remote rendering - geometry delivery
         self._root_protocol.registerLinkProtocol(ParaViewWebLocalRendering())
-
-        # Add custom serializer ahead of proper vtk integration
-        registerAddOnSerializers()
 
         # Mimic client interactor on server side
         from .core import apply_default_interaction_settings

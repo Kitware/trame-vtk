@@ -115,7 +115,6 @@ class Helper:
             vtkWebPublishImageDelivery,
             vtkWebLocalRendering,
         )
-        from .addon_serializer import registerAddOnSerializers
 
         # Initialize vtk application helper
         self._root_protocol.setSharedObject("app", self._vtk_core)
@@ -129,9 +128,6 @@ class Helper:
 
         # Remote rendering - geometry delivery
         self._root_protocol.registerLinkProtocol(vtkWebLocalRendering())
-
-        # Add custom serializer ahead of proper vtk integration
-        registerAddOnSerializers()
 
     def add_hybrid_view(
         self,

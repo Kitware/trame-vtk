@@ -13,6 +13,7 @@ from .utils import (
 )
 
 from vtkmodules.vtkCommonCore import vtkTypeUInt32Array
+from vtkmodules.vtkCommonMath import vtkMatrix4x4
 from vtkmodules.vtkFiltersGeometry import vtkCompositeDataGeometryFilter
 from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
@@ -24,6 +25,10 @@ logger.setLevel(logging.DEBUG)
 # -----------------------------------------------------------------------------
 # Array helpers
 # -----------------------------------------------------------------------------
+
+
+def rgb_float_to_hex(r, g, b):
+    return f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
 
 
 def zipCompression(name, data):
@@ -217,6 +222,14 @@ def initializeSerializers():
     registerInstanceSerializer(
         "vtkFixedPointVolumeRayCastMapper", genericVolumeMapperSerializer
     )
+    registerInstanceSerializer(
+        "vtkGPUVolumeRayCastMapper", genericVolumeMapperSerializer
+    )
+    registerInstanceSerializer(
+        "vtkOpenGLGPUVolumeRayCastMapper", genericVolumeMapperSerializer
+    )
+    registerInstanceSerializer("vtkSmartVolumeMapper", genericVolumeMapperSerializer)
+
     registerJSClass("vtkFixedPointVolumeRayCastMapper", "vtkVolumeMapper")
 
     # LookupTables/TransferFunctions
@@ -277,9 +290,10 @@ def initializeSerializers():
     registerInstanceSerializer("vtkPVLight", lightSerializer)
     registerInstanceSerializer("vtkOpenGLLight", lightSerializer)
 
-    # Annotations (ScalarBar/CubeAxes
+    # Annotations (ScalarBar/Axes)
     registerInstanceSerializer("vtkCubeAxesActor", cubeAxesSerializer)
     registerInstanceSerializer("vtkScalarBarActor", scalarBarActorSerializer)
+    registerInstanceSerializer("vtkAxesActor", axesActorSerializer)
 
 
 # -----------------------------------------------------------------------------
@@ -641,7 +655,8 @@ def genericMapperSerializer(parent, mapper, mapperId, context, depth):
         mapper.GetInputAlgorithm().Update()
         dataObject = mapper.GetInputDataObject(0, 0)
     else:
-        logger.debug("This mapper does not have GetInputDataObject method")
+        if context.debugAll:
+            print("This mapper does not have GetInputDataObject method")
 
     if dataObject:
         if dataObject.IsA("vtkDataSet"):
@@ -664,7 +679,8 @@ def genericMapperSerializer(parent, mapper, mapperId, context, depth):
     if hasattr(mapper, "GetLookupTable"):
         lookupTable = mapper.GetLookupTable()
     else:
-        logger.debug("This mapper does not have GetLookupTable method")
+        if context.debugAll:
+            print("This mapper does not have GetLookupTable method")
 
     if lookupTable:
         lookupTableId = getReferenceId(lookupTable)
@@ -716,6 +732,7 @@ def genericVolumeMapperSerializer(parent, mapper, mapperId, context, depth):
     # table
     dataObject = None
     dataObjectInstance = None
+    # lookupTableInstance = None
     calls = []
     dependencies = []
 
@@ -736,6 +753,10 @@ def genericVolumeMapperSerializer(parent, mapper, mapperId, context, depth):
             calls.append(["setInputData", [wrapId(dataObjectId)]])
 
     if dataObjectInstance:
+        if hasattr(mapper, "GetImageSampleDistance"):
+            imageSampleDistance = mapper.GetImageSampleDistance()
+        else:
+            imageSampleDistance = 1.0
         return {
             "parent": getReferenceId(parent),
             "id": mapperId,
@@ -743,7 +764,7 @@ def genericVolumeMapperSerializer(parent, mapper, mapperId, context, depth):
             "properties": {
                 # VolumeMapper
                 "sampleDistance": mapper.GetSampleDistance(),
-                "imageSampleDistance": mapper.GetImageSampleDistance(),
+                "imageSampleDistance": imageSampleDistance,
                 # "maximumSamplesPerRay": mapper.GetMaximumSamplesPerRay(),
                 "autoAdjustSampleDistances": mapper.GetAutoAdjustSampleDistances(),
                 "blendMode": mapper.GetBlendMode(),
@@ -810,8 +831,15 @@ def lookupTableSerializer(parent, lookupTable, lookupTableId, context, depth):
 def lookupTableToColorTransferFunction(lookupTable):
     dataTable = lookupTable.GetTable()
     table = dataTableToList(dataTable)
+
+    if not table:
+        lookupTable.Build()
+        table = dataTableToList(dataTable)
+
     if table:
         ctf = vtkColorTransferFunction()
+        ctf.DeepCopy(lookupTable)  # <== needed to capture vector props
+
         tableRange = lookupTable.GetTableRange()
         points = linspace(*tableRange, num=len(table))
         for x, rgba in zip(points, table):
@@ -940,7 +968,7 @@ def imagedataSerializer(
         "properties": {
             "spacing": dataset.GetSpacing(),
             "origin": dataset.GetOrigin(),
-            "dimensions": dataset.GetDimensions(),
+            "extent": dataset.GetExtent(),
             "direction": direction,
             "fields": fields,
         },
@@ -1043,12 +1071,25 @@ def mergeToPolydataSerializer(
 
 def colorTransferFunctionSerializer(parent, instance, objId, context, depth):
     nodes = []
-
     for i in range(instance.GetSize()):
         # x, r, g, b, midpoint, sharpness
         node = [0, 0, 0, 0, 0, 0]
         instance.GetNodeValue(i, node)
         nodes.append(node)
+
+    discretize = 0
+    numberOfValues = instance.GetSize()
+    if hasattr(instance, "GetDiscretize"):
+        discretize = (
+            instance.GetDiscretize() if hasattr(instance, "GetDiscretize") else 0
+        )
+        numberOfValues = (
+            instance.GetNumberOfValues()
+            if hasattr(instance, "GetNumberOfValues")
+            else 256
+        )
+    elif numberOfValues < 256:
+        discretize = 1
 
     return {
         "parent": getReferenceId(parent),
@@ -1070,6 +1111,8 @@ def colorTransferFunctionSerializer(parent, instance, objId, context, depth):
             "vectorMode": instance.GetVectorMode(),
             "indexedLookup": instance.GetIndexedLookup(),
             "nodes": nodes,
+            "numberOfValues": numberOfValues,
+            "discretize": discretize,
         },
     }
 
@@ -1139,6 +1182,29 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
     if actor.GetZAxisLabelVisibility():
         axisLabels[2] = actor.GetZTitle()
 
+    text_color = rgb_float_to_hex(*actor.GetXAxesGridlinesProperty().GetColor())
+
+    dependencies = []
+    calls = [
+        [
+            "setCamera",
+            [wrapId(getReferenceId(actor.GetCamera()))],
+        ]
+    ]
+
+    prop = None
+    if hasattr(actor, "GetXAxesLinesProperty"):
+        prop = actor.GetXAxesLinesProperty()
+    else:
+        logger.debug("This actor does not have a GetXAxesLinesProperty method")
+
+    if prop:
+        propId = getReferenceId(prop)
+        propertyInstance = serializeInstance(actor, prop, propId, context, depth + 1)
+        if propertyInstance:
+            dependencies.append(propertyInstance)
+            calls.append(["setProperty", [wrapId(propId)]])
+
     return {
         "parent": getReferenceId(parent),
         "id": actorId,
@@ -1163,21 +1229,21 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
             "axisLabels": axisLabels,
             "axisTitlePixelOffset": 35.0,
             "axisTextStyle": {
-                "fontColor": "white",
+                "fontColor": text_color,
                 "fontStyle": "normal",
                 "fontSize": 18,
                 "fontFamily": "serif",
             },
             "tickLabelPixelOffset": 12.0,
             "tickTextStyle": {
-                "fontColor": "white",
+                "fontColor": text_color,
                 "fontStyle": "normal",
                 "fontSize": 14,
                 "fontFamily": "serif",
             },
         },
-        "calls": [["setCamera", [wrapId(getReferenceId(actor.GetCamera()))]]],
-        "dependencies": [],
+        "calls": calls,
+        "dependencies": dependencies,
     }
 
 
@@ -1203,7 +1269,8 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
     if hasattr(actor, "GetProperty"):
         prop = actor.GetProperty()
     else:
-        logger.debug("This scalarBarActor does not have a GetProperty method")
+        if context.debugAll:
+            print("This scalarBarActor does not have a GetProperty method")
 
         if prop:
             propId = getReferenceId(prop)
@@ -1242,14 +1309,14 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
             "boxSize": [width, height],
             "axisTitlePixelOffset": 36.0,
             "axisTextStyle": {
-                "fontColor": actor.GetTitleTextProperty().GetColor(),
+                "fontColor": rgb_float_to_hex(*actor.GetTitleTextProperty().GetColor()),
                 "fontStyle": "normal",
                 "fontSize": 18,
                 "fontFamily": "serif",
             },
             "tickLabelPixelOffset": 14.0,
             "tickTextStyle": {
-                "fontColor": actor.GetTitleTextProperty().GetColor(),
+                "fontColor": rgb_float_to_hex(*actor.GetTitleTextProperty().GetColor()),
                 "fontStyle": "normal",
                 "fontSize": 14,
                 "fontFamily": "serif",
@@ -1260,6 +1327,94 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
         },
         "calls": calls,
         "dependencies": dependencies,
+    }
+
+
+# -----------------------------------------------------------------------------
+
+
+def axesActorSerializer(parent, actor, actorId, context, depth):
+    actorVisibility = actor.GetVisibility()
+
+    if not actorVisibility:
+        return None
+
+    # C++ extract
+    label_show = actor.GetAxisLabels()
+    # label_position = actor.GetNormalizedLabelPosition()
+
+    # shaft_length = actor.GetNormalizedShaftLength()
+    shaft_type = actor.GetShaftType()  # int [line/cylinder]
+
+    tip_length = actor.GetNormalizedTipLength()
+    # tip_type = actor.GetTipType() # int [cone/sphere]
+
+    cone_resolution = actor.GetConeResolution()
+    cone_radius = actor.GetConeRadius()
+
+    cylinder_resolution = actor.GetCylinderResolution()
+    cylinder_radius = actor.GetCylinderRadius()
+
+    # sphere_radius = actor.GetSphereRadius()
+    # sphere_resolution = actor.GetSphereResolution()
+
+    # XYZ...
+    # actor.GetXAxisCaptionActor2D()
+    # actor.GetXAxisTipProperty()
+    # actor.GetXAxisShaftProperty()
+    # actor.GetXAxisLabelText()
+
+    # Apply transform
+    user_matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    if actor.GetUserTransform():
+        matrix = vtkMatrix4x4()
+        actor.GetUserTransform().GetTranspose(matrix)
+        for i in range(4):
+            for j in range(4):
+                idx = i + 4 * j
+                user_matrix[idx] = matrix.GetElement(j, i)
+
+    return {
+        "parent": getReferenceId(parent),
+        "id": actorId,
+        "type": "vtkAxesActor",
+        "properties": {
+            # vtkProp
+            "visibility": actorVisibility,
+            "pickable": actor.GetPickable(),
+            "dragable": actor.GetDragable(),
+            "useBounds": actor.GetUseBounds(),
+            # vtkProp3D
+            "origin": actor.GetOrigin(),
+            "position": actor.GetPosition(),
+            "scale": actor.GetScale(),
+            "userMatrix": user_matrix,
+            # vtkAxesActor
+            "labels": {
+                "show": label_show,
+                "x": actor.GetXAxisLabelText(),
+                "y": actor.GetYAxisLabelText(),
+                "z": actor.GetZAxisLabelText(),
+            },
+            "config": {
+                "recenter": 0,
+                "tipResolution": cone_resolution,  # 60,
+                "tipRadius": 0.2 * cone_radius,  # 0.1,
+                "tipLength": tip_length[0],  # 0.2,
+                "shaftResolution": cylinder_resolution,  # 60,
+                "shaftRadius": 0.01 if shaft_type else cylinder_radius,  # 0.03,
+                "invert": 0,
+            },
+            "xAxisColor": list(
+                map(lambda x: int(x * 255), actor.GetXAxisTipProperty().GetColor())
+            ),
+            "yAxisColor": list(
+                map(lambda x: int(x * 255), actor.GetYAxisTipProperty().GetColor())
+            ),
+            "zAxisColor": list(
+                map(lambda x: int(x * 255), actor.GetZAxisTipProperty().GetColor())
+            ),
+        },
     }
 
 
