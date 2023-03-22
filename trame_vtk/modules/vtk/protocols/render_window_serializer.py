@@ -4,7 +4,7 @@ import struct
 import time
 import zipfile
 
-from vtkmodules.web import (
+from .utils import (
     base64Encode,
     hashDataArray,
     getJSArrayType,

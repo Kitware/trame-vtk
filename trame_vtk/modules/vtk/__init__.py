@@ -1,6 +1,7 @@
 import warnings
 
 from .core import HybridView
+from .protocols.utils import mesh as vtk_mesh
 
 try:
     import vtkmodules  # noqa
@@ -12,7 +13,6 @@ except ImportError:
 
 try:
     from vtkmodules.vtkWebCore import vtkWebApplication
-    from .protocols.utils import mesh as vtk_mesh
 
     HAS_VTK_WEB = True
 except ImportError:
