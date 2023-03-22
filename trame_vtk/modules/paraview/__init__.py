@@ -109,11 +109,11 @@ class Helper:
     def configure_protocol(self, protocol):
         self._root_protocol = protocol
 
-        from paraview.web.protocols import (
-            ParaViewWebMouseHandler,
-            ParaViewWebViewPort,
-            ParaViewWebPublishImageDelivery,
+        from .protocols import (
             ParaViewWebLocalRendering,
+            ParaViewWebMouseHandler,
+            ParaViewWebPublishImageDelivery,
+            ParaViewWebViewPort,
         )
 
         # Initialize vtk application helper
