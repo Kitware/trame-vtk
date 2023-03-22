@@ -109,7 +109,7 @@ class Helper:
 
     def configure_protocol(self, protocol):
         self._root_protocol = protocol
-        from vtkmodules.web.protocols import (
+        from .protocols import (
             vtkWebMouseHandler,
             vtkWebViewPort,
             vtkWebPublishImageDelivery,

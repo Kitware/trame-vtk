@@ -1,8 +1,9 @@
 from vtkmodules import web
-from vtkmodules.web import render_window_serializer
 from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 from vtkmodules.vtkCommonMath import vtkMatrix4x4
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
+
+from .protocols import render_window_serializer
 
 # Patch support for BigInt64 (VTK_LONG_LONG)
 # This requires the latest VTK.js
