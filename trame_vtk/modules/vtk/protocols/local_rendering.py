@@ -1,6 +1,6 @@
 from wslink import register as exportRpc
 
-from .render_window_serializer import (
+from .serializers import (
     serializeInstance,
     SynchronizationContext,
     getReferenceId,
