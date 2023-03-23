@@ -1,7 +1,7 @@
 from paraview import simple
 from wslink import register as exportRpc
 
-from trame_vtk.modules.vtk.protocols.serializers import (
+from trame_vtk.modules.vtk.serializers import (
     getReferenceId,
     initializeSerializers,
     serialize,

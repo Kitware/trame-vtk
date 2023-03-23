@@ -1,6 +1,6 @@
 from wslink import register as exportRpc
 
-from .serializers import (
+from ..serializers import (
     getReferenceId,
     initializeSerializers,
     serialize,

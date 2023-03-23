@@ -1,7 +1,7 @@
 import logging
 
 from ..vtk.core import HybridView
-from ..vtk.protocols.serializers.mesh import mesh as mesh_vtk
+from ..vtk.serializers.mesh import mesh as mesh_vtk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
