@@ -10,6 +10,10 @@ from .web_protocol import vtkWebProtocol
 class vtkWebMouseHandler(vtkWebProtocol):
     """Handle Mouse interaction on any type of view"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.lastAction = "up"
+
     @exportRpc("viewport.mouse.interaction")
     def mouseInteraction(self, event):
         """
@@ -50,14 +54,18 @@ class vtkWebMouseHandler(vtkWebProtocol):
         retVal = self.getApplication().HandleInteractionEvent(view, pvevent)
         del pvevent
 
-        if event["action"] == "down":
+        if event["action"] == "down" and self.lastAction != event["action"]:
+            # Make sure animation registration is only triggered on the first
+            # "down" action.
             self.getApplication().InvokeEvent("StartInteractionEvent")
 
-        if event["action"] == "up":
+        if event["action"] == "up" and self.lastAction != event["action"]:
             self.getApplication().InvokeEvent("EndInteractionEvent")
 
         if retVal:
             self.getApplication().InvokeEvent("UpdateEvent")
+
+        self.lastAction = event["action"]
 
         return retVal
 
