@@ -1,3 +1,5 @@
+import math
+
 from vtkmodules.vtkWebCore import vtkWebInteractionEvent
 
 from wslink import register as exportRpc
@@ -61,22 +63,45 @@ class vtkWebMouseHandler(vtkWebProtocol):
 
     @exportRpc("viewport.mouse.zoom.wheel")
     def updateZoomFromWheel(self, event):
+        renderWindow = self.getView(event["view"])
+
+        if not renderWindow:
+            return
+
+        interactor = renderWindow.GetInteractor()
+
+        if "x" in event and "y" in event:
+            # Set the mouse position, so that if there are multiple
+            # renderers, the interactor can figure out which one should
+            # be modified.
+            viewSize = renderWindow.GetSize()
+            posX = math.floor(viewSize[0] * event["x"] + 0.5)
+            posY = math.floor(viewSize[1] * event["y"] + 0.5)
+
+            interactor.SetEventPosition(posX, posY)
+            interactor.MouseMoveEvent()
+
         if "Start" in event["type"]:
             self.getApplication().InvokeEvent("StartInteractionEvent")
-
-        renderWindow = self.getView(event["view"])
-        if renderWindow and "spinY" in event:
-            zoomFactor = 1.0 - event["spinY"] / 10.0
-
-            camera = renderWindow.GetRenderers().GetFirstRenderer().GetActiveCamera()
-            fp = camera.GetFocalPoint()
-            pos = camera.GetPosition()
-            delta = [fp[i] - pos[i] for i in range(3)]
-            camera.Zoom(zoomFactor)
-
-            pos2 = camera.GetPosition()
-            camera.SetFocalPoint([pos2[i] + delta[i] for i in range(3)])
-            renderWindow.Modified()
+            # It seems every time a StartInteractionEvent is sent, a
+            # mouse wheel event with the same spin is sent afterward. We
+            # don't want to zoom twice, so do not perform a zoom on the
+            # StartInteractionEvent.
+            return
 
         if "End" in event["type"]:
             self.getApplication().InvokeEvent("EndInteractionEvent")
+            # This is done
+            return
+
+        spinY = event.get("spinY", 0)
+        direction = "Backward" if spinY >= 0 else "Forward"
+        method = getattr(interactor, f"MouseWheel{direction}Event")
+
+        style = interactor.GetInteractorStyle()
+        prev_motion_factor = style.GetMouseWheelMotionFactor()
+        style.SetMouseWheelMotionFactor(abs(spinY))
+        try:
+            method()
+        finally:
+            style.SetMouseWheelMotionFactor(prev_motion_factor)
