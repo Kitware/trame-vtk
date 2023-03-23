@@ -1,45 +1,49 @@
 import logging
 
 from .actors import (
-    axesActorSerializer,
-    cubeAxesSerializer,
-    genericActorSerializer,
-    scalarBarActorSerializer,
+    axes_actor_serializer,
+    cube_axes_serializer,
+    generic_actor_serializer,
+    scalar_bar_actor_serializer,
 )
 from .data import (
-    imagedataSerializer,
-    genericVolumeSerializer,
-    mergeToPolydataSerializer,
-    polydataSerializer,
+    imagedata_serializer,
+    generic_volume_serializer,
+    merge_to_polydata_serializer,
+    polydata_serializer,
 )
-from .lights import lightSerializer
+from .lights import light_serializer
 from .lookup_tables import (
-    colorTransferFunctionSerializer,
-    discretizableColorTransferFunctionSerializer,
-    lookupTableSerializer2,
-    pwfSerializer,
+    color_transfer_function_serializer,
+    discretizable_color_transfer_function_serializer,
+    lookup_table_serializer2,
+    pwf_serializer,
 )
-from .mappers import genericMapperSerializer, genericVolumeMapperSerializer
-from .properties import propertySerializer, volumePropertySerializer
-from .registry import registerInstanceSerializer, registerJSClass
-from .render_windows import cameraSerializer, rendererSerializer, renderWindowSerializer
-from .textures import textureSerializer
+from .mappers import generic_mapper_serializer, generic_volume_mapper_serializer
+from .properties import property_serializer, volume_property_serializer
+from .registry import register_instance_serializer, register_js_class
+from .render_windows import (
+    camera_serializer,
+    renderer_serializer,
+    render_window_serializer,
+)
+from .textures import texture_serializer
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def initializeSerializers():
+def initialize_serializers():
     # Define which serializer will be used for which VTK classes
     serializers = {
-        # Actors/viewProps
-        genericActorSerializer: [
+        # Actors/view_props
+        generic_actor_serializer: [
             "vtkActor",
             "vtkOpenGLActor",
             "vtkPVLODActor",
         ],
         # Mappers
-        genericMapperSerializer: [
+        generic_mapper_serializer: [
             "vtkMapper",
             "vtkDataSetMapper",
             "vtkPolyDataMapper",
@@ -48,27 +52,27 @@ def initializeSerializers():
             "vtkCompositePolyDataMapper2",
         ],
         # Volume mappers
-        genericVolumeMapperSerializer: [
+        generic_volume_mapper_serializer: [
             "vtkVolumeMapper",
             "vtkFixedPointVolumeRayCastMapper",
             "vtkGPUVolumeRayCastMapper",
             "vtkOpenGLGPUVolumeRayCastMapper",
             "vtkSmartVolumeMapper",
         ],
-        # Volume/viewProps
-        genericVolumeSerializer: "vtkVolume",
+        # Volume/view_props
+        generic_volume_serializer: "vtkVolume",
         # Textures
-        textureSerializer: [
+        texture_serializer: [
             "vtkTexture",
             "vtkOpenGLTexture",
         ],
         # Properties
-        propertySerializer: [
+        property_serializer: [
             "vtkProperty",
             "vtkOpenGLProperty",
         ],
         # RenderWindows
-        renderWindowSerializer: [
+        render_window_serializer: [
             "vtkRenderWindow",
             "vtkCocoaRenderWindow",
             "vtkXOpenGLRenderWindow",
@@ -84,39 +88,39 @@ def initializeSerializers():
             "vtkOffscreenOpenGLRenderWindow",
         ],
         # LookupTables/TransferFunctions
-        lookupTableSerializer2: "vtkLookupTable",
-        discretizableColorTransferFunctionSerializer: "vtkPVDiscretizableColorTransferFunction",
-        colorTransferFunctionSerializer: "vtkColorTransferFunction",
-        pwfSerializer: "vtkPiecewiseFunction",
+        lookup_table_serializer2: "vtkLookupTable",
+        discretizable_color_transfer_function_serializer: "vtkPVDiscretizableColorTransferFunction",
+        color_transfer_function_serializer: "vtkColorTransferFunction",
+        pwf_serializer: "vtkPiecewiseFunction",
         # VolumeProperty
-        volumePropertySerializer: "vtkVolumeProperty",
+        volume_property_serializer: "vtkVolumeProperty",
         # Datasets
-        polydataSerializer: "vtkPolyData",
-        imagedataSerializer: [
+        polydata_serializer: "vtkPolyData",
+        imagedata_serializer: [
             "vtkImageData",
             "vtkStructuredPoints",
         ],
-        mergeToPolydataSerializer: [
+        merge_to_polydata_serializer: [
             "vtkMultiBlockDataSet",
             "vtkUnstructuredGrid",
         ],
         # Renderers
-        rendererSerializer: [
+        renderer_serializer: [
             "vtkRenderer",
             "vtkOpenGLRenderer",
         ],
         # Lights
-        lightSerializer: [
+        light_serializer: [
             "vtkLight",
             "vtkPVLight",
             "vtkOpenGLLight",
         ],
         # Annotations (ScalarBar/Axes)
-        cubeAxesSerializer: "vtkCubeAxesActor",
-        scalarBarActorSerializer: "vtkScalarBarActor",
-        axesActorSerializer: "vtkAxesActor",
+        cube_axes_serializer: "vtkCubeAxesActor",
+        scalar_bar_actor_serializer: "vtkScalarBarActor",
+        axes_actor_serializer: "vtkAxesActor",
         # Cameras
-        cameraSerializer: [
+        camera_serializer: [
             "vtkCamera",
             "vtkOpenGLCamera",
         ],
@@ -138,11 +142,11 @@ def initializeSerializers():
             names = [names]
 
         for name in names:
-            registerInstanceSerializer(name, serializer)
+            register_instance_serializer(name, serializer)
 
     for js_class, vtk_classes in js_classes.items():
         if not isinstance(vtk_classes, (list, tuple)):
             vtk_classes = [vtk_classes]
 
         for vtk_class in vtk_classes:
-            registerJSClass(vtk_class, js_class)
+            register_js_class(vtk_class, js_class)

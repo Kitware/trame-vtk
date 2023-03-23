@@ -8,13 +8,12 @@ from trame_vtk.modules.vtk.protocols.web_protocol import vtkWebProtocol
 
 class ParaViewWebProtocol(vtkWebProtocol):
     def __init__(self):
-        # self.Application = None
-        self.coreServer = None
-        self.multiRoot = False
-        self.baseDirectory = ""
-        self.baseDirectoryMap = {}
+        self.core_server = None
+        self.multi_root = False
+        self.base_directory = ""
+        self.base_directory_map = {}
 
-    def mapIdToProxy(self, id):
+    def map_id_to_proxy(self, id):
         """
         Maps global-id for a proxy to the proxy instance. May return None if the
         id is not valid.
@@ -29,81 +28,85 @@ class ParaViewWebProtocol(vtkWebProtocol):
             simple.servermanager.ActiveConnection.Session.GetRemoteObject(id)
         )
 
-    def getView(self, vid):
+    def get_view(self, vid):
         """
         Returns the view for a given view ID, if vid is None then return the
         current active view.
         :param vid: The view ID
         :type vid: str
         """
-        view = self.mapIdToProxy(vid)
+        view = self.map_id_to_proxy(vid)
         if not view:
             # Use active view is none provided.
             view = simple.GetActiveView()
 
         if not view:
-            raise Exception("no view provided: " + str(vid))
+            raise Exception(f"no view provided: {vid}")
 
         return view
 
     def debug(self, msg):
-        if self.debugMode:
+        if self.debug_mode:
             print(msg)
 
-    def setBaseDirectory(self, basePath):
-        self.overrideDataDirKey = None
-        self.baseDirectory = ""
-        self.baseDirectoryMap = {}
-        self.multiRoot = False
+    def set_base_directory(self, base_path):
+        self.override_data_dir_key = None
+        self.base_directory = ""
+        self.base_directory_map = {}
+        self.multi_root = False
 
-        if basePath.find("|") < 0:
-            if basePath.find("=") >= 0:
-                basePair = basePath.split("=")
-                if os.path.exists(basePair[1]):
-                    self.baseDirectory = basePair[1]
-                    self.overrideDataDirKey = basePair[0]
+        if base_path.find("|") < 0:
+            if base_path.find("=") >= 0:
+                base_pair = base_path.split("=")
+                if os.path.exists(base_pair[1]):
+                    self.base_directory = base_pair[1]
+                    self.override_data_dir_key = base_pair[0]
             else:
-                self.baseDirectory = basePath
-            self.baseDirectory = os.path.normpath(self.baseDirectory)
+                self.base_directory = base_path
+            self.base_directory = os.path.normpath(self.base_directory)
         else:
-            baseDirs = basePath.split("|")
-            for baseDir in baseDirs:
-                basePair = baseDir.split("=")
-                if os.path.exists(basePair[1]):
-                    self.baseDirectoryMap[basePair[0]] = os.path.normpath(basePair[1])
+            base_dirs = base_path.split("|")
+            for base_dir in base_dirs:
+                base_pair = base_dir.split("=")
+                if os.path.exists(base_pair[1]):
+                    self.base_directory_map[base_pair[0]] = os.path.normpath(
+                        base_pair[1]
+                    )
 
             # Check if we ended up with just a single directory
-            bdKeys = list(self.baseDirectoryMap)
-            if len(bdKeys) == 1:
-                self.baseDirectory = os.path.normpath(self.baseDirectoryMap[bdKeys[0]])
-                self.overrideDataDirKey = bdKeys[0]
-                self.baseDirectoryMap = {}
-            elif len(bdKeys) > 1:
-                self.multiRoot = True
+            bd_keys = list(self.base_directory_map)
+            if len(bd_keys) == 1:
+                self.base_directory = os.path.normpath(
+                    self.base_directory_map[bd_keys[0]]
+                )
+                self.override_data_dir_key = bd_keys[0]
+                self.base_directory_map = {}
+            elif len(bd_keys) > 1:
+                self.multi_root = True
 
-    def getAbsolutePath(self, relativePath):
-        absolutePath = None
+    def get_absolute_path(self, relative_path):
+        absolute_path = None
 
-        if self.multiRoot:
-            relPathParts = relativePath.replace("\\", "/").split("/")
-            realBasePath = self.baseDirectoryMap[relPathParts[0]]
-            absolutePath = os.path.join(realBasePath, *relPathParts[1:])
+        if self.multi_root:
+            rel_path_parts = relative_path.replace("\\", "/").split("/")
+            real_base_path = self.base_directory_map[rel_path_parts[0]]
+            absolute_path = os.path.join(real_base_path, *rel_path_parts[1:])
         else:
-            absolutePath = os.path.join(self.baseDirectory, relativePath)
+            absolute_path = os.path.join(self.base_directory, relative_path)
 
-        cleanedPath = os.path.normpath(absolutePath)
+        cleaned_path = os.path.normpath(absolute_path)
 
-        # Make sure the cleanedPath is part of the allowed ones
-        if self.multiRoot:
-            for key, value in self.baseDirectoryMap.items():
-                if cleanedPath.startswith(value):
-                    return cleanedPath
-        elif cleanedPath.startswith(self.baseDirectory):
-            return cleanedPath
+        # Make sure the cleaned_path is part of the allowed ones
+        if self.multi_root:
+            for key, value in self.base_directory_map.items():
+                if cleaned_path.startswith(value):
+                    return cleaned_path
+        elif cleaned_path.startswith(self.base_directory):
+            return cleaned_path
 
         return None
 
-    def updateScalarBars(self, view=None, mode=1):
+    def update_scalar_bars(self, view=None, mode=1):
         """
         Manage scalarbar state
 
@@ -114,10 +117,10 @@ class ParaViewWebProtocol(vtkWebProtocol):
                 HIDE_UNUSED_SCALAR_BARS = 0x01,
                 SHOW_USED_SCALAR_BARS = 0x02
         """
-        v = view or self.getView(-1)
-        lutMgr = vtkSMTransferFunctionManager()
-        lutMgr.UpdateScalarBars(v.SMProxy, mode)
+        v = view or self.get_view(-1)
+        lut_mgr = vtkSMTransferFunctionManager()
+        lut_mgr.UpdateScalarBars(v.SMProxy, mode)
 
     def publish(self, topic, event):
-        if self.coreServer:
-            self.coreServer.publish(topic, event)
+        if self.core_server:
+            self.core_server.publish(topic, event)

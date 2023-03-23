@@ -16,10 +16,10 @@ def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
     if dataset.IsA("vtkPolyData"):
         polydata = dataset
     else:
-        extractSkinFilter = vtkDataSetSurfaceFilter()
-        extractSkinFilter.SetInputData(dataset)
-        extractSkinFilter.Update()
-        polydata = extractSkinFilter.GetOutput()
+        extract_skin_filter = vtkDataSetSurfaceFilter()
+        extract_skin_filter.SetInputData(dataset)
+        extract_skin_filter.Update()
+        polydata = extract_skin_filter.GetOutput()
 
     if polydata.GetPoints() is None:
         return None
@@ -84,7 +84,7 @@ def mesh_array(array):
 
 def data_array(data_array, location="PointData", name=None):
     if data_array:
-        dataRange = data_array.GetRange(-1)
+        data_range = data_array.GetRange(-1)
         nb_comp = data_array.GetNumberOfComponents()
         values = vtk_to_numpy(data_array)
         js_types = to_js_type[str(values.dtype)]
@@ -94,7 +94,7 @@ def data_array(data_array, location="PointData", name=None):
             "numberOfComponents": nb_comp,
             "type": js_types,
             "location": location,
-            "dataRange": dataRange,
+            "dataRange": data_range,
         }
 
 
@@ -156,7 +156,7 @@ to_js_type = {
 
 
 def b64_encode_numpy(obj):
-    # Convert 1D numpy arrays with numeric types to memoryviews with
+    # Convert 1_d numpy arrays with numeric types to memoryviews with
     # datatype and shape metadata.
     if len(obj) == 0:
         return obj.tolist()

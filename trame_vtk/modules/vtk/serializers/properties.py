@@ -1,83 +1,87 @@
 from .registry import class_name
 from .serialize import serialize
-from .utils import getReferenceId, wrapId
+from .utils import reference_id, wrap_id
 
 
-def propertySerializer(parent, propObj, propObjId, context, depth):
+def property_serializer(parent, prop_obj, prop_obj_id, context, depth):
     representation = (
-        propObj.GetRepresentation() if hasattr(propObj, "GetRepresentation") else 2
+        prop_obj.GetRepresentation() if hasattr(prop_obj, "GetRepresentation") else 2
     )
-    colorToUse = (
-        propObj.GetDiffuseColor() if hasattr(propObj, "GetDiffuseColor") else [1, 1, 1]
+    color_to_use = (
+        prop_obj.GetDiffuseColor()
+        if hasattr(prop_obj, "GetDiffuseColor")
+        else [1, 1, 1]
     )
-    if representation == 1 and hasattr(propObj, "GetColor"):
-        colorToUse = propObj.GetColor()
+    if representation == 1 and hasattr(prop_obj, "GetColor"):
+        color_to_use = prop_obj.GetColor()
 
     return {
-        "parent": getReferenceId(parent),
-        "id": propObjId,
-        "type": class_name(propObj),
+        "parent": reference_id(parent),
+        "id": prop_obj_id,
+        "type": class_name(prop_obj),
         "properties": {
             "representation": representation,
-            "diffuseColor": colorToUse,
-            "color": propObj.GetColor(),
-            "ambientColor": propObj.GetAmbientColor(),
-            "specularColor": propObj.GetSpecularColor(),
-            "edgeColor": propObj.GetEdgeColor(),
-            "ambient": propObj.GetAmbient(),
-            "diffuse": propObj.GetDiffuse(),
-            "specular": propObj.GetSpecular(),
-            "specularPower": propObj.GetSpecularPower(),
-            "opacity": propObj.GetOpacity(),
-            "interpolation": propObj.GetInterpolation(),
-            "edgeVisibility": 1 if propObj.GetEdgeVisibility() else 0,
-            "backfaceCulling": 1 if propObj.GetBackfaceCulling() else 0,
-            "frontfaceCulling": 1 if propObj.GetFrontfaceCulling() else 0,
-            "pointSize": propObj.GetPointSize(),
-            "lineWidth": propObj.GetLineWidth(),
-            "lighting": 1 if propObj.GetLighting() else 0,
+            "diffuseColor": color_to_use,
+            "color": prop_obj.GetColor(),
+            "ambientColor": prop_obj.GetAmbientColor(),
+            "specularColor": prop_obj.GetSpecularColor(),
+            "edgeColor": prop_obj.GetEdgeColor(),
+            "ambient": prop_obj.GetAmbient(),
+            "diffuse": prop_obj.GetDiffuse(),
+            "specular": prop_obj.GetSpecular(),
+            "specularPower": prop_obj.GetSpecularPower(),
+            "opacity": prop_obj.GetOpacity(),
+            "interpolation": prop_obj.GetInterpolation(),
+            "edgeVisibility": 1 if prop_obj.GetEdgeVisibility() else 0,
+            "backfaceCulling": 1 if prop_obj.GetBackfaceCulling() else 0,
+            "frontfaceCulling": 1 if prop_obj.GetFrontfaceCulling() else 0,
+            "pointSize": prop_obj.GetPointSize(),
+            "lineWidth": prop_obj.GetLineWidth(),
+            "lighting": 1 if prop_obj.GetLighting() else 0,
         },
     }
 
 
-def volumePropertySerializer(parent, propObj, propObjId, context, depth):
+def volume_property_serializer(parent, prop_obj, prop_obj_id, context, depth):
     calls = []
     dependencies = []
 
     # Color handling
-    lut = propObj.GetRGBTransferFunction()
+    lut = prop_obj.GetRGBTransferFunction()
     if lut:
-        lookupTableId = getReferenceId(lut)
-        lookupTableInstance = serialize(propObj, lut, lookupTableId, context, depth + 1)
+        lookup_table_id = reference_id(lut)
+        lookup_table_instance = serialize(
+            prop_obj, lut, lookup_table_id, context, depth + 1
+        )
 
-        if lookupTableInstance:
-            dependencies.append(lookupTableInstance)
-            calls.append(["setRGBTransferFunction", [0, wrapId(lookupTableId)]])
+        if lookup_table_instance:
+            dependencies.append(lookup_table_instance)
+            calls.append(["setRGBTransferFunction", [0, wrap_id(lookup_table_id)]])
 
     # Piecewise handling
-    pwf = propObj.GetScalarOpacity()
+    pwf = prop_obj.GetScalarOpacity()
     if pwf:
-        pwfId = getReferenceId(pwf)
-        pwfInstance = serialize(propObj, pwf, pwfId, context, depth + 1)
+        pwf_id = reference_id(pwf)
+        pwf_instance = serialize(prop_obj, pwf, pwf_id, context, depth + 1)
 
-        if pwfInstance:
-            dependencies.append(pwfInstance)
-            calls.append(["setScalarOpacity", [0, wrapId(pwfId)]])
+        if pwf_instance:
+            dependencies.append(pwf_instance)
+            calls.append(["setScalarOpacity", [0, wrap_id(pwf_id)]])
 
     return {
-        "parent": getReferenceId(parent),
-        "id": propObjId,
-        "type": class_name(propObj),
+        "parent": reference_id(parent),
+        "id": prop_obj_id,
+        "type": class_name(prop_obj),
         "properties": {
-            "independentComponents": propObj.GetIndependentComponents(),
-            "interpolationType": propObj.GetInterpolationType(),
-            "shade": propObj.GetShade(),
-            "ambient": propObj.GetAmbient(),
-            "diffuse": propObj.GetDiffuse(),
-            "specular": propObj.GetSpecular(),
-            "specularPower": propObj.GetSpecularPower(),
-            # "useLabelOutline": propObj.GetUseLabelOutline(),
-            # "labelOutlineThickness": propObj.GetLabelOutlineThickness(),
+            "independentComponents": prop_obj.GetIndependentComponents(),
+            "interpolationType": prop_obj.GetInterpolationType(),
+            "shade": prop_obj.GetShade(),
+            "ambient": prop_obj.GetAmbient(),
+            "diffuse": prop_obj.GetDiffuse(),
+            "specular": prop_obj.GetSpecular(),
+            "specularPower": prop_obj.GetSpecularPower(),
+            # "useLabelOutline": prop_obj.GetUseLabelOutline(),
+            # "labelOutlineThickness": prop_obj.GetLabelOutlineThickness(),
         },
         "calls": calls,
         "dependencies": dependencies,

@@ -4,22 +4,22 @@ from vtkmodules.vtkCommonMath import vtkMatrix4x4
 
 from .registry import class_name
 from .serialize import serialize
-from .utils import getReferenceId, rgb_float_to_hex, wrapId
+from .utils import reference_id, rgb_float_to_hex, wrap_id
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def genericActorSerializer(parent, actor, actorId, context, depth):
+def generic_actor_serializer(parent, actor, actor_id, context, depth):
     # This kind of actor has two "children" of interest, a property and a
     # mapper
-    actorVisibility = actor.GetVisibility()
-    mapperInstance = None
-    propertyInstance = None
+    actor_visibility = actor.GetVisibility()
+    mapper_instance = None
+    property_instance = None
     calls = []
     dependencies = []
 
-    if actorVisibility:
+    if actor_visibility:
         mapper = None
         if not hasattr(actor, "GetMapper"):
             logger.debug("This actor does not have a GetMapper method")
@@ -27,11 +27,11 @@ def genericActorSerializer(parent, actor, actorId, context, depth):
             mapper = actor.GetMapper()
 
         if mapper:
-            mapperId = getReferenceId(mapper)
-            mapperInstance = serialize(actor, mapper, mapperId, context, depth + 1)
-            if mapperInstance:
-                dependencies.append(mapperInstance)
-                calls.append(["setMapper", [wrapId(mapperId)]])
+            mapper_id = reference_id(mapper)
+            mapper_instance = serialize(actor, mapper, mapper_id, context, depth + 1)
+            if mapper_instance:
+                dependencies.append(mapper_instance)
+                calls.append(["setMapper", [wrap_id(mapper_id)]])
 
         prop = None
         if hasattr(actor, "GetProperty"):
@@ -40,11 +40,11 @@ def genericActorSerializer(parent, actor, actorId, context, depth):
             logger.debug("This actor does not have a GetProperty method")
 
         if prop:
-            propId = getReferenceId(prop)
-            propertyInstance = serialize(actor, prop, propId, context, depth + 1)
-            if propertyInstance:
-                dependencies.append(propertyInstance)
-                calls.append(["setProperty", [wrapId(propId)]])
+            prop_id = reference_id(prop)
+            property_instance = serialize(actor, prop, prop_id, context, depth + 1)
+            if property_instance:
+                dependencies.append(property_instance)
+                calls.append(["setProperty", [wrap_id(prop_id)]])
 
         # Handle texture if any
         texture = None
@@ -54,20 +54,20 @@ def genericActorSerializer(parent, actor, actorId, context, depth):
             logger.debug("This actor does not have a GetTexture method")
 
         if texture:
-            textureId = getReferenceId(texture)
-            textureInstance = serialize(actor, texture, textureId, context, depth + 1)
-            if textureInstance:
-                dependencies.append(textureInstance)
-                calls.append(["addTexture", [wrapId(textureId)]])
+            texture_id = reference_id(texture)
+            texture_instance = serialize(actor, texture, texture_id, context, depth + 1)
+            if texture_instance:
+                dependencies.append(texture_instance)
+                calls.append(["addTexture", [wrap_id(texture_id)]])
 
-    if actorVisibility == 0 or (mapperInstance and propertyInstance):
+    if actor_visibility == 0 or (mapper_instance and property_instance):
         return {
-            "parent": getReferenceId(parent),
-            "id": actorId,
+            "parent": reference_id(parent),
+            "id": actor_id,
             "type": class_name(actor),
             "properties": {
                 # vtkProp
-                "visibility": actorVisibility,
+                "visibility": actor_visibility,
                 "pickable": actor.GetPickable(),
                 "dragable": actor.GetDragable(),
                 "useBounds": actor.GetUseBounds(),
@@ -89,7 +89,7 @@ def genericActorSerializer(parent, actor, actorId, context, depth):
 # -----------------------------------------------------------------------------
 
 
-def cubeAxesSerializer(parent, actor, actorId, context, depth):
+def cube_axes_serializer(parent, actor, actor_id, context, depth):
     """
     Possible add-on properties for vtk.js:
         gridLines: True,
@@ -109,13 +109,13 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
             fontFamily: 'serif',
         },
     """
-    axisLabels = ["", "", ""]
+    axis_labels = ["", "", ""]
     if actor.GetXAxisLabelVisibility():
-        axisLabels[0] = actor.GetXTitle()
+        axis_labels[0] = actor.GetXTitle()
     if actor.GetYAxisLabelVisibility():
-        axisLabels[1] = actor.GetYTitle()
+        axis_labels[1] = actor.GetYTitle()
     if actor.GetZAxisLabelVisibility():
-        axisLabels[2] = actor.GetZTitle()
+        axis_labels[2] = actor.GetZTitle()
 
     text_color = rgb_float_to_hex(*actor.GetXAxesGridlinesProperty().GetColor())
 
@@ -123,7 +123,7 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
     calls = [
         [
             "setCamera",
-            [wrapId(getReferenceId(actor.GetCamera()))],
+            [wrap_id(reference_id(actor.GetCamera()))],
         ]
     ]
 
@@ -134,15 +134,15 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
         logger.debug("This actor does not have a GetXAxesLinesProperty method")
 
     if prop:
-        propId = getReferenceId(prop)
-        propertyInstance = serialize(actor, prop, propId, context, depth + 1)
-        if propertyInstance:
-            dependencies.append(propertyInstance)
-            calls.append(["setProperty", [wrapId(propId)]])
+        prop_id = reference_id(prop)
+        property_instance = serialize(actor, prop, prop_id, context, depth + 1)
+        if property_instance:
+            dependencies.append(property_instance)
+            calls.append(["setProperty", [wrap_id(prop_id)]])
 
     return {
-        "parent": getReferenceId(parent),
-        "id": actorId,
+        "parent": reference_id(parent),
+        "id": actor_id,
         "type": "vtkCubeAxesActor",
         "properties": {
             # vtkProp
@@ -161,7 +161,7 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
             "dataBounds": actor.GetBounds(),
             "faceVisibilityAngle": 8,
             "gridLines": True,
-            "axisLabels": axisLabels,
+            "axisLabels": axis_labels,
             "axisTitlePixelOffset": 35.0,
             "axisTextStyle": {
                 "fontColor": text_color,
@@ -185,42 +185,42 @@ def cubeAxesSerializer(parent, actor, actorId, context, depth):
 # -----------------------------------------------------------------------------
 
 
-def scalarBarActorSerializer(parent, actor, actorId, context, depth):
+def scalar_bar_actor_serializer(parent, actor, actor_id, context, depth):
     dependencies = []
     calls = []
     lut = actor.GetLookupTable()
     if not lut:
         return None
 
-    lutId = getReferenceId(lut)
-    lutInstance = serialize(actor, lut, lutId, context, depth + 1)
-    if not lutInstance:
+    lut_id = reference_id(lut)
+    lut_instance = serialize(actor, lut, lut_id, context, depth + 1)
+    if not lut_instance:
         return None
 
-    dependencies.append(lutInstance)
-    calls.append(["setScalarsToColors", [wrapId(lutId)]])
+    dependencies.append(lut_instance)
+    calls.append(["setScalarsToColors", [wrap_id(lut_id)]])
 
     prop = None
     if hasattr(actor, "GetProperty"):
         prop = actor.GetProperty()
     else:
-        if context.debugAll:
-            print("This scalarBarActor does not have a GetProperty method")
+        if context.debug_all:
+            print("This scalar_bar_actor does not have a GetProperty method")
 
         if prop:
-            propId = getReferenceId(prop)
-            propertyInstance = serialize(actor, prop, propId, context, depth + 1)
-            if propertyInstance:
-                dependencies.append(propertyInstance)
-                calls.append(["setProperty", [wrapId(propId)]])
+            prop_id = reference_id(prop)
+            property_instance = serialize(actor, prop, prop_id, context, depth + 1)
+            if property_instance:
+                dependencies.append(property_instance)
+                calls.append(["setProperty", [wrap_id(prop_id)]])
 
-    axisLabel = actor.GetTitle()
+    axis_label = actor.GetTitle()
     width = actor.GetWidth()
     height = actor.GetHeight()
 
     return {
-        "parent": getReferenceId(parent),
-        "id": actorId,
+        "parent": reference_id(parent),
+        "id": actor_id,
         "type": "vtkScalarBarActor",
         "properties": {
             # vtkProp
@@ -235,9 +235,9 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
             # "height": actor.GetHeight(),
             # vtkScalarBarActor
             "automated": True,
-            "axisLabel": axisLabel,
-            # 'barPosition': [0, 0],
-            # 'barSize': [0, 0],
+            "axisLabel": axis_label,
+            # 'bar_position': [0, 0],
+            # 'bar_size': [0, 0],
             "boxPosition": [0.88, -0.92],
             "boxSize": [width, height],
             "axisTitlePixelOffset": 36.0,
@@ -266,10 +266,10 @@ def scalarBarActorSerializer(parent, actor, actorId, context, depth):
 # -----------------------------------------------------------------------------
 
 
-def axesActorSerializer(parent, actor, actorId, context, depth):
-    actorVisibility = actor.GetVisibility()
+def axes_actor_serializer(parent, actor, actor_id, context, depth):
+    actor_visibility = actor.GetVisibility()
 
-    if not actorVisibility:
+    if not actor_visibility:
         return None
 
     # C++ extract
@@ -308,12 +308,12 @@ def axesActorSerializer(parent, actor, actorId, context, depth):
                 user_matrix[idx] = matrix.GetElement(j, i)
 
     return {
-        "parent": getReferenceId(parent),
-        "id": actorId,
+        "parent": reference_id(parent),
+        "id": actor_id,
         "type": "vtkAxesActor",
         "properties": {
             # vtkProp
-            "visibility": actorVisibility,
+            "visibility": actor_visibility,
             "pickable": actor.GetPickable(),
             "dragable": actor.GetDragable(),
             "useBounds": actor.GetUseBounds(),

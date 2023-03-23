@@ -4,70 +4,70 @@ from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 from .registry import class_name
 from .serialize import serialize
-from .utils import getReferenceId, wrapId
+from .utils import reference_id, wrap_id
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def genericMapperSerializer(parent, mapper, mapperId, context, depth):
+def generic_mapper_serializer(parent, mapper, mapper_id, context, depth):
     # This kind of mapper requires us to get 2 items: input data and lookup
     # table
-    dataObject = None
-    dataObjectInstance = None
-    lookupTableInstance = None
+    data_object = None
+    data_object_instance = None
+    lookup_table_instance = None
     calls = []
     dependencies = []
 
     if hasattr(mapper, "GetInputDataObject"):
         mapper.GetInputAlgorithm().Update()
-        dataObject = mapper.GetInputDataObject(0, 0)
+        data_object = mapper.GetInputDataObject(0, 0)
     else:
-        if context.debugAll:
+        if context.debug_all:
             print("This mapper does not have GetInputDataObject method")
 
-    if dataObject:
-        if dataObject.IsA("vtkDataSet"):
+    if data_object:
+        if data_object.IsA("vtkDataSet"):
             alg = vtkDataSetSurfaceFilter()
-            alg.SetInputData(dataObject)
+            alg.SetInputData(data_object)
             alg.Update()
-            dataObject = alg.GetOutput()
+            data_object = alg.GetOutput()
 
-        dataObjectId = "%s-dataset" % mapperId
-        dataObjectInstance = serialize(
-            mapper, dataObject, dataObjectId, context, depth + 1
+        data_object_id = "%s-dataset" % mapper_id
+        data_object_instance = serialize(
+            mapper, data_object, data_object_id, context, depth + 1
         )
 
-        if dataObjectInstance:
-            dependencies.append(dataObjectInstance)
-            calls.append(["setInputData", [wrapId(dataObjectId)]])
+        if data_object_instance:
+            dependencies.append(data_object_instance)
+            calls.append(["setInputData", [wrap_id(data_object_id)]])
 
-    lookupTable = None
+    lookup_table = None
 
     if hasattr(mapper, "GetLookupTable"):
-        lookupTable = mapper.GetLookupTable()
+        lookup_table = mapper.GetLookupTable()
     else:
-        if context.debugAll:
+        if context.debug_all:
             print("This mapper does not have GetLookupTable method")
 
-    if lookupTable:
-        lookupTableId = getReferenceId(lookupTable)
-        lookupTableInstance = serialize(
-            mapper, lookupTable, lookupTableId, context, depth + 1
+    if lookup_table:
+        lookup_table_id = reference_id(lookup_table)
+        lookup_table_instance = serialize(
+            mapper, lookup_table, lookup_table_id, context, depth + 1
         )
-        if lookupTableInstance:
-            dependencies.append(lookupTableInstance)
-            calls.append(["setLookupTable", [wrapId(lookupTableId)]])
+        if lookup_table_instance:
+            dependencies.append(lookup_table_instance)
+            calls.append(["setLookupTable", [wrap_id(lookup_table_id)]])
 
-    if dataObjectInstance:
-        colorArrayName = (
+    if data_object_instance:
+        color_array_name = (
             mapper.GetArrayName()
             if mapper.GetArrayAccessMode() == 1
             else mapper.GetArrayId()
         )
         return {
-            "parent": getReferenceId(parent),
-            "id": mapperId,
+            "parent": reference_id(parent),
+            "id": mapper_id,
             "type": class_name(mapper),
             "properties": {
                 "resolveCoincidentTopology": mapper.GetResolveCoincidentTopology(),
@@ -78,7 +78,7 @@ def genericMapperSerializer(parent, mapper, mapperId, context, depth):
                 if mapper.GetUseLookupTableScalarRange()
                 else 0,
                 "scalarVisibility": mapper.GetScalarVisibility(),
-                "colorByArrayName": colorArrayName,
+                "colorByArrayName": color_array_name,
                 "colorMode": mapper.GetColorMode(),
                 "scalarMode": mapper.GetScalarMode(),
                 "interpolateScalarsBeforeMapping": 1
@@ -95,44 +95,44 @@ def genericMapperSerializer(parent, mapper, mapperId, context, depth):
 # -----------------------------------------------------------------------------
 
 
-def genericVolumeMapperSerializer(parent, mapper, mapperId, context, depth):
+def generic_volume_mapper_serializer(parent, mapper, mapper_id, context, depth):
     # This kind of mapper requires us to get 2 items: input data and lookup
     # table
-    dataObject = None
-    dataObjectInstance = None
-    # lookupTableInstance = None
+    data_object = None
+    data_object_instance = None
+    # lookup_table_instance = None
     calls = []
     dependencies = []
 
     if hasattr(mapper, "GetInputDataObject"):
         mapper.GetInputAlgorithm().Update()
-        dataObject = mapper.GetInputDataObject(0, 0)
+        data_object = mapper.GetInputDataObject(0, 0)
     else:
         logger.debug("This mapper does not have GetInputDataObject method")
 
-    if dataObject:
-        dataObjectId = "%s-dataset" % mapperId
-        dataObjectInstance = serialize(
-            mapper, dataObject, dataObjectId, context, depth + 1
+    if data_object:
+        data_object_id = "%s-dataset" % mapper_id
+        data_object_instance = serialize(
+            mapper, data_object, data_object_id, context, depth + 1
         )
 
-        if dataObjectInstance:
-            dependencies.append(dataObjectInstance)
-            calls.append(["setInputData", [wrapId(dataObjectId)]])
+        if data_object_instance:
+            dependencies.append(data_object_instance)
+            calls.append(["setInputData", [wrap_id(data_object_id)]])
 
-    if dataObjectInstance:
+    if data_object_instance:
         if hasattr(mapper, "GetImageSampleDistance"):
-            imageSampleDistance = mapper.GetImageSampleDistance()
+            image_sample_distance = mapper.GetImageSampleDistance()
         else:
-            imageSampleDistance = 1.0
+            image_sample_distance = 1.0
         return {
-            "parent": getReferenceId(parent),
-            "id": mapperId,
+            "parent": reference_id(parent),
+            "id": mapper_id,
             "type": class_name(mapper),
             "properties": {
                 # VolumeMapper
                 "sampleDistance": mapper.GetSampleDistance(),
-                "imageSampleDistance": imageSampleDistance,
+                "imageSampleDistance": image_sample_distance,
                 # "maximumSamplesPerRay": mapper.GetMaximumSamplesPerRay(),
                 "autoAdjustSampleDistances": mapper.GetAutoAdjustSampleDistances(),
                 "blendMode": mapper.GetBlendMode(),

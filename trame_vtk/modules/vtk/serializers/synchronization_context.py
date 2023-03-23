@@ -5,7 +5,7 @@ import zipfile
 
 from vtkmodules.vtkCommonCore import vtkTypeUInt32Array
 
-from .utils import base64Encode, wrapId
+from .utils import base64_encode, wrap_id
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -17,83 +17,88 @@ class SynchronizationContext:
     """
 
     def __init__(self):
-        self.dataArrayCache = {}
-        self.lastDependenciesMapping = {}
-        self.ingoreLastDependencies = False
+        self.data_array_cache = {}
+        self.last_dependencies_mapping = {}
+        self.ingore_last_dependencies = False
 
-    def setIgnoreLastDependencies(self, force):
-        self.ingoreLastDependencies = force
+    def set_ignore_last_dependencies(self, force):
+        self.ingore_last_dependencies = force
 
-    def cacheDataArray(self, pMd5, data):
-        self.dataArrayCache[pMd5] = data
+    def cache_data_array(self, p_md5, data):
+        self.data_array_cache[p_md5] = data
 
-    def getCachedDataArray(self, pMd5, binary=False, compression=False):
-        cacheObj = self.dataArrayCache[pMd5]
-        array = cacheObj["array"]
-        cacheTime = cacheObj["mTime"]
+    def get_cached_data_array(self, p_md5, binary=False, compression=False):
+        cache_obj = self.data_array_cache[p_md5]
+        array = cache_obj["array"]
+        cache_time = cache_obj["mTime"]
 
-        if cacheTime != array.GetMTime():
+        if cache_time != array.GetMTime():
             logger.debug(" ***** ERROR: you asked for an old cache key! ***** ")
 
         if array.GetDataType() == 12:
             # IdType need to be converted to Uint32
-            arraySize = array.GetNumberOfTuples() * array.GetNumberOfComponents()
-            newArray = vtkTypeUInt32Array()
-            newArray.SetNumberOfTuples(arraySize)
-            for i in range(arraySize):
-                newArray.SetValue(i, -1 if array.GetValue(i) < 0 else array.GetValue(i))
-            pBuffer = memoryview(newArray)
+            array_size = array.GetNumberOfTuples() * array.GetNumberOfComponents()
+            new_array = vtkTypeUInt32Array()
+            new_array.SetNumberOfTuples(array_size)
+            for i in range(array_size):
+                new_array.SetValue(
+                    i, -1 if array.GetValue(i) < 0 else array.GetValue(i)
+                )
+            p_buffer = memoryview(new_array)
         else:
-            pBuffer = memoryview(array)
+            p_buffer = memoryview(array)
 
         if binary:
             # Convert the vtkUnsignedCharArray into a bytes object, required by
             # Autobahn websockets
             return (
-                pBuffer.tobytes()
+                p_buffer.tobytes()
                 if not compression
-                else zipCompression(pMd5, pBuffer.tobytes())
+                else zip_compression(p_md5, p_buffer.tobytes())
             )
 
-        return base64Encode(
-            pBuffer if not compression else zipCompression(pMd5, pBuffer.tobytes())
+        return base64_encode(
+            p_buffer if not compression else zip_compression(p_md5, p_buffer.tobytes())
         )
 
-    def checkForArraysToRelease(self, timeWindow=20):
-        cutOffTime = time.time() - timeWindow
-        shasToDelete = []
-        for sha in self.dataArrayCache:
-            record = self.dataArrayCache[sha]
+    def check_for_arrays_to_release(self, time_window=20):
+        cut_off_time = time.time() - time_window
+        shas_to_delete = []
+        for sha in self.data_array_cache:
+            record = self.data_array_cache[sha]
             array = record["array"]
             count = array.GetReferenceCount()
 
-            if count == 1 and record["ts"] < cutOffTime:
-                shasToDelete.append(sha)
+            if count == 1 and record["ts"] < cut_off_time:
+                shas_to_delete.append(sha)
 
-        for sha in shasToDelete:
-            del self.dataArrayCache[sha]
+        for sha in shas_to_delete:
+            del self.data_array_cache[sha]
 
-    def getLastDependencyList(self, idstr):
-        lastDeps = []
-        if idstr in self.lastDependenciesMapping and not self.ingoreLastDependencies:
-            lastDeps = self.lastDependenciesMapping[idstr]
-        return lastDeps
+    def get_last_dependency_list(self, idstr):
+        last_deps = []
+        if (
+            idstr in self.last_dependencies_mapping
+            and not self.ingore_last_dependencies
+        ):
+            last_deps = self.last_dependencies_mapping[idstr]
+        return last_deps
 
-    def setNewDependencyList(self, idstr, depList):
-        self.lastDependenciesMapping[idstr] = depList
+    def set_new_dependency_list(self, idstr, dep_list):
+        self.last_dependencies_mapping[idstr] = dep_list
 
-    def buildDependencyCallList(self, idstr, newList, addMethod, removeMethod):
-        oldList = self.getLastDependencyList(idstr)
+    def build_dependency_call_list(self, idstr, new_list, add_method, remove_method):
+        old_list = self.get_last_dependency_list(idstr)
 
         calls = []
-        calls += [[addMethod, [wrapId(x)]] for x in newList if x not in oldList]
-        calls += [[removeMethod, [wrapId(x)]] for x in oldList if x not in newList]
+        calls += [[add_method, [wrap_id(x)]] for x in new_list if x not in old_list]
+        calls += [[remove_method, [wrap_id(x)]] for x in old_list if x not in new_list]
 
-        self.setNewDependencyList(idstr, newList)
+        self.set_new_dependency_list(idstr, new_list)
         return calls
 
 
-def zipCompression(name, data):
+def zip_compression(name, data):
     with io.BytesIO() as in_memory:
         with zipfile.ZipFile(in_memory, mode="w") as zf:
             zf.writestr("data/%s" % name, data, zipfile.ZIP_DEFLATED)

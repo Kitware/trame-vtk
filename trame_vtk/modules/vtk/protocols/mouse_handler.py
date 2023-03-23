@@ -2,7 +2,7 @@ import math
 
 from vtkmodules.vtkWebCore import vtkWebInteractionEvent
 
-from wslink import register as exportRpc
+from wslink import register as export_rpc
 
 from .web_protocol import vtkWebProtocol
 
@@ -12,14 +12,14 @@ class vtkWebMouseHandler(vtkWebProtocol):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.lastAction = "up"
+        self.last_action = "up"
 
-    @exportRpc("viewport.mouse.interaction")
-    def mouseInteraction(self, event):
+    @export_rpc("viewport.mouse.interaction")
+    def mouse_interaction(self, event):
         """
         RPC Callback for mouse interactions.
         """
-        view = self.getView(event["view"])
+        view = self.get_view(event["view"])
 
         buttons = 0
         if event["buttonLeft"]:
@@ -51,46 +51,46 @@ class vtkWebMouseHandler(vtkWebProtocol):
         if event["action"] == "dblclick":
             pvevent.SetRepeatCount(2)
         # pvevent.SetKeyCode(event["charCode"])
-        retVal = self.getApplication().HandleInteractionEvent(view, pvevent)
+        ret_val = self.app.HandleInteractionEvent(view, pvevent)
         del pvevent
 
-        if event["action"] == "down" and self.lastAction != event["action"]:
+        if event["action"] == "down" and self.last_action != event["action"]:
             # Make sure animation registration is only triggered on the first
             # "down" action.
-            self.getApplication().InvokeEvent("StartInteractionEvent")
+            self.app.InvokeEvent("StartInteractionEvent")
 
-        if event["action"] == "up" and self.lastAction != event["action"]:
-            self.getApplication().InvokeEvent("EndInteractionEvent")
+        if event["action"] == "up" and self.last_action != event["action"]:
+            self.app.InvokeEvent("EndInteractionEvent")
 
-        if retVal:
-            self.getApplication().InvokeEvent("UpdateEvent")
+        if ret_val:
+            self.app.InvokeEvent("UpdateEvent")
 
-        self.lastAction = event["action"]
+        self.last_action = event["action"]
 
-        return retVal
+        return ret_val
 
-    @exportRpc("viewport.mouse.zoom.wheel")
-    def updateZoomFromWheel(self, event):
-        renderWindow = self.getView(event["view"])
+    @export_rpc("viewport.mouse.zoom.wheel")
+    def update_zoomFromWheel(self, event):
+        render_window = self.get_view(event["view"])
 
-        if not renderWindow:
+        if not render_window:
             return
 
-        interactor = renderWindow.GetInteractor()
+        interactor = render_window.GetInteractor()
 
         if "x" in event and "y" in event:
             # Set the mouse position, so that if there are multiple
             # renderers, the interactor can figure out which one should
             # be modified.
-            viewSize = renderWindow.GetSize()
-            posX = math.floor(viewSize[0] * event["x"] + 0.5)
-            posY = math.floor(viewSize[1] * event["y"] + 0.5)
+            view_size = render_window.GetSize()
+            pos_x = math.floor(view_size[0] * event["x"] + 0.5)
+            pos_y = math.floor(view_size[1] * event["y"] + 0.5)
 
-            interactor.SetEventPosition(posX, posY)
+            interactor.SetEventPosition(pos_x, pos_y)
             interactor.MouseMoveEvent()
 
         if "Start" in event["type"]:
-            self.getApplication().InvokeEvent("StartInteractionEvent")
+            self.app.InvokeEvent("StartInteractionEvent")
             # It seems every time a StartInteractionEvent is sent, a
             # mouse wheel event with the same spin is sent afterward. We
             # don't want to zoom twice, so do not perform a zoom on the
@@ -98,17 +98,17 @@ class vtkWebMouseHandler(vtkWebProtocol):
             return
 
         if "End" in event["type"]:
-            self.getApplication().InvokeEvent("EndInteractionEvent")
+            self.app.InvokeEvent("EndInteractionEvent")
             # This is done
             return
 
-        spinY = event.get("spinY", 0)
-        direction = "Backward" if spinY >= 0 else "Forward"
+        spin_y = event.get("spinY", 0)
+        direction = "Backward" if spin_y >= 0 else "Forward"
         method = getattr(interactor, f"MouseWheel{direction}Event")
 
         style = interactor.GetInteractorStyle()
         prev_motion_factor = style.GetMouseWheelMotionFactor()
-        style.SetMouseWheelMotionFactor(abs(spinY))
+        style.SetMouseWheelMotionFactor(abs(spin_y))
         try:
             method()
         finally:

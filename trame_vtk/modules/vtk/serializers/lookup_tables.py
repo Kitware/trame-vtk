@@ -1,49 +1,49 @@
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
 
-from .helpers import dataTableToList, linspace
+from .helpers import data_table_to_list, linspace
 from .registry import class_name
-from .utils import getReferenceId
+from .utils import reference_id
 
 
-def lookupTableSerializer(parent, lookupTable, lookupTableId, context, depth):
+def lookup_table_serializer(parent, lookup_table, lookup_table_id, context, depth):
     # No children in this case, so no additions to bindings and return empty list
     # But we do need to add instance
 
-    lookupTableRange = lookupTable.GetRange()
+    lookup_table_range = lookup_table.GetRange()
 
-    lookupTableHueRange = [0.5, 0]
-    if hasattr(lookupTable, "GetHueRange"):
+    lookup_table_hue_range = [0.5, 0]
+    if hasattr(lookup_table, "GetHueRange"):
         try:
-            lookupTable.GetHueRange(lookupTableHueRange)
+            lookup_table.GetHueRange(lookup_table_hue_range)
         except Exception:
             pass
 
-    lutSatRange = lookupTable.GetSaturationRange()
+    lut_sat_range = lookup_table.GetSaturationRange()
 
     return {
-        "parent": getReferenceId(parent),
-        "id": lookupTableId,
-        "type": class_name(lookupTable),
+        "parent": reference_id(parent),
+        "id": lookup_table_id,
+        "type": class_name(lookup_table),
         "properties": {
-            "numberOfColors": lookupTable.GetNumberOfColors(),
-            "valueRange": lookupTableRange,
-            "hueRange": lookupTableHueRange,
-            # 'alphaRange': lutAlphaRange,  # Causes weird rendering artifacts on client
-            "saturationRange": lutSatRange,
-            "nanColor": lookupTable.GetNanColor(),
-            "belowRangeColor": lookupTable.GetBelowRangeColor(),
-            "aboveRangeColor": lookupTable.GetAboveRangeColor(),
+            "numberOfColors": lookup_table.GetNumberOfColors(),
+            "valueRange": lookup_table_range,
+            "hueRange": lookup_table_hue_range,
+            # 'alpha_range': lut_alpha_range,  # Causes weird rendering artifacts on client
+            "saturationRange": lut_sat_range,
+            "nanColor": lookup_table.GetNanColor(),
+            "belowRangeColor": lookup_table.GetBelowRangeColor(),
+            "aboveRangeColor": lookup_table.GetAboveRangeColor(),
             "useAboveRangeColor": True
-            if lookupTable.GetUseAboveRangeColor()
+            if lookup_table.GetUseAboveRangeColor()
             else False,
             "useBelowRangeColor": True
-            if lookupTable.GetUseBelowRangeColor()
+            if lookup_table.GetUseBelowRangeColor()
             else False,
-            "alpha": lookupTable.GetAlpha(),
-            "vectorSize": lookupTable.GetVectorSize(),
-            "vectorComponent": lookupTable.GetVectorComponent(),
-            "vectorMode": lookupTable.GetVectorMode(),
-            "indexedLookup": lookupTable.GetIndexedLookup(),
+            "alpha": lookup_table.GetAlpha(),
+            "vectorSize": lookup_table.GetVectorSize(),
+            "vectorComponent": lookup_table.GetVectorComponent(),
+            "vectorMode": lookup_table.GetVectorMode(),
+            "indexedLookup": lookup_table.GetIndexedLookup(),
         },
     }
 
@@ -51,20 +51,20 @@ def lookupTableSerializer(parent, lookupTable, lookupTableId, context, depth):
 # -----------------------------------------------------------------------------
 
 
-def lookupTableToColorTransferFunction(lookupTable):
-    dataTable = lookupTable.GetTable()
-    table = dataTableToList(dataTable)
+def lookup_table_to_color_transfer_function(lookup_table):
+    data_table = lookup_table.GetTable()
+    table = data_table_to_list(data_table)
 
     if not table:
-        lookupTable.Build()
-        table = dataTableToList(dataTable)
+        lookup_table.Build()
+        table = data_table_to_list(data_table)
 
     if table:
         ctf = vtkColorTransferFunction()
-        ctf.DeepCopy(lookupTable)  # <== needed to capture vector props
+        ctf.DeepCopy(lookup_table)  # <== needed to capture vector props
 
-        tableRange = lookupTable.GetTableRange()
-        points = linspace(*tableRange, num=len(table))
+        table_range = lookup_table.GetTableRange()
+        points = linspace(*table_range, num=len(table))
         for x, rgba in zip(points, table):
             ctf.AddRGBPoint(x, *[x / 255 for x in rgba[:3]])
 
@@ -73,17 +73,17 @@ def lookupTableToColorTransferFunction(lookupTable):
     return None
 
 
-def lookupTableSerializer2(parent, lookupTable, lookupTableId, context, depth):
-    ctf = lookupTableToColorTransferFunction(lookupTable)
+def lookup_table_serializer2(parent, lookup_table, lookup_table_id, context, depth):
+    ctf = lookup_table_to_color_transfer_function(lookup_table)
     if ctf:
-        return colorTransferFunctionSerializer(
-            parent, ctf, lookupTableId, context, depth
+        return color_transfer_function_serializer(
+            parent, ctf, lookup_table_id, context, depth
         )
 
     return None
 
 
-def colorTransferFunctionSerializer(parent, instance, objId, context, depth):
+def color_transfer_function_serializer(parent, instance, obj_id, context, depth):
     nodes = []
     for i in range(instance.GetSize()):
         # x, r, g, b, midpoint, sharpness
@@ -92,32 +92,32 @@ def colorTransferFunctionSerializer(parent, instance, objId, context, depth):
         nodes.append(node)
 
     discretize = 0
-    numberOfValues = instance.GetSize()
+    number_of_values = instance.GetSize()
     if hasattr(instance, "GetDiscretize"):
         discretize = (
             instance.GetDiscretize() if hasattr(instance, "GetDiscretize") else 0
         )
-        numberOfValues = (
+        number_of_values = (
             instance.GetNumberOfValues()
             if hasattr(instance, "GetNumberOfValues")
             else 256
         )
-    elif numberOfValues < 256:
+    elif number_of_values < 256:
         discretize = 1
 
     return {
-        "parent": getReferenceId(parent),
-        "id": objId,
+        "parent": reference_id(parent),
+        "id": obj_id,
         "type": class_name(instance),
         "properties": {
             "clamping": 1 if instance.GetClamping() else 0,
             "colorSpace": instance.GetColorSpace(),
             "hSVWrap": 1 if instance.GetHSVWrap() else 0,
-            # 'nanColor': instance.GetNanColor(),                  # Breaks client
-            # 'belowRangeColor': instance.GetBelowRangeColor(),    # Breaks client
-            # 'aboveRangeColor': instance.GetAboveRangeColor(),    # Breaks client
-            # 'useAboveRangeColor': 1 if instance.GetUseAboveRangeColor() else 0,
-            # 'useBelowRangeColor': 1 if instance.GetUseBelowRangeColor() else 0,
+            # 'nan_color': instance.GetNanColor(),                  # Breaks client
+            # 'below_range_color': instance.GetBelowRangeColor(),    # Breaks client
+            # 'above_range_color': instance.GetAboveRangeColor(),    # Breaks client
+            # 'use_above_range_color': 1 if instance.GetUseAboveRangeColor() else 0,
+            # 'use_below_range_color': 1 if instance.GetUseBelowRangeColor() else 0,
             "allowDuplicateScalars": 1 if instance.GetAllowDuplicateScalars() else 0,
             "alpha": instance.GetAlpha(),
             "vectorComponent": instance.GetVectorComponent(),
@@ -125,22 +125,22 @@ def colorTransferFunctionSerializer(parent, instance, objId, context, depth):
             "vectorMode": instance.GetVectorMode(),
             "indexedLookup": instance.GetIndexedLookup(),
             "nodes": nodes,
-            "numberOfValues": numberOfValues,
+            "numberOfValues": number_of_values,
             "discretize": discretize,
         },
     }
 
 
-def discretizableColorTransferFunctionSerializer(
-    parent, instance, objId, context, depth
+def discretizable_color_transfer_function_serializer(
+    parent, instance, obj_id, context, depth
 ):
-    ctf = colorTransferFunctionSerializer(parent, instance, objId, context, depth)
+    ctf = color_transfer_function_serializer(parent, instance, obj_id, context, depth)
     ctf["properties"]["discretize"] = instance.GetDiscretize()
     ctf["properties"]["numberOfValues"] = instance.GetNumberOfValues()
     return ctf
 
 
-def pwfSerializer(parent, instance, objId, context, depth):
+def pwf_serializer(parent, instance, obj_id, context, depth):
     nodes = []
 
     for i in range(instance.GetSize()):
@@ -150,8 +150,8 @@ def pwfSerializer(parent, instance, objId, context, depth):
         nodes.append(node)
 
     return {
-        "parent": getReferenceId(parent),
-        "id": objId,
+        "parent": reference_id(parent),
+        "id": obj_id,
         "type": class_name(instance),
         "properties": {
             "range": list(instance.GetRange()),

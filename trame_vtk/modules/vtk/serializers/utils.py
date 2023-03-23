@@ -6,7 +6,7 @@ def rgb_float_to_hex(r, g, b):
     return f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
 
 
-arrayTypesMapping = [
+array_types_mapping = [
     " ",  # VTK_VOID                   0
     " ",  # VTK_BIT                    1
     "b",  # VTK_CHAR                   2
@@ -27,7 +27,7 @@ arrayTypesMapping = [
     "LL",  # VTK_UNSIGNED_LONG_LONG   17
 ]
 
-javascriptMapping = {
+javascript_mapping = {
     "b": "Int8Array",
     "B": "Uint8Array",
     "h": "Int16Array",
@@ -43,30 +43,30 @@ javascriptMapping = {
 }
 
 
-def base64Encode(x):
+def base64_encode(x):
     return base64.b64encode(x).decode("utf-8")
 
 
-def hashDataArray(dataArray):
-    hashedBit = hashlib.md5(memoryview(dataArray)).hexdigest()
-    typeCode = arrayTypesMapping[dataArray.GetDataType()]
-    return "%s_%d%s" % (hashedBit, dataArray.GetSize(), typeCode)
+def hash_data_array(data_array):
+    hashed_bit = hashlib.md5(memoryview(data_array)).hexdigest()
+    type_code = array_types_mapping[data_array.GetDataType()]
+    return "%s_%d%s" % (hashed_bit, data_array.GetSize(), type_code)
 
 
-def getJSArrayType(dataArray):
-    return javascriptMapping[arrayTypesMapping[dataArray.GetDataType()]]
+def get_js_array_type(data_array):
+    return javascript_mapping[array_types_mapping[data_array.GetDataType()]]
 
 
-def wrapId(idStr):
-    return "instance:${%s}" % idStr
+def wrap_id(id_str):
+    return "instance:${%s}" % id_str
 
 
-def getReferenceId(ref):
+def reference_id(ref):
     if ref:
         try:
             return ref.__this__[1:17]
         except Exception:
-            idStr = str(ref)[-12:-1]
-            # print('====> fallback ID %s for %s' % (idStr, ref))
-            return idStr
+            id_str = str(ref)[-12:-1]
+            # print('====> fallback ID %s for %s' % (id_str, ref))
+            return id_str
     return "0x0"

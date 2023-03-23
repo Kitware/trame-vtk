@@ -6,13 +6,13 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def serialize(parent, instance, instanceId, context, depth):
-    instanceType = class_name(instance)
-    serializer = SERIALIZERS[instanceType] if instanceType in SERIALIZERS else None
+def serialize(parent, instance, instance_id, context, depth):
+    instance_type = class_name(instance)
+    serializer = SERIALIZERS[instance_type] if instance_type in SERIALIZERS else None
 
     if serializer:
-        return serializer(parent, instance, instanceId, context, depth)
+        return serializer(parent, instance, instance_id, context, depth)
 
-    logger.error(f"!!!No serializer for {instanceType} with id {instanceId}")
+    logger.error(f"!!!No serializer for {instance_type} with id {instance_id}")
 
     return None

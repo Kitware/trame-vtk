@@ -1,8 +1,8 @@
 from .registry import class_name
-from .utils import getReferenceId
+from .utils import reference_id
 
 
-def lightTypeToString(value):
+def light_type_to_string(value):
     """
     #define VTK_LIGHT_TYPE_HEADLIGHT    1
     #define VTK_LIGHT_TYPE_CAMERA_LIGHT 2
@@ -20,14 +20,14 @@ def lightTypeToString(value):
     return "SceneLight"
 
 
-def lightSerializer(parent, instance, objId, context, depth):
+def light_serializer(parent, instance, obj_id, context, depth):
     return {
-        "parent": getReferenceId(parent),
-        "id": objId,
+        "parent": reference_id(parent),
+        "id": obj_id,
         "type": class_name(instance),
         "properties": {
-            # 'specularColor': instance.GetSpecularColor(),
-            # 'ambientColor': instance.GetAmbientColor(),
+            # 'specular_color': instance.GetSpecularColor(),
+            # 'ambient_color': instance.GetAmbientColor(),
             "switch": instance.GetSwitch(),
             "intensity": instance.GetIntensity(),
             "color": instance.GetDiffuseColor(),
@@ -37,7 +37,7 @@ def lightSerializer(parent, instance, objId, context, depth):
             "exponent": instance.GetExponent(),
             "coneAngle": instance.GetConeAngle(),
             "attenuationValues": instance.GetAttenuationValues(),
-            "lightType": lightTypeToString(instance.GetLightType()),
+            "lightType": light_type_to_string(instance.GetLightType()),
             "shadowAttenuation": instance.GetShadowAttenuation(),
         },
     }

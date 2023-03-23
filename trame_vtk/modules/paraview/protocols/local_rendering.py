@@ -1,9 +1,9 @@
 from paraview import simple
-from wslink import register as exportRpc
+from wslink import register as export_rpc
 
 from trame_vtk.modules.vtk.serializers import (
-    getReferenceId,
-    initializeSerializers,
+    reference_id,
+    initialize_serializers,
     serialize,
     SynchronizationContext,
 )
@@ -13,96 +13,100 @@ from .web_protocol import ParaViewWebProtocol
 
 class ParaViewWebLocalRendering(ParaViewWebProtocol):
     def __init__(self, **kwargs):
-        super(ParaViewWebLocalRendering, self).__init__()
-        initializeSerializers()
+        super().__init__()
+        initialize_serializers()
         self.context = SynchronizationContext()
-        self.trackingViews = {}
+        self.tracking_views = {}
         self.mtime = 0
 
-    # RpcName: getArray => viewport.geometry.array.get
-    @exportRpc("viewport.geometry.array.get")
-    def getArray(self, dataHash, binary=False):
+    # RpcName: get_array => viewport.geometry.array.get
+    @export_rpc("viewport.geometry.array.get")
+    def get_array(self, data_hash, binary=False):
         if binary:
-            return self.addAttachment(self.context.getCachedDataArray(dataHash, binary))
-        return self.context.getCachedDataArray(dataHash, binary)
-
-    # RpcName: addViewObserver => viewport.geometry.view.observer.add
-    @exportRpc("viewport.geometry.view.observer.add")
-    def addViewObserver(self, viewId):
-        sView = self.getView(viewId)
-        if not sView:
-            return {"error": "Unable to get view with id %s" % viewId}
-
-        realViewId = sView.GetGlobalIDAsString()
-
-        def pushGeometry(newSubscription=False):
-            simple.Render(sView)
-            stateToReturn = self.getViewState(realViewId, newSubscription)
-            stateToReturn["mtime"] = 0 if newSubscription else self.mtime
-            self.mtime += 1
-            return stateToReturn
-
-        if realViewId not in self.trackingViews:
-            observerCallback = lambda *args, **kwargs: self.publish(
-                "viewport.geometry.view.subscription", pushGeometry()
+            return self.addAttachment(
+                self.context.get_cached_data_array(data_hash, binary)
             )
-            tag = self.getApplication().AddObserver("UpdateEvent", observerCallback)
-            self.trackingViews[realViewId] = {"tags": [tag], "observerCount": 1}
+        return self.context.get_cached_data_array(data_hash, binary)
+
+    # RpcName: add_view_observer => viewport.geometry.view.observer.add
+    @export_rpc("viewport.geometry.view.observer.add")
+    def add_view_observer(self, view_id):
+        s_view = self.get_view(view_id)
+        if not s_view:
+            return {"error": "Unable to get view with id %s" % view_id}
+
+        real_view_id = s_view.GetGlobalIDAsString()
+
+        def push_geometry(new_subscription=False):
+            simple.Render(s_view)
+            state_to_return = self.get_view_state(real_view_id, new_subscription)
+            state_to_return["mtime"] = 0 if new_subscription else self.mtime
+            self.mtime += 1
+            return state_to_return
+
+        if real_view_id not in self.tracking_views:
+            observer_callback = lambda *args, **kwargs: self.publish(
+                "viewport.geometry.view.subscription", push_geometry()
+            )
+            tag = self.app.AddObserver("UpdateEvent", observer_callback)
+            self.tracking_views[real_view_id] = {"tags": [tag], "observerCount": 1}
         else:
             # There is an observer on this view already
-            self.trackingViews[realViewId]["observerCount"] += 1
+            self.tracking_views[real_view_id]["observerCount"] += 1
 
-        self.publish("viewport.geometry.view.subscription", pushGeometry(True))
-        return {"success": True, "viewId": realViewId}
+        self.publish("viewport.geometry.view.subscription", push_geometry(True))
+        return {"success": True, "viewId": real_view_id}
 
-    # RpcName: removeViewObserver => viewport.geometry.view.observer.remove
-    @exportRpc("viewport.geometry.view.observer.remove")
-    def removeViewObserver(self, viewId):
-        sView = self.getView(viewId)
-        if not sView:
-            return {"error": "Unable to get view with id %s" % viewId}
+    # RpcName: remove_view_observer => viewport.geometry.view.observer.remove
+    @export_rpc("viewport.geometry.view.observer.remove")
+    def remove_view_observer(self, view_id):
+        s_view = self.get_view(view_id)
+        if not s_view:
+            return {"error": "Unable to get view with id %s" % view_id}
 
-        realViewId = sView.GetGlobalIDAsString()
+        real_view_id = s_view.GetGlobalIDAsString()
 
-        observerInfo = None
-        if realViewId in self.trackingViews:
-            observerInfo = self.trackingViews[realViewId]
+        observer_info = None
+        if real_view_id in self.tracking_views:
+            observer_info = self.tracking_views[real_view_id]
 
-        if not observerInfo:
-            return {"error": "Unable to find subscription for view %s" % realViewId}
+        if not observer_info:
+            return {"error": "Unable to find subscription for view %s" % real_view_id}
 
-        observerInfo["observerCount"] -= 1
+        observer_info["observerCount"] -= 1
 
-        if observerInfo["observerCount"] <= 0:
-            for tag in observerInfo["tags"]:
-                self.getApplication().RemoveObserver(tag)
-            del self.trackingViews[realViewId]
+        if observer_info["observerCount"] <= 0:
+            for tag in observer_info["tags"]:
+                self.app.RemoveObserver(tag)
+            del self.tracking_views[real_view_id]
 
         return {"result": "success"}
 
-    # RpcName: getViewState => viewport.geometry.view.get.state
-    @exportRpc("viewport.geometry.view.get.state")
-    def getViewState(self, viewId, newSubscription=False):
-        sView = self.getView(viewId)
-        if not sView:
-            return {"error": "Unable to get view with id %s" % viewId}
+    # RpcName: get_view_state => viewport.geometry.view.get.state
+    @export_rpc("viewport.geometry.view.get.state")
+    def get_view_state(self, view_id, new_subscription=False):
+        s_view = self.get_view(view_id)
+        if not s_view:
+            return {"error": "Unable to get view with id %s" % view_id}
 
-        self.context.setIgnoreLastDependencies(newSubscription)
+        self.context.set_ignore_last_dependencies(new_subscription)
 
         # Get the active view and render window, use it to iterate over renderers
-        renderWindow = sView.GetRenderWindow()
-        renderWindowId = sView.GetGlobalIDAsString()
-        viewInstance = serialize(None, renderWindow, renderWindowId, self.context, 1)
-        viewInstance["extra"] = {
-            "vtkRefId": getReferenceId(renderWindow),
-            "centerOfRotation": sView.CenterOfRotation.GetData(),
-            "camera": getReferenceId(sView.GetActiveCamera()),
+        render_window = s_view.GetRenderWindow()
+        render_window_id = s_view.GetGlobalIDAsString()
+        view_instance = serialize(
+            None, render_window, render_window_id, self.context, 1
+        )
+        view_instance["extra"] = {
+            "vtkRefId": reference_id(render_window),
+            "centerOfRotation": s_view.CenterOfRotation.GetData(),
+            "camera": reference_id(s_view.GetActiveCamera()),
         }
 
-        self.context.setIgnoreLastDependencies(False)
-        self.context.checkForArraysToRelease()
+        self.context.set_ignore_last_dependencies(False)
+        self.context.check_for_arrays_to_release()
 
-        if viewInstance:
-            return viewInstance
+        if view_instance:
+            return view_instance
 
         return None

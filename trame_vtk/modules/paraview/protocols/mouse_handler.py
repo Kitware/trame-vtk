@@ -1,4 +1,4 @@
-from wslink import register as exportRpc
+from wslink import register as export_rpc
 
 from vtkmodules.vtkWebCore import vtkWebInteractionEvent
 
@@ -8,15 +8,15 @@ from .web_protocol import ParaViewWebProtocol
 class ParaViewWebMouseHandler(ParaViewWebProtocol):
     def __init__(self, **kwargs):
         super(ParaViewWebMouseHandler, self).__init__()
-        self.lastAction = "up"
+        self.last_action = "up"
 
-    # RpcName: mouseInteraction => viewport.mouse.interaction
-    @exportRpc("viewport.mouse.interaction")
-    def mouseInteraction(self, event):
+    # RpcName: mouse_interaction => viewport.mouse.interaction
+    @export_rpc("viewport.mouse.interaction")
+    def mouse_interaction(self, event):
         """
         RPC Callback for mouse interactions.
         """
-        view = self.getView(event["view"])
+        view = self.get_view(event["view"])
 
         if hasattr(view, "UseInteractiveRenderingForScreenshots"):
             if event["action"] == "down":
@@ -48,18 +48,18 @@ class ParaViewWebMouseHandler(ParaViewWebProtocol):
         pvevent.SetX(event["x"])
         pvevent.SetY(event["y"])
         # pvevent.SetKeyCode(event["charCode"])
-        retVal = self.getApplication().HandleInteractionEvent(view.SMProxy, pvevent)
+        ret_val = self.app.HandleInteractionEvent(view.SMProxy, pvevent)
         del pvevent
 
-        if event["action"] == "down" and self.lastAction != event["action"]:
-            self.getApplication().InvokeEvent("StartInteractionEvent")
+        if event["action"] == "down" and self.last_action != event["action"]:
+            self.app.InvokeEvent("StartInteractionEvent")
 
-        if event["action"] == "up" and self.lastAction != event["action"]:
-            self.getApplication().InvokeEvent("EndInteractionEvent")
+        if event["action"] == "up" and self.last_action != event["action"]:
+            self.app.InvokeEvent("EndInteractionEvent")
 
-        if retVal:
-            self.getApplication().InvokeEvent("UpdateEvent")
+        if ret_val:
+            self.app.InvokeEvent("UpdateEvent")
 
-        self.lastAction = event["action"]
+        self.last_action = event["action"]
 
-        return retVal
+        return ret_val

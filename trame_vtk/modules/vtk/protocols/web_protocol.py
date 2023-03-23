@@ -4,14 +4,11 @@ from wslink.websocket import LinkProtocol
 class vtkWebProtocol(LinkProtocol):
     """Base class for any VTK Web based protocol"""
 
-    def getApplication(self):
+    @property
+    def app(self):
         return self.getSharedObject("app")
 
-    # no need for a setApplication anymore, but keep for compatibility
-    def setApplication(self, app):
-        pass
-
-    def mapIdToObject(self, id):
+    def map_id_to_object(self, id):
         """
         Maps global-id for a vtkObject to the vtkObject instance. May return None if the
         id is not valid.
@@ -19,46 +16,46 @@ class vtkWebProtocol(LinkProtocol):
         id = int(id)
         if id <= 0:
             return None
-        return self.getApplication().GetObjectIdMap().GetVTKObject(id)
+        return self.app.GetObjectIdMap().GetVTKObject(id)
 
-    def getGlobalId(self, obj):
+    def get_global_id(self, obj):
         """
         Return the id for a given vtkObject
         """
-        return self.getApplication().GetObjectIdMap().GetGlobalId(obj)
+        return self.app.GetObjectIdMap().GetGlobalId(obj)
 
-    def freeObject(self, obj):
+    def free_object(self, obj):
         """
-        Delete the given vtkObject from the objectIdMap. Returns true if delete succeeded.
+        Delete the given vtkObject from the object_id_map. Returns true if delete succeeded.
         """
-        return self.getApplication().GetObjectIdMap().FreeObject(obj)
+        return self.app.GetObjectIdMap().FreeObject(obj)
 
-    def freeObjectById(self, id):
+    def free_object_by_id(self, id):
         """
-        Delete the vtkObject corresponding to the given objectId from the objectIdMap.
+        Delete the vtkObject corresponding to the given object_id from the object_id_map.
         Returns true if delete succeeded.
         """
-        return self.getApplication().GetObjectIdMap().FreeObjectById(id)
+        return self.app.GetObjectIdMap().FreeObjectById(id)
 
-    def getView(self, vid):
+    def get_view(self, vid):
         """
         Returns the view for a given view ID, if vid is None then return the
         current active view.
         :param vid: The view ID
         :type vid: str
         """
-        v = self.mapIdToObject(vid)
+        v = self.map_id_to_object(vid)
 
         if not v:
             # Use active view is none provided.
-            v = self.getApplication().GetObjectIdMap().GetActiveObject("VIEW")
+            v = self.app.GetObjectIdMap().GetActiveObject("VIEW")
         if not v:
             raise Exception("no view provided: %s" % vid)
 
         return v
 
-    def setActiveView(self, view):
+    def set_active_view(self, view):
         """
         Set a vtkRenderWindow to be the active one
         """
-        self.getApplication().GetObjectIdMap().SetActiveObject("VIEW", view)
+        self.app.GetObjectIdMap().SetActiveObject("VIEW", view)

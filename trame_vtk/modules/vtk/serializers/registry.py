@@ -3,11 +3,11 @@ JS_CLASS_MAPPING = {}
 context = None
 
 
-def registerInstanceSerializer(name, method):
+def register_instance_serializer(name, method):
     SERIALIZERS[name] = method
 
 
-def registerJSClass(vtk_class, js_class):
+def register_js_class(vtk_class, js_class):
     JS_CLASS_MAPPING[vtk_class] = js_class
 
 
