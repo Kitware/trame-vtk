@@ -138,3 +138,25 @@ def discretizableColorTransferFunctionSerializer(
     ctf["properties"]["discretize"] = instance.GetDiscretize()
     ctf["properties"]["numberOfValues"] = instance.GetNumberOfValues()
     return ctf
+
+
+def pwfSerializer(parent, instance, objId, context, depth):
+    nodes = []
+
+    for i in range(instance.GetSize()):
+        # x, y, midpoint, sharpness
+        node = [0, 0, 0, 0]
+        instance.GetNodeValue(i, node)
+        nodes.append(node)
+
+    return {
+        "parent": getReferenceId(parent),
+        "id": objId,
+        "type": class_name(instance),
+        "properties": {
+            "range": list(instance.GetRange()),
+            "clamping": instance.GetClamping(),
+            "allowDuplicateScalars": instance.GetAllowDuplicateScalars(),
+            "nodes": nodes,
+        },
+    }

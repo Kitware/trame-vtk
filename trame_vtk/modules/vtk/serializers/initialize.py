@@ -17,10 +17,10 @@ from .lookup_tables import (
     colorTransferFunctionSerializer,
     discretizableColorTransferFunctionSerializer,
     lookupTableSerializer2,
+    pwfSerializer,
 )
 from .mappers import genericMapperSerializer, genericVolumeMapperSerializer
 from .properties import propertySerializer, volumePropertySerializer
-from .pwf import pwfSerializer
 from .registry import registerInstanceSerializer, registerJSClass
 from .render_windows import cameraSerializer, rendererSerializer, renderWindowSerializer
 from .textures import textureSerializer
