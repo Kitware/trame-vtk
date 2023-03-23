@@ -1,4 +1,10 @@
+import logging
+
 from ..vtk.core import HybridView
+from ..vtk.protocols.serializers.mesh import mesh as mesh_vtk
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def has_capabilities(*features):
@@ -14,9 +20,8 @@ class Helper:
         try:  # defer need to paraview to support --www usecase
             from paraview import servermanager
             from paraview.modules.vtkPVClientWeb import vtkPVWebApplication
-            from ..vtk.protocols.utils import mesh as mesh_vtk
         except ImportError:
-            print("ParaView is not available")
+            logger.exception("*** ERROR: ParaView is not available!")
         else:
             self._pv_core = vtkPVWebApplication()
             self._pv_core.SetImageEncoding(0)
