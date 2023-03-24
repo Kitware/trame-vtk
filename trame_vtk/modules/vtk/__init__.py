@@ -1,6 +1,7 @@
 import warnings
 
 from .core import HybridView
+from .serializers import mesh as vtk_mesh
 
 try:
     import vtkmodules  # noqa
@@ -12,7 +13,6 @@ except ImportError:
 
 try:
     from vtkmodules.vtkWebCore import vtkWebApplication
-    from vtkmodules.web.utils import mesh as vtk_mesh
 
     HAS_VTK_WEB = True
 except ImportError:
@@ -33,16 +33,16 @@ def has_capabilities(*features):
 
 
 class Helper:
-    def __init__(self, app):
+    def __init__(self, trame_server):
         self._root_protocol = None
-        self._app = app
+        self._trame_server = trame_server
         if HAS_VTK_WEB:
             self._vtk_core = vtkWebApplication()
             self._vtk_core.SetImageEncoding(0)
             self._hybrid_views = {}
 
             # Link our custom protocols initialization
-            app.add_protocol_to_configure(self.configure_protocol)
+            trame_server.add_protocol_to_configure(self.configure_protocol)
 
     def id(self, vtk_obj):
         if not vtk_obj:
@@ -64,7 +64,7 @@ class Helper:
         )
 
     def scene(self, render_window, new_state=False):
-        return self._app.protocol_call(
+        return self._trame_server.protocol_call(
             "viewport.geometry.view.get.state", self.id(render_window), new_state
         )
 
@@ -73,11 +73,11 @@ class Helper:
         render_window.GetInteractor().EnableRenderOff()
 
         if reset_camera:
-            self._app.protocol_call(
+            self._trame_server.protocol_call(
                 "viewport.camera.reset", {"view": self.id(render_window)}
             )
 
-        return self._app.protocol_call(
+        return self._trame_server.protocol_call(
             "viewport.image.push", {"view": self.id(render_window)}
         )
 
@@ -109,13 +109,12 @@ class Helper:
 
     def configure_protocol(self, protocol):
         self._root_protocol = protocol
-        from vtkmodules.web.protocols import (
-            vtkWebMouseHandler,
-            vtkWebViewPort,
-            vtkWebPublishImageDelivery,
+        from .protocols import (
             vtkWebLocalRendering,
+            vtkWebMouseHandler,
+            vtkWebPublishImageDelivery,
+            vtkWebViewPort,
         )
-        from .addon_serializer import registerAddOnSerializers
 
         # Initialize vtk application helper
         self._root_protocol.setSharedObject("app", self._vtk_core)
@@ -129,9 +128,6 @@ class Helper:
 
         # Remote rendering - geometry delivery
         self._root_protocol.registerLinkProtocol(vtkWebLocalRendering())
-
-        # Add custom serializer ahead of proper vtk integration
-        registerAddOnSerializers()
 
     def add_hybrid_view(
         self,
@@ -177,10 +173,10 @@ class Helper:
 HELPER = None
 
 
-def setup(app, **kwargs):
+def setup(trame_server, **kwargs):
     global HELPER
     if HAS_VTK_WEB:
-        HELPER = Helper(app)
+        HELPER = Helper(trame_server)
 
 
 def reload_app():

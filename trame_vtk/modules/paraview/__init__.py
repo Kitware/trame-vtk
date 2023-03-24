@@ -1,4 +1,10 @@
+import logging
+
 from ..vtk.core import HybridView
+from ..vtk.serializers.mesh import mesh as mesh_vtk
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def has_capabilities(*features):
@@ -14,9 +20,8 @@ class Helper:
         try:  # defer need to paraview to support --www usecase
             from paraview import servermanager
             from paraview.modules.vtkPVClientWeb import vtkPVWebApplication
-            from vtkmodules.web.utils import mesh as mesh_vtk
         except ImportError:
-            print("ParaView is not available")
+            logger.exception("*** ERROR: ParaView is not available!")
         else:
             self._pv_core = vtkPVWebApplication()
             self._pv_core.SetImageEncoding(0)
@@ -109,13 +114,12 @@ class Helper:
     def configure_protocol(self, protocol):
         self._root_protocol = protocol
 
-        from paraview.web.protocols import (
-            ParaViewWebMouseHandler,
-            ParaViewWebViewPort,
-            ParaViewWebPublishImageDelivery,
+        from .protocols import (
             ParaViewWebLocalRendering,
+            ParaViewWebMouseHandler,
+            ParaViewWebPublishImageDelivery,
+            ParaViewWebViewPort,
         )
-        from ..vtk.addon_serializer import registerAddOnSerializers
 
         # Initialize vtk application helper
         self._root_protocol.setSharedObject("app", self._pv_core)
@@ -129,9 +133,6 @@ class Helper:
 
         # Remote rendering - geometry delivery
         self._root_protocol.registerLinkProtocol(ParaViewWebLocalRendering())
-
-        # Add custom serializer ahead of proper vtk integration
-        registerAddOnSerializers()
 
         # Mimic client interactor on server side
         from .core import apply_default_interaction_settings

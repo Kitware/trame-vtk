@@ -6,8 +6,8 @@ def apply_default_interaction_settings():
     pxm = servermanager.ProxyManager()
 
     # Update interaction mode
-    interactionProxy = pxm.GetProxy("settings", "RenderViewInteractionSettings")
-    interactionProxy.Camera3DManipulators = [
+    interaction_proxy = pxm.GetProxy("settings", "RenderViewInteractionSettings")
+    interaction_proxy.Camera3DManipulators = [
         "Rotate",
         "Pan",
         "Zoom",  # -
@@ -20,5 +20,5 @@ def apply_default_interaction_settings():
     ]
 
     # Custom rendering settings
-    renderingSettings = pxm.GetProxy("settings", "RenderViewSettings")
-    renderingSettings.LODThreshold = 102400
+    rendering_settings = pxm.GetProxy("settings", "RenderViewSettings")
+    rendering_settings.LODThreshold = 102400

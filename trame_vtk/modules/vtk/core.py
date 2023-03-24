@@ -11,7 +11,7 @@ class HybridView:
         still_quality=98,
     ):
         self._helper = helper
-        self._app = helper._app
+        self._app = helper._trame_server
         self._view = view
         self._view_id = self._helper.id(view)
 
