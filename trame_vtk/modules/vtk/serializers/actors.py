@@ -7,7 +7,6 @@ from .serialize import serialize
 from .utils import reference_id, rgb_float_to_hex, wrap_id
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 def generic_actor_serializer(parent, actor, actor_id, context, depth):

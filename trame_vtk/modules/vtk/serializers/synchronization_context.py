@@ -8,7 +8,6 @@ from vtkmodules.vtkCommonCore import vtkTypeUInt32Array
 from .utils import base64_encode, wrap_id
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 class SynchronizationContext:

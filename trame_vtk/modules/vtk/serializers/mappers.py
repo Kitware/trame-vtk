@@ -7,7 +7,6 @@ from .serialize import serialize
 from .utils import reference_id, wrap_id
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 def generic_mapper_serializer(parent, mapper, mapper_id, context, depth):

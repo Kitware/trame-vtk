@@ -3,7 +3,6 @@ import logging
 from .registry import class_name, SERIALIZERS
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 def serialize(parent, instance, instance_id, context, depth):
@@ -13,6 +12,6 @@ def serialize(parent, instance, instance_id, context, depth):
     if serializer:
         return serializer(parent, instance, instance_id, context, depth)
 
-    logger.error(f"!!!No serializer for {instance_type} with id {instance_id}")
+    logger.debug(f"!!!No serializer for {instance_type} with id {instance_id}")
 
     return None

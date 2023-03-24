@@ -4,7 +4,6 @@ from .serialize import serialize
 from .utils import reference_id, wrap_id
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 def texture_serializer(parent, texture, texture_id, context, depth):

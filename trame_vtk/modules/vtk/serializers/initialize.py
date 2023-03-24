@@ -30,7 +30,6 @@ from .render_windows import (
 from .textures import texture_serializer
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 def initialize_serializers():
