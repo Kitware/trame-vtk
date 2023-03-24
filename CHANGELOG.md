@@ -2,6 +2,20 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.0 (2023-03-24)
+### Feature
+* **protocols:** Copy protocols from VTK exactly ([`9fe3c26`](https://github.com/Kitware/trame-vtk/commit/9fe3c261bc78a8814e1f4bab37ac6df3977144d8))
+
+### Fix
+* **messages:** Only print no serializer warning once per instance type ([`65db322`](https://github.com/Kitware/trame-vtk/commit/65db3229b9b0d15183a3fa882a825b4a9ea745ea))
+* **logger:** Add environment variable for setting serializer log level ([`3c1614c`](https://github.com/Kitware/trame-vtk/commit/3c1614c82f47528e71de69916baa22961177c3d9))
+* **paraview:** Update mouse wheel to match VTK version ([`6f93186`](https://github.com/Kitware/trame-vtk/commit/6f931867e3b63aa59e03799495ade03c59b31abf))
+* **helper:** Update name to `_trame_server` ([`2b2b607`](https://github.com/Kitware/trame-vtk/commit/2b2b607da8abc3639b791c4411ffb22d9d3a147c))
+* **vue-vtk-js:** Upgrade to prevent client error on unmount ([`3a2acee`](https://github.com/Kitware/trame-vtk/commit/3a2aceececd6f70e2bc4e78c309b051723eb9d45))
+* **mouse_handler:** Only trigger animation registration on first "down" ([`88bac50`](https://github.com/Kitware/trame-vtk/commit/88bac500cbd3d6f3775a7cab9170c775a5683ff6))
+* **mouse_handler:** Apply a couple of fixes to mouse wheel event ([`45505ef`](https://github.com/Kitware/trame-vtk/commit/45505ef25bb76a4d04bddd9cecdc375999de9e1b))
+* **vue-vtk-js:** Update vue-vtk-js to the newest version ([`eb7310d`](https://github.com/Kitware/trame-vtk/commit/eb7310dd9e763b069de438ad33db3173965c2e81))
+
 ## v2.3.5 (2023-03-21)
 ### Fix
 * Axes serializer ([`cc2136d`](https://github.com/Kitware/trame-vtk/commit/cc2136df0d4ff850f25f791ffc76f3ae2ba10a92))
