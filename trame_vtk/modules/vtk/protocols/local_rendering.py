@@ -4,6 +4,7 @@ from ..serializers import (
     reference_id,
     initialize_serializers,
     serialize,
+    serialize_widget,
     SynchronizationContext,
 )
 from .web_protocol import vtkWebProtocol
@@ -87,7 +88,14 @@ class vtkWebLocalRendering(vtkWebProtocol):
 
     # RpcName: get_view_state => viewport.geometry.view.get.state
     @export_rpc("viewport.geometry.view.get.state")
-    def get_view_state(self, view_id, new_subscription=False):
+    def get_view_state(
+        self,
+        view_id,
+        new_subscription=False,
+        widgets=None,
+        orientation_axis=0,
+        **kwargs
+    ):
         s_view = self.get_view(view_id)
         if not s_view:
             return {"error": "Unable to get view with id %s" % view_id}
@@ -107,6 +115,17 @@ class vtkWebLocalRendering(vtkWebProtocol):
             "centerOfRotation": camera.GetFocalPoint(),
             "camera": reference_id(camera),
         }
+
+        # Handle widgets/behaviors
+        if widgets:
+            behaviors = {}
+            view_instance["behaviors"] = behaviors
+            for widget in widgets:
+                serialize_widget(behaviors, widget)
+        elif orientation_axis:
+            view_instance["behaviors"] = {
+                "autoOrientation": 1,
+            }
 
         self.context.set_ignore_last_dependencies(False)
         self.context.check_for_arrays_to_release()

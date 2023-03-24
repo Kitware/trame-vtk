@@ -461,15 +461,27 @@ class VtkRemoteLocalView(HtmlElement):
         # print("vtkCommand.EndInteractionEvent", vtkCommand.EndInteractionEvent)
         self.__view.GetInteractor().AddObserver(45, self._push_camera)
 
-    def update_geometry(self, reset_camera=False, **kwargs):
+    def update_geometry(
+        self, reset_camera=False, widgets=None, orientation_axis=0, **kwargs
+    ):
         """
         Force update to geometry
         """
         if self.server.protocol:
-            delta_state = MODULE.scene(self.__view, new_state=False)
+            delta_state = MODULE.scene(
+                self.__view,
+                new_state=False,
+                widgets=widgets,
+                orientation_axis=orientation_axis,
+            )
             self.server.protocol.publish("trame.vtk.delta", delta_state)
 
-        full_state = MODULE.scene(self.__view, new_state=True)
+        full_state = MODULE.scene(
+            self.__view,
+            new_state=True,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
+        )
         self.server.state[self.__scene_id] = full_state
 
     def update_image(self, reset_camera=False):
@@ -778,15 +790,25 @@ class VtkLocalView(HtmlElement):
         self.update()
         self._server.controller.on_server_ready.add(self.update)
 
-    def update(self, **kwargs):
+    def update(self, widgets=None, orientation_axis=0, **kwargs):
         """
         Force geometry to be pushed
         """
         if self.server.protocol:
-            delta_state = MODULE.scene(self.__view, new_state=False)
+            delta_state = MODULE.scene(
+                self.__view,
+                new_state=False,
+                widgets=widgets,
+                orientation_axis=orientation_axis,
+            )
             self.server.protocol.publish("trame.vtk.delta", delta_state)
 
-        full_state = MODULE.scene(self.__view, new_state=True)
+        full_state = MODULE.scene(
+            self.__view,
+            new_state=True,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
+        )
         self.server.state[self.__scene_id] = full_state
 
     def reset_camera(self, **kwargs):

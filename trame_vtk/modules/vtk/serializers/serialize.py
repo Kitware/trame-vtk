@@ -21,3 +21,8 @@ def serialize(parent, instance, instance_id, context, depth):
         NO_SERIALIZER_FOR_INSTANCE[instance_type] = instance_id
 
     return None
+
+
+def serialize_widget(dict_out, widget):
+    instance_type = class_name(widget)
+    logger.debug(f"Widget serialization {instance_type}")
