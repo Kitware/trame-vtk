@@ -1,4 +1,5 @@
 import base64
+import math
 import time
 
 from paraview import simple
@@ -587,28 +588,58 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
 
     @export_rpc("viewport.mouse.zoom.wheel")
     def update_zoom_from_wheel(self, event):
+        view_proxy = self.get_view(event["view"])
+
+        if not view_proxy:
+            return
+
+        interactor = view_proxy.GetInteractor()
+        if not interactor:
+            # Can't do anything.
+            return
+
+        if "x" in event and "y" in event and interactor.GetRenderWindow():
+            # Set the mouse position, so that if there are multiple
+            # renderers, the interactor can figure out which one should
+            # be modified.
+            view_size = interactor.GetRenderWindow().GetSize()
+            pos_x = math.floor(view_size[0] * event["x"] + 0.5)
+            pos_y = math.floor(view_size[1] * event["y"] + 0.5)
+
+            interactor.SetEventPosition(pos_x, pos_y)
+            interactor.MouseMoveEvent()
+
         if "Start" in event["type"]:
             self.app.InvokeEvent("StartInteractionEvent")
-
-        view_proxy = self.get_view(event["view"])
-        if view_proxy and "spinY" in event:
-            root_id = view_proxy.GetGlobalIDAsString()
-            zoom_factor = 1.0 - event["spinY"] / 10.0
-
-            fp = view_proxy.CameraFocalPoint
-            pos = view_proxy.CameraPosition
-            delta = [fp[i] - pos[i] for i in range(3)]
-            view_proxy.GetActiveCamera().Zoom(zoom_factor)
-            view_proxy.UpdatePropertyInformation()
-            pos2 = view_proxy.CameraPosition
-            view_proxy.CameraFocalPoint = [pos2[i] + delta[i] for i in range(3)]
-
-            if root_id in self.linked_views:
-                dst_views = [self.get_view(vid) for vid in self.linked_views]
-                _push_camera_link(view_proxy, dst_views)
+            # It seems every time a StartInteractionEvent is sent, a
+            # mouse wheel event with the same spin is sent afterward. We
+            # don't want to zoom twice, so do not perform a zoom on the
+            # StartInteractionEvent.
+            return
 
         if "End" in event["type"]:
             self.app.InvokeEvent("EndInteractionEvent")
+            # This is done
+            return
+
+        spin_y = event.get("spinY", 0)
+        direction = "Backward" if spin_y >= 0 else "Forward"
+        method = getattr(interactor, f"MouseWheel{direction}Event")
+
+        style = interactor.GetInteractorStyle()
+        prev_motion_factor = style.GetMouseWheelMotionFactor()
+        style.SetMouseWheelMotionFactor(prev_motion_factor * abs(spin_y))
+        try:
+            method()
+        finally:
+            style.SetMouseWheelMotionFactor(prev_motion_factor)
+
+        view_proxy.UpdatePropertyInformation()
+
+        root_id = view_proxy.GetGlobalIDAsString()
+        if root_id in self.linked_views:
+            dst_views = [self.get_view(vid) for vid in self.linked_views]
+            _push_camera_link(view_proxy, dst_views)
 
 
 CAMERA_PROP_NAMES = [

@@ -108,7 +108,7 @@ class vtkWebMouseHandler(vtkWebProtocol):
 
         style = interactor.GetInteractorStyle()
         prev_motion_factor = style.GetMouseWheelMotionFactor()
-        style.SetMouseWheelMotionFactor(abs(spin_y))
+        style.SetMouseWheelMotionFactor(prev_motion_factor * abs(spin_y))
         try:
             method()
         finally:
