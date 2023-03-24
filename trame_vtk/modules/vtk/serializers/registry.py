@@ -1,6 +1,5 @@
 SERIALIZERS = {}
 JS_CLASS_MAPPING = {}
-context = None
 
 
 def register_instance_serializer(name, method):
