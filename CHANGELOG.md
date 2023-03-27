@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.1 (2023-03-27)
+### Fix
+* **paraview:** Fix protocol ([`b72425c`](https://github.com/Kitware/trame-vtk/commit/b72425cdde30344b15cebf8dd1b11aa62701176f))
+
 ## v2.4.0 (2023-03-24)
 ### Feature
 * **protocols:** Copy protocols from VTK exactly ([`9fe3c26`](https://github.com/Kitware/trame-vtk/commit/9fe3c261bc78a8814e1f4bab37ac6df3977144d8))
