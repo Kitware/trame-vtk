@@ -74,7 +74,7 @@ class Helper:
 
         if reset_camera:
             self._trame_server.protocol_call(
-                "viewport.camera.reset", {"view": self.id(render_window)}
+                "viewport.camera.reset", self.id(render_window)
             )
 
         return self._trame_server.protocol_call(

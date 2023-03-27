@@ -12,9 +12,9 @@ def has_capabilities(*features):
 
 
 class Helper:
-    def __init__(self, app):
+    def __init__(self, trame_server):
         self._root_protocol = None
-        self._app = app
+        self._trame_server = trame_server
         self._hybrid_views = {}
 
         try:  # defer need to paraview to support --www usecase
@@ -29,7 +29,7 @@ class Helper:
             self._mesh_vtk = mesh_vtk
 
             # Link our custom protocols initialization
-            app.add_protocol_to_configure(self.configure_protocol)
+            trame_server.add_protocol_to_configure(self.configure_protocol)
 
     def id(self, pv_proxy):
         if pv_proxy:
@@ -67,7 +67,7 @@ class Helper:
         finally:
             view_proxy.SuppressRendering = tmp
 
-        return self._app.protocol_call(
+        return self._trame_server.protocol_call(
             "viewport.geometry.view.get.state", self.id(view_proxy), new_state
         )
 
@@ -76,11 +76,11 @@ class Helper:
             view_proxy.EnableRenderOnInteraction = 0
 
         if reset_camera:
-            self._app.protocol_call(
-                "viewport.camera.reset", {"view": self.id(view_proxy)}
+            self._trame_server.protocol_call(
+                "viewport.camera.reset", self.id(view_proxy)
             )
 
-        return self._app.protocol_call(
+        return self._trame_server.protocol_call(
             "viewport.image.push", {"view": self.id(view_proxy)}
         )
 
@@ -180,9 +180,9 @@ class Helper:
 HELPER = None
 
 
-def setup(app, **kwargs):
+def setup(trame_server, **kwargs):
     global HELPER
-    HELPER = Helper(app)
+    HELPER = Helper(trame_server)
 
 
 # -----------------------------------------------------------------------------
