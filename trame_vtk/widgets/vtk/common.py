@@ -722,7 +722,7 @@ class VtkLocalView(HtmlElement):
     ... )
     """
 
-    def __init__(self, view, ref="view", **kwargs):
+    def __init__(self, view, ref="view", widgets=[], **kwargs):
         super().__init__("vtk-local-view", **kwargs)
 
         activate_module_for(self.server, view)
@@ -734,6 +734,7 @@ class VtkLocalView(HtmlElement):
         self.__ref = ref
         self._attributes["ref"] = f'ref="{ref}"'
         self._attributes["view_state"] = f':viewState="{self.__scene_id}"'
+        self._widgets = widgets
 
         self._attr_names += [
             ("interactor_events", "interactorEvents"),
@@ -790,6 +791,13 @@ class VtkLocalView(HtmlElement):
         self.update()
         self._server.controller.on_server_ready.add(self.update)
 
+    def get_widgets(self):
+        return self._widgets
+
+    def set_widgets(self, value):
+        self._widgets = value
+        self.update()
+
     def update(self, widgets=None, orientation_axis=0, **kwargs):
         """
         Force geometry to be pushed
@@ -802,6 +810,9 @@ class VtkLocalView(HtmlElement):
                 orientation_axis=orientation_axis,
             )
             self.server.protocol.publish("trame.vtk.delta", delta_state)
+
+        if widgets is None:
+            widgets = self._widgets
 
         full_state = MODULE.scene(
             self.__view,
