@@ -349,7 +349,7 @@ class VtkRemoteLocalView(HtmlElement):
     ... )
     """
 
-    def __init__(self, view, enable_rendering=True, **kwargs):
+    def __init__(self, view, enable_rendering=True, widgets=[], **kwargs):
         super().__init__("vtk-remote-local-view", **kwargs)
 
         activate_module_for(self.server, view)
@@ -363,6 +363,7 @@ class VtkRemoteLocalView(HtmlElement):
         self.__ref = kwargs.get("ref", __ns)
         self.__rendering = enable_rendering
         self.__namespace = __ns
+        self._widgets = widgets
 
         # !!! HACK !!!
         # Allow user to configure view mode by providing (..., local/remote) and or "local/remote"
@@ -476,6 +477,9 @@ class VtkRemoteLocalView(HtmlElement):
             )
             self.server.protocol.publish("trame.vtk.delta", delta_state)
 
+        if widgets is None:
+            widgets = self._widgets
+
         full_state = MODULE.scene(
             self.__view,
             new_state=True,
@@ -496,11 +500,15 @@ class VtkRemoteLocalView(HtmlElement):
     def set_remote_rendering(self, remote=True, **kwargs):
         self.server.state[self.__mode_key] = "remote" if remote else "local"
 
-    def update(self, reset_camera=False, **kwargs):
+    def update(self, reset_camera=False, widgets=None, orientation_axis=0, **kwargs):
         # need to do both to keep things in sync
         if self.__rendering:
             self.update_image(reset_camera)
-        self.update_geometry()
+        self.update_geometry(
+            reset_camera=reset_camera,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
+        )
 
         if reset_camera:
             self.server.js_call(
@@ -570,6 +578,13 @@ class VtkRemoteLocalView(HtmlElement):
             format,
             opts,
         )
+
+    def get_widgets(self):
+        return self._widgets
+
+    def set_widgets(self, value):
+        self._widgets = value
+        self.update_geometry()
 
 
 class VtkRemoteView(HtmlElement):
