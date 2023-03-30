@@ -22,6 +22,23 @@ plotter.reset_camera()
 plotter.add_axes()
 axes_widget = plotter.renderer.axes_widget
 
+views = []
+
+
+def update_views():
+    for view in views:
+        view.update()
+
+
+@state.change("show_widget")
+def toggle_axes_widget(show_widget, **kwargs):
+    if show_widget:
+        plotter.renderer.show_axes()
+    else:
+        plotter.renderer.hide_axes()
+    update_views()
+
+
 # -----------------------------------------------------------------------------
 # GUI
 # -----------------------------------------------------------------------------
@@ -32,6 +49,15 @@ with SinglePageLayout(server) as layout:
 
     with layout.toolbar:
         vuetify.VSpacer()
+
+        vuetify.VCheckbox(
+            v_model=("show_widget", True),
+            on_icon="mdi-axis-arrow-info",
+            off_icon="mdi-axis-arrow-info",
+            dense=True,
+            hide_details=True,
+            classes="my-0 py-0 ml-1",
+        )
 
     with layout.content:
         with vuetify.VContainer(
@@ -46,10 +72,12 @@ with SinglePageLayout(server) as layout:
                 ctrl.view_reset_camera.add(view.reset_camera)
                 ctrl.view_widgets_set = view.set_widgets
                 view.set_widgets([axes_widget])  # or at constructor
+                views.append(view)
 
             with vuetify.VCol(classes="fill-height"):
                 view = VtkRemoteView(plotter.ren_win, ref="remote")
                 ctrl.view_reset_camera.add(view.reset_camera)
+                views.append(view)
 
     # hide footer
     layout.footer.hide()

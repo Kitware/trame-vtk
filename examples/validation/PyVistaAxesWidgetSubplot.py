@@ -29,6 +29,33 @@ plotter.reset_camera()
 plotter.add_axes()
 axes_widget_1 = plotter.renderer.axes_widget
 
+views = []
+
+
+def update_views():
+    for view in views:
+        view.update()
+
+
+@state.change("show_widget_a")
+def toggle_axes_widget_a(show_widget_a, **kwargs):
+    plotter.subplot(0, 0)
+    if show_widget_a:
+        plotter.renderer.show_axes()
+    else:
+        plotter.renderer.hide_axes()
+    update_views()
+
+
+@state.change("show_widget_b")
+def toggle_axes_widget_b(show_widget_b, **kwargs):
+    plotter.subplot(0, 1)
+    if show_widget_b:
+        plotter.renderer.show_axes()
+    else:
+        plotter.renderer.hide_axes()
+    update_views()
+
 
 # -----------------------------------------------------------------------------
 # GUI
@@ -41,6 +68,24 @@ with SinglePageLayout(server) as layout:
     with layout.toolbar:
         vuetify.VSpacer()
 
+        vuetify.VCheckbox(
+            v_model=("show_widget_a", True),
+            on_icon="mdi-axis-arrow-info",
+            off_icon="mdi-axis-arrow-info",
+            dense=True,
+            hide_details=True,
+            classes="my-0 py-0 ml-1",
+        )
+
+        vuetify.VCheckbox(
+            v_model=("show_widget_b", True),
+            on_icon="mdi-axis-arrow-info",
+            off_icon="mdi-axis-arrow-info",
+            dense=True,
+            hide_details=True,
+            classes="my-0 py-0 ml-1",
+        )
+
     with layout.content:
         with vuetify.VContainer(
             fluid=True,
@@ -51,9 +96,11 @@ with SinglePageLayout(server) as layout:
                 ctrl.view_update = view.update
                 ctrl.view_reset_camera.add(view.reset_camera)
                 view.set_widgets([axes_widget_0, axes_widget_1])  # or at constructor
+                views.append(view)
             with vuetify.VCol(classes="fill-height"):
                 view = VtkRemoteView(plotter.ren_win, ref="remote")
                 ctrl.view_reset_camera.add(view.reset_camera)
+                views.append(view)
 
     # hide footer
     layout.footer.hide()
