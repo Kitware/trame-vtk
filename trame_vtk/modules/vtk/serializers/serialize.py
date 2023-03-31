@@ -1,6 +1,7 @@
 import logging
 
 from .registry import class_name, SERIALIZERS
+from .widgets import handle_widget
 
 logger = logging.getLogger(__name__)
 
@@ -21,3 +22,7 @@ def serialize(parent, instance, instance_id, context, depth):
         NO_SERIALIZER_FOR_INSTANCE[instance_type] = instance_id
 
     return None
+
+
+def serialize_widget(dict_out, widget):
+    handle_widget(dict_out, widget)

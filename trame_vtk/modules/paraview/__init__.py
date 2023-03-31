@@ -58,7 +58,9 @@ class Helper:
             cell_arrays=cell_arrays,
         )
 
-    def scene(self, view_proxy, new_state=False):
+    def scene(
+        self, view_proxy, new_state=False, widgets=None, orientation_axis=0, **kwargs
+    ):
         # flush data without requiring a render/picture
         tmp = view_proxy.SuppressRendering
         view_proxy.SuppressRendering = 1
@@ -67,8 +69,12 @@ class Helper:
         finally:
             view_proxy.SuppressRendering = tmp
 
-        return self._trame_server.protocol_call(
-            "viewport.geometry.view.get.state", self.id(view_proxy), new_state
+        return self._app.protocol_call(
+            "viewport.geometry.view.get.state",
+            self.id(view_proxy),
+            new_state,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
         )
 
     def push_image(self, view_proxy, reset_camera=False):

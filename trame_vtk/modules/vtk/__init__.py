@@ -63,9 +63,15 @@ class Helper:
             cell_arrays=cell_arrays,
         )
 
-    def scene(self, render_window, new_state=False):
+    def scene(
+        self, render_window, new_state=False, widgets=None, orientation_axis=0, **kwargs
+    ):
         return self._trame_server.protocol_call(
-            "viewport.geometry.view.get.state", self.id(render_window), new_state
+            "viewport.geometry.view.get.state",
+            self.id(render_window),
+            new_state,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
         )
 
     def push_image(self, render_window, reset_camera=False):
@@ -201,8 +207,12 @@ def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
     return HELPER.mesh(dataset, field_to_keep, point_arrays, cell_arrays)
 
 
-def scene(render_window, reset_camera=False, new_state=True):
-    scene_state = HELPER.scene(render_window, new_state)
+def scene(
+    render_window, reset_camera=False, new_state=True, widgets=None, orientation_axis=0
+):
+    scene_state = HELPER.scene(
+        render_window, new_state, widgets=widgets, orientation_axis=orientation_axis
+    )
     if reset_camera:
         scene_state.setdefault("extra", {})["resetCamera"] = 1
     return scene_state
