@@ -2,6 +2,20 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.2 (2023-03-31)
+### Fix
+* **vue-vtk-js:** Bump version of vue-vtk-js ([`11c14b9`](https://github.com/Kitware/trame-vtk/commit/11c14b9b19a6fe1d8019c63c2d94806caf438954))
+* **widgets:** Use proper order initialization ([`f3c0505`](https://github.com/Kitware/trame-vtk/commit/f3c05053a81786fc1627cd55f5a360b580c52a10))
+* **VtkRemoteLocalView:** Add support for widgets ([`79d106a`](https://github.com/Kitware/trame-vtk/commit/79d106ac2ffb432517bef8f57d80551ff699466d))
+* **behavior:** Implement handler for vtkOrientationMarkerWidget ([`01e035f`](https://github.com/Kitware/trame-vtk/commit/01e035ff6f8f3fd52717b627f6db57961f4debc1))
+* **LocalView:** Add infrastructure to support behaviors ([`26e1945`](https://github.com/Kitware/trame-vtk/commit/26e194535c2e5ca910ebc053b16bd7abacd91cbe))
+
+### Documentation
+* **examples:** Simplify code ([`b9afcea`](https://github.com/Kitware/trame-vtk/commit/b9afceadd32a565aef380ec148a05d014e115687))
+* **examples:** Add button toggles for widgets ([`ed307b3`](https://github.com/Kitware/trame-vtk/commit/ed307b32b888e9698e87f5f6af14b5f3cb2e4d8f))
+* **examples:** Update the widget ones ([`cdda471`](https://github.com/Kitware/trame-vtk/commit/cdda471df5c2364e7359c2d6533ffcd4e4b38cf0))
+* **examples:** Add pyvista axes widget examples ([`b1598f6`](https://github.com/Kitware/trame-vtk/commit/b1598f61c6a53d77acd5688026560069153e6886))
+
 ## v2.4.1 (2023-03-27)
 ### Fix
 * **paraview:** Fix protocol ([`b72425c`](https://github.com/Kitware/trame-vtk/commit/b72425cdde30344b15cebf8dd1b11aa62701176f))
