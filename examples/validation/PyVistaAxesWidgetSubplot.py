@@ -29,13 +29,6 @@ plotter.reset_camera()
 plotter.add_axes()
 axes_widget_1 = plotter.renderer.axes_widget
 
-views = []
-
-
-def update_views():
-    for view in views:
-        view.update()
-
 
 @state.change("show_widget_a")
 def toggle_axes_widget_a(show_widget_a, **kwargs):
@@ -44,7 +37,7 @@ def toggle_axes_widget_a(show_widget_a, **kwargs):
         plotter.renderer.show_axes()
     else:
         plotter.renderer.hide_axes()
-    update_views()
+    ctrl.view_update()
 
 
 @state.change("show_widget_b")
@@ -54,7 +47,7 @@ def toggle_axes_widget_b(show_widget_b, **kwargs):
         plotter.renderer.show_axes()
     else:
         plotter.renderer.hide_axes()
-    update_views()
+    ctrl.view_update()
 
 
 # -----------------------------------------------------------------------------
@@ -93,14 +86,14 @@ with SinglePageLayout(server) as layout:
         ):
             with vuetify.VCol(classes="fill-height"):
                 view = VtkLocalView(plotter.ren_win, ref="local")
-                ctrl.view_update = view.update
+                ctrl.view_update.add(view.update)
                 ctrl.view_reset_camera.add(view.reset_camera)
                 view.set_widgets([axes_widget_0, axes_widget_1])  # or at constructor
-                views.append(view)
+
             with vuetify.VCol(classes="fill-height"):
                 view = VtkRemoteView(plotter.ren_win, ref="remote")
+                ctrl.view_update.add(view.update)
                 ctrl.view_reset_camera.add(view.reset_camera)
-                views.append(view)
 
     # hide footer
     layout.footer.hide()
