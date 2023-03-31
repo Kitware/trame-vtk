@@ -468,6 +468,9 @@ class VtkRemoteLocalView(HtmlElement):
         """
         Force update to geometry
         """
+        if widgets is None:
+            widgets = self._widgets
+
         if self.server.protocol:
             delta_state = MODULE.scene(
                 self.__view,
@@ -476,9 +479,6 @@ class VtkRemoteLocalView(HtmlElement):
                 orientation_axis=orientation_axis,
             )
             self.server.protocol.publish("trame.vtk.delta", delta_state)
-
-        if widgets is None:
-            widgets = self._widgets
 
         full_state = MODULE.scene(
             self.__view,
@@ -817,6 +817,9 @@ class VtkLocalView(HtmlElement):
         """
         Force geometry to be pushed
         """
+        if widgets is None:
+            widgets = self._widgets
+
         if self.server.protocol:
             delta_state = MODULE.scene(
                 self.__view,
@@ -825,9 +828,6 @@ class VtkLocalView(HtmlElement):
                 orientation_axis=orientation_axis,
             )
             self.server.protocol.publish("trame.vtk.delta", delta_state)
-
-        if widgets is None:
-            widgets = self._widgets
 
         full_state = MODULE.scene(
             self.__view,
