@@ -5,6 +5,7 @@ from ..serializers import (
     initialize_serializers,
     serialize,
     serialize_widget,
+    extract_array_hash,
     SynchronizationContext,
 )
 from .web_protocol import vtkWebProtocol
@@ -134,3 +135,21 @@ class vtkWebLocalRendering(vtkWebProtocol):
             return view_instance
 
         return None
+
+    @export_rpc("viewport.geometry.view.get.export")
+    def get_standalone_state(self, view_id, widgets=None, orientation_axis=0, **kwargs):
+        scene_description = self.get_view_state(
+            view_id,
+            new_subscription=True,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
+            **kwargs,
+        )
+        hashes = {}
+        for entry in extract_array_hash(scene_description):
+            data_hash = entry.get("hash")
+            hashes[data_hash] = dict(
+                **entry, content=self.context.get_cached_data_array(data_hash, False)
+            )
+
+        return dict(hashes=hashes, scene=scene_description)

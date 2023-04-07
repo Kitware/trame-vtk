@@ -3,6 +3,8 @@ import logging
 from .registry import class_name, SERIALIZERS
 from .widgets import handle_widget
 
+__all__ = ["serialize", "serialize_widget"]
+
 logger = logging.getLogger(__name__)
 
 # Keep track of which warnings have been printed

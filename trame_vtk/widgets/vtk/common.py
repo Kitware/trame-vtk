@@ -1,5 +1,17 @@
+import io
+import json
+import zipfile
+
 from trame_client.widgets.core import AbstractElement
+
 from trame_vtk.modules import common
+
+try:
+    import zlib  # noqa
+
+    ZIP_COMPRESSION = zipfile.ZIP_DEFLATED
+except ImportError:
+    ZIP_COMPRESSION = zipfile.ZIP_STORED
 
 MODULE = None
 
@@ -488,6 +500,34 @@ class VtkRemoteLocalView(HtmlElement):
         )
         self.server.state[self.__scene_id] = full_state
 
+    def export_geometry(self, widgets=None, orientation_axis=0, format="zip", **kwargs):
+        """Export standalone scene for OfflineViewer
+
+        :param format: Can be either be "zip" or "json".
+        """
+        encoded_data = None
+
+        if widgets is None:
+            widgets = self._widgets
+
+        if self.server.protocol:
+            encoded_data = MODULE.export(
+                self.__view,
+                widgets=widgets,
+                orientation_axis=orientation_axis,
+            )
+
+        if encoded_data:
+            json_out = json.dumps(encoded_data)
+            if format == "json":
+                return json_out.encode(encoding="UTF-8", errors="strict")
+
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, "a") as zfile:
+                zfile.writestr("index.json", json_out, compress_type=ZIP_COMPRESSION)
+
+            return zip_buffer.getvalue()
+
     def update_image(self, reset_camera=False):
         """
         Force update to image
@@ -836,6 +876,34 @@ class VtkLocalView(HtmlElement):
             orientation_axis=orientation_axis,
         )
         self.server.state[self.__scene_id] = full_state
+
+    def export(self, widgets=None, orientation_axis=0, format="zip", **kwargs):
+        """Export standalone scene for OfflineViewer
+
+        :param format: Can be either be "zip" or "json".
+        """
+        encoded_data = None
+
+        if widgets is None:
+            widgets = self._widgets
+
+        if self.server.protocol:
+            encoded_data = MODULE.export(
+                self.__view,
+                widgets=widgets,
+                orientation_axis=orientation_axis,
+            )
+
+        if encoded_data:
+            json_out = json.dumps(encoded_data)
+            if format == "json":
+                return json_out.encode(encoding="UTF-8", errors="strict")
+
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, "a") as zfile:
+                zfile.writestr("index.json", json_out, compress_type=ZIP_COMPRESSION)
+
+            return zip_buffer.getvalue()
 
     def reset_camera(self, **kwargs):
         """

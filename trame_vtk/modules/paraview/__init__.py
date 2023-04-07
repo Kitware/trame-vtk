@@ -77,6 +77,14 @@ class Helper:
             orientation_axis=orientation_axis,
         )
 
+    def export(self, render_window, widgets=None, orientation_axis=0, **kwargs):
+        return self._trame_server.protocol_call(
+            "viewport.geometry.view.get.export",
+            self.id(render_window),
+            widgets=widgets,
+            orientation_axis=orientation_axis,
+        )
+
     def push_image(self, view_proxy, reset_camera=False):
         if view_proxy.EnableRenderOnInteraction:
             view_proxy.EnableRenderOnInteraction = 0
@@ -213,6 +221,12 @@ def scene(render_window, reset_camera=False, new_state=True):
     if reset_camera:
         scene_state.setdefault("extra", {})["resetCamera"] = 1
     return scene_state
+
+
+def export(render_window, widgets=None, orientation_axis=0):
+    return HELPER.export(
+        render_window, widgets=widgets, orientation_axis=orientation_axis
+    )
 
 
 def push_image(render_window, reset_camera=False):

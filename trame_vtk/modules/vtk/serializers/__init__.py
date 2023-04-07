@@ -4,6 +4,7 @@ import os
 from .mesh import mesh
 from .initialize import initialize_serializers
 from .serialize import serialize, serialize_widget
+from .export import extract_array_hash
 from .synchronization_context import SynchronizationContext
 from .utils import reference_id
 
@@ -22,4 +23,5 @@ __all__ = [
     "serialize",
     "SynchronizationContext",
     "serialize_widget",
+    "extract_array_hash",
 ]
