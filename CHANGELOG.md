@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.3 (2023-04-07)
+### Fix
+* **export:** Add export for VtkLocalView ([`b58ccf4`](https://github.com/Kitware/trame-vtk/commit/b58ccf4109b25f567cac0f8f1185ab71e00c14dc))
+
 ## v2.4.2 (2023-03-31)
 ### Fix
 * **vue-vtk-js:** Bump version of vue-vtk-js ([`11c14b9`](https://github.com/Kitware/trame-vtk/commit/11c14b9b19a6fe1d8019c63c2d94806caf438954))
