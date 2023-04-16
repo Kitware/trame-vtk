@@ -1,4 +1,9 @@
 def handle_property(hash_list, prop_value):
+    if isinstance(prop_value, list):
+        for item in prop_value:
+            handle_property(hash_list, item)
+        return
+
     if not isinstance(prop_value, dict):
         return
 
