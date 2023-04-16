@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.4 (2023-04-16)
+### Fix
+* **export:** Handle fields for offline rendering ([`8b9920f`](https://github.com/Kitware/trame-vtk/commit/8b9920fdc7328d8fa20bd3d6c3d2566f1175d883))
+* **ParaView:** Add missing widgets args in scene ([`47c4f0e`](https://github.com/Kitware/trame-vtk/commit/47c4f0efc3ad2feed4a12901a33e1442aab15b29))
+
+### Documentation
+* **pv:** Add paraview validation example ([`9146694`](https://github.com/Kitware/trame-vtk/commit/914669478cb2ba088131d8da81ddc287003afb23))
+
 ## v2.4.3 (2023-04-07)
 ### Fix
 * **export:** Add export for VtkLocalView ([`b58ccf4`](https://github.com/Kitware/trame-vtk/commit/b58ccf4109b25f567cac0f8f1185ab71e00c14dc))
