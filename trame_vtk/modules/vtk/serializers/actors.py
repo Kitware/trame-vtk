@@ -5,6 +5,7 @@ from vtkmodules.vtkCommonMath import vtkMatrix4x4
 from .registry import class_name
 from .serialize import serialize
 from .utils import reference_id, rgb_float_to_hex, wrap_id
+from .cache import cache_properties
 
 logger = logging.getLogger(__name__)
 
@@ -64,20 +65,24 @@ def generic_actor_serializer(parent, actor, actor_id, context, depth):
             "parent": reference_id(parent),
             "id": actor_id,
             "type": class_name(actor),
-            "properties": {
-                # vtkProp
-                "visibility": actor_visibility,
-                "pickable": actor.GetPickable(),
-                "dragable": actor.GetDragable(),
-                "useBounds": actor.GetUseBounds(),
-                # vtkProp3D
-                "origin": actor.GetOrigin(),
-                "position": actor.GetPosition(),
-                "scale": actor.GetScale(),
-                # vtkActor
-                "forceOpaque": actor.GetForceOpaque(),
-                "forceTranslucent": actor.GetForceTranslucent(),
-            },
+            "properties": cache_properties(
+                actor_id,
+                context,
+                {
+                    # vtkProp
+                    "visibility": actor_visibility,
+                    "pickable": actor.GetPickable(),
+                    "dragable": actor.GetDragable(),
+                    "useBounds": actor.GetUseBounds(),
+                    # vtkProp3D
+                    "origin": actor.GetOrigin(),
+                    "position": actor.GetPosition(),
+                    "scale": actor.GetScale(),
+                    # vtkActor
+                    "forceOpaque": actor.GetForceOpaque(),
+                    "forceTranslucent": actor.GetForceTranslucent(),
+                },
+            ),
             "calls": calls,
             "dependencies": dependencies,
         }
@@ -143,39 +148,43 @@ def cube_axes_serializer(parent, actor, actor_id, context, depth):
         "parent": reference_id(parent),
         "id": actor_id,
         "type": "vtkCubeAxesActor",
-        "properties": {
-            # vtkProp
-            "visibility": actor.GetVisibility(),
-            "pickable": actor.GetPickable(),
-            "dragable": actor.GetDragable(),
-            "useBounds": actor.GetUseBounds(),
-            # vtkProp3D
-            "origin": actor.GetOrigin(),
-            "position": actor.GetPosition(),
-            "scale": actor.GetScale(),
-            # vtkActor
-            "forceOpaque": actor.GetForceOpaque(),
-            "forceTranslucent": actor.GetForceTranslucent(),
-            # vtkCubeAxesActor
-            "dataBounds": actor.GetBounds(),
-            "faceVisibilityAngle": 8,
-            "gridLines": True,
-            "axisLabels": axis_labels,
-            "axisTitlePixelOffset": 35.0,
-            "axisTextStyle": {
-                "fontColor": text_color,
-                "fontStyle": "normal",
-                "fontSize": 18,
-                "fontFamily": "serif",
+        "properties": cache_properties(
+            actor_id,
+            context,
+            {
+                # vtkProp
+                "visibility": actor.GetVisibility(),
+                "pickable": actor.GetPickable(),
+                "dragable": actor.GetDragable(),
+                "useBounds": actor.GetUseBounds(),
+                # vtkProp3D
+                "origin": actor.GetOrigin(),
+                "position": actor.GetPosition(),
+                "scale": actor.GetScale(),
+                # vtkActor
+                "forceOpaque": actor.GetForceOpaque(),
+                "forceTranslucent": actor.GetForceTranslucent(),
+                # vtkCubeAxesActor
+                "dataBounds": actor.GetBounds(),
+                "faceVisibilityAngle": 8,
+                "gridLines": True,
+                "axisLabels": axis_labels,
+                "axisTitlePixelOffset": 35.0,
+                "axisTextStyle": {
+                    "fontColor": text_color,
+                    "fontStyle": "normal",
+                    "fontSize": 18,
+                    "fontFamily": "serif",
+                },
+                "tickLabelPixelOffset": 12.0,
+                "tickTextStyle": {
+                    "fontColor": text_color,
+                    "fontStyle": "normal",
+                    "fontSize": 14,
+                    "fontFamily": "serif",
+                },
             },
-            "tickLabelPixelOffset": 12.0,
-            "tickTextStyle": {
-                "fontColor": text_color,
-                "fontStyle": "normal",
-                "fontSize": 14,
-                "fontFamily": "serif",
-            },
-        },
+        ),
         "calls": calls,
         "dependencies": dependencies,
     }
@@ -221,42 +230,50 @@ def scalar_bar_actor_serializer(parent, actor, actor_id, context, depth):
         "parent": reference_id(parent),
         "id": actor_id,
         "type": "vtkScalarBarActor",
-        "properties": {
-            # vtkProp
-            "visibility": actor.GetVisibility(),
-            "pickable": actor.GetPickable(),
-            "dragable": actor.GetDragable(),
-            "useBounds": actor.GetUseBounds(),
-            # vtkActor2D
-            # "position": actor.GetPosition(),
-            # "position2": actor.GetPosition2(),
-            # "width": actor.GetWidth(),
-            # "height": actor.GetHeight(),
-            # vtkScalarBarActor
-            "automated": True,
-            "axisLabel": axis_label,
-            # 'bar_position': [0, 0],
-            # 'bar_size': [0, 0],
-            "boxPosition": [0.88, -0.92],
-            "boxSize": [width, height],
-            "axisTitlePixelOffset": 36.0,
-            "axisTextStyle": {
-                "fontColor": rgb_float_to_hex(*actor.GetTitleTextProperty().GetColor()),
-                "fontStyle": "normal",
-                "fontSize": 18,
-                "fontFamily": "serif",
+        "properties": cache_properties(
+            actor_id,
+            context,
+            {
+                # vtkProp
+                "visibility": actor.GetVisibility(),
+                "pickable": actor.GetPickable(),
+                "dragable": actor.GetDragable(),
+                "useBounds": actor.GetUseBounds(),
+                # vtkActor2D
+                # "position": actor.GetPosition(),
+                # "position2": actor.GetPosition2(),
+                # "width": actor.GetWidth(),
+                # "height": actor.GetHeight(),
+                # vtkScalarBarActor
+                "automated": True,
+                "axisLabel": axis_label,
+                # 'bar_position': [0, 0],
+                # 'bar_size': [0, 0],
+                "boxPosition": [0.88, -0.92],
+                "boxSize": [width, height],
+                "axisTitlePixelOffset": 36.0,
+                "axisTextStyle": {
+                    "fontColor": rgb_float_to_hex(
+                        *actor.GetTitleTextProperty().GetColor()
+                    ),
+                    "fontStyle": "normal",
+                    "fontSize": 18,
+                    "fontFamily": "serif",
+                },
+                "tickLabelPixelOffset": 14.0,
+                "tickTextStyle": {
+                    "fontColor": rgb_float_to_hex(
+                        *actor.GetTitleTextProperty().GetColor()
+                    ),
+                    "fontStyle": "normal",
+                    "fontSize": 14,
+                    "fontFamily": "serif",
+                },
+                "drawNanAnnotation": actor.GetDrawNanAnnotation(),
+                "drawBelowRangeSwatch": actor.GetDrawBelowRangeSwatch(),
+                "drawAboveRangeSwatch": actor.GetDrawAboveRangeSwatch(),
             },
-            "tickLabelPixelOffset": 14.0,
-            "tickTextStyle": {
-                "fontColor": rgb_float_to_hex(*actor.GetTitleTextProperty().GetColor()),
-                "fontStyle": "normal",
-                "fontSize": 14,
-                "fontFamily": "serif",
-            },
-            "drawNanAnnotation": actor.GetDrawNanAnnotation(),
-            "drawBelowRangeSwatch": actor.GetDrawBelowRangeSwatch(),
-            "drawAboveRangeSwatch": actor.GetDrawAboveRangeSwatch(),
-        },
+        ),
         "calls": calls,
         "dependencies": dependencies,
     }
@@ -310,41 +327,45 @@ def axes_actor_serializer(parent, actor, actor_id, context, depth):
         "parent": reference_id(parent),
         "id": actor_id,
         "type": "vtkAxesActor",
-        "properties": {
-            # vtkProp
-            "visibility": actor_visibility,
-            "pickable": actor.GetPickable(),
-            "dragable": actor.GetDragable(),
-            "useBounds": actor.GetUseBounds(),
-            # vtkProp3D
-            "origin": actor.GetOrigin(),
-            "position": actor.GetPosition(),
-            "scale": actor.GetScale(),
-            "userMatrix": user_matrix,
-            # vtkAxesActor
-            "labels": {
-                "show": label_show,
-                "x": actor.GetXAxisLabelText(),
-                "y": actor.GetYAxisLabelText(),
-                "z": actor.GetZAxisLabelText(),
+        "properties": cache_properties(
+            actor_id,
+            context,
+            {
+                # vtkProp
+                "visibility": actor_visibility,
+                "pickable": actor.GetPickable(),
+                "dragable": actor.GetDragable(),
+                "useBounds": actor.GetUseBounds(),
+                # vtkProp3D
+                "origin": actor.GetOrigin(),
+                "position": actor.GetPosition(),
+                "scale": actor.GetScale(),
+                "userMatrix": user_matrix,
+                # vtkAxesActor
+                "labels": {
+                    "show": label_show,
+                    "x": actor.GetXAxisLabelText(),
+                    "y": actor.GetYAxisLabelText(),
+                    "z": actor.GetZAxisLabelText(),
+                },
+                "config": {
+                    "recenter": 0,
+                    "tipResolution": cone_resolution,  # 60,
+                    "tipRadius": 0.2 * cone_radius,  # 0.1,
+                    "tipLength": tip_length[0],  # 0.2,
+                    "shaftResolution": cylinder_resolution,  # 60,
+                    "shaftRadius": 0.01 if shaft_type else cylinder_radius,  # 0.03,
+                    "invert": 0,
+                },
+                "xAxisColor": list(
+                    map(lambda x: int(x * 255), actor.GetXAxisTipProperty().GetColor())
+                ),
+                "yAxisColor": list(
+                    map(lambda x: int(x * 255), actor.GetYAxisTipProperty().GetColor())
+                ),
+                "zAxisColor": list(
+                    map(lambda x: int(x * 255), actor.GetZAxisTipProperty().GetColor())
+                ),
             },
-            "config": {
-                "recenter": 0,
-                "tipResolution": cone_resolution,  # 60,
-                "tipRadius": 0.2 * cone_radius,  # 0.1,
-                "tipLength": tip_length[0],  # 0.2,
-                "shaftResolution": cylinder_resolution,  # 60,
-                "shaftRadius": 0.01 if shaft_type else cylinder_radius,  # 0.03,
-                "invert": 0,
-            },
-            "xAxisColor": list(
-                map(lambda x: int(x * 255), actor.GetXAxisTipProperty().GetColor())
-            ),
-            "yAxisColor": list(
-                map(lambda x: int(x * 255), actor.GetYAxisTipProperty().GetColor())
-            ),
-            "zAxisColor": list(
-                map(lambda x: int(x * 255), actor.GetZAxisTipProperty().GetColor())
-            ),
-        },
+        ),
     }

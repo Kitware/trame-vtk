@@ -3,6 +3,7 @@ from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
 from .helpers import data_table_to_list, linspace
 from .registry import class_name
 from .utils import reference_id
+from .cache import cache_properties
 
 
 def lookup_table_serializer(parent, lookup_table, lookup_table_id, context, depth):
@@ -24,27 +25,31 @@ def lookup_table_serializer(parent, lookup_table, lookup_table_id, context, dept
         "parent": reference_id(parent),
         "id": lookup_table_id,
         "type": class_name(lookup_table),
-        "properties": {
-            "numberOfColors": lookup_table.GetNumberOfColors(),
-            "valueRange": lookup_table_range,
-            "hueRange": lookup_table_hue_range,
-            # 'alpha_range': lut_alpha_range,  # Causes weird rendering artifacts on client
-            "saturationRange": lut_sat_range,
-            "nanColor": lookup_table.GetNanColor(),
-            "belowRangeColor": lookup_table.GetBelowRangeColor(),
-            "aboveRangeColor": lookup_table.GetAboveRangeColor(),
-            "useAboveRangeColor": True
-            if lookup_table.GetUseAboveRangeColor()
-            else False,
-            "useBelowRangeColor": True
-            if lookup_table.GetUseBelowRangeColor()
-            else False,
-            "alpha": lookup_table.GetAlpha(),
-            "vectorSize": lookup_table.GetVectorSize(),
-            "vectorComponent": lookup_table.GetVectorComponent(),
-            "vectorMode": lookup_table.GetVectorMode(),
-            "indexedLookup": lookup_table.GetIndexedLookup(),
-        },
+        "properties": cache_properties(
+            lookup_table_id,
+            context,
+            {
+                "numberOfColors": lookup_table.GetNumberOfColors(),
+                "valueRange": lookup_table_range,
+                "hueRange": lookup_table_hue_range,
+                # 'alpha_range': lut_alpha_range,  # Causes weird rendering artifacts on client
+                "saturationRange": lut_sat_range,
+                "nanColor": lookup_table.GetNanColor(),
+                "belowRangeColor": lookup_table.GetBelowRangeColor(),
+                "aboveRangeColor": lookup_table.GetAboveRangeColor(),
+                "useAboveRangeColor": True
+                if lookup_table.GetUseAboveRangeColor()
+                else False,
+                "useBelowRangeColor": True
+                if lookup_table.GetUseBelowRangeColor()
+                else False,
+                "alpha": lookup_table.GetAlpha(),
+                "vectorSize": lookup_table.GetVectorSize(),
+                "vectorComponent": lookup_table.GetVectorComponent(),
+                "vectorMode": lookup_table.GetVectorMode(),
+                "indexedLookup": lookup_table.GetIndexedLookup(),
+            },
+        ),
     }
 
 
@@ -109,25 +114,31 @@ def color_transfer_function_serializer(parent, instance, obj_id, context, depth)
         "parent": reference_id(parent),
         "id": obj_id,
         "type": class_name(instance),
-        "properties": {
-            "clamping": 1 if instance.GetClamping() else 0,
-            "colorSpace": instance.GetColorSpace(),
-            "hSVWrap": 1 if instance.GetHSVWrap() else 0,
-            # 'nan_color': instance.GetNanColor(),                  # Breaks client
-            # 'below_range_color': instance.GetBelowRangeColor(),    # Breaks client
-            # 'above_range_color': instance.GetAboveRangeColor(),    # Breaks client
-            # 'use_above_range_color': 1 if instance.GetUseAboveRangeColor() else 0,
-            # 'use_below_range_color': 1 if instance.GetUseBelowRangeColor() else 0,
-            "allowDuplicateScalars": 1 if instance.GetAllowDuplicateScalars() else 0,
-            "alpha": instance.GetAlpha(),
-            "vectorComponent": instance.GetVectorComponent(),
-            "vectorSize": instance.GetVectorSize(),
-            "vectorMode": instance.GetVectorMode(),
-            "indexedLookup": instance.GetIndexedLookup(),
-            "nodes": nodes,
-            "numberOfValues": number_of_values,
-            "discretize": discretize,
-        },
+        "properties": cache_properties(
+            obj_id,
+            context,
+            {
+                "clamping": 1 if instance.GetClamping() else 0,
+                "colorSpace": instance.GetColorSpace(),
+                "hSVWrap": 1 if instance.GetHSVWrap() else 0,
+                # 'nan_color': instance.GetNanColor(),                  # Breaks client
+                # 'below_range_color': instance.GetBelowRangeColor(),    # Breaks client
+                # 'above_range_color': instance.GetAboveRangeColor(),    # Breaks client
+                # 'use_above_range_color': 1 if instance.GetUseAboveRangeColor() else 0,
+                # 'use_below_range_color': 1 if instance.GetUseBelowRangeColor() else 0,
+                "allowDuplicateScalars": 1
+                if instance.GetAllowDuplicateScalars()
+                else 0,
+                "alpha": instance.GetAlpha(),
+                "vectorComponent": instance.GetVectorComponent(),
+                "vectorSize": instance.GetVectorSize(),
+                "vectorMode": instance.GetVectorMode(),
+                "indexedLookup": instance.GetIndexedLookup(),
+                "nodes": nodes,
+                "numberOfValues": number_of_values,
+                "discretize": discretize,
+            },
+        ),
     }
 
 
@@ -153,10 +164,14 @@ def pwf_serializer(parent, instance, obj_id, context, depth):
         "parent": reference_id(parent),
         "id": obj_id,
         "type": class_name(instance),
-        "properties": {
-            "range": list(instance.GetRange()),
-            "clamping": instance.GetClamping(),
-            "allowDuplicateScalars": instance.GetAllowDuplicateScalars(),
-            "nodes": nodes,
-        },
+        "properties": cache_properties(
+            obj_id,
+            context,
+            {
+                "range": list(instance.GetRange()),
+                "clamping": instance.GetClamping(),
+                "allowDuplicateScalars": instance.GetAllowDuplicateScalars(),
+                "nodes": nodes,
+            },
+        ),
     }
