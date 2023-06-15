@@ -1,6 +1,7 @@
 from .registry import class_name
 from .serialize import serialize
 from .utils import reference_id, wrap_id
+from .cache import cache_properties
 
 
 def property_serializer(parent, prop_obj, prop_obj_id, context, depth):
@@ -19,26 +20,30 @@ def property_serializer(parent, prop_obj, prop_obj_id, context, depth):
         "parent": reference_id(parent),
         "id": prop_obj_id,
         "type": class_name(prop_obj),
-        "properties": {
-            "representation": representation,
-            "diffuseColor": color_to_use,
-            "color": prop_obj.GetColor(),
-            "ambientColor": prop_obj.GetAmbientColor(),
-            "specularColor": prop_obj.GetSpecularColor(),
-            "edgeColor": prop_obj.GetEdgeColor(),
-            "ambient": prop_obj.GetAmbient(),
-            "diffuse": prop_obj.GetDiffuse(),
-            "specular": prop_obj.GetSpecular(),
-            "specularPower": prop_obj.GetSpecularPower(),
-            "opacity": prop_obj.GetOpacity(),
-            "interpolation": prop_obj.GetInterpolation(),
-            "edgeVisibility": 1 if prop_obj.GetEdgeVisibility() else 0,
-            "backfaceCulling": 1 if prop_obj.GetBackfaceCulling() else 0,
-            "frontfaceCulling": 1 if prop_obj.GetFrontfaceCulling() else 0,
-            "pointSize": prop_obj.GetPointSize(),
-            "lineWidth": prop_obj.GetLineWidth(),
-            "lighting": 1 if prop_obj.GetLighting() else 0,
-        },
+        "properties": cache_properties(
+            prop_obj_id,
+            context,
+            {
+                "representation": representation,
+                "diffuseColor": color_to_use,
+                "color": prop_obj.GetColor(),
+                "ambientColor": prop_obj.GetAmbientColor(),
+                "specularColor": prop_obj.GetSpecularColor(),
+                "edgeColor": prop_obj.GetEdgeColor(),
+                "ambient": prop_obj.GetAmbient(),
+                "diffuse": prop_obj.GetDiffuse(),
+                "specular": prop_obj.GetSpecular(),
+                "specularPower": prop_obj.GetSpecularPower(),
+                "opacity": prop_obj.GetOpacity(),
+                "interpolation": prop_obj.GetInterpolation(),
+                "edgeVisibility": 1 if prop_obj.GetEdgeVisibility() else 0,
+                "backfaceCulling": 1 if prop_obj.GetBackfaceCulling() else 0,
+                "frontfaceCulling": 1 if prop_obj.GetFrontfaceCulling() else 0,
+                "pointSize": prop_obj.GetPointSize(),
+                "lineWidth": prop_obj.GetLineWidth(),
+                "lighting": 1 if prop_obj.GetLighting() else 0,
+            },
+        ),
     }
 
 

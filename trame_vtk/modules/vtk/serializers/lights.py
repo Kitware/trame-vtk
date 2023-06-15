@@ -1,5 +1,6 @@
 from .registry import class_name
 from .utils import reference_id
+from .cache import cache_properties
 
 
 def light_type_to_string(value):
@@ -25,19 +26,23 @@ def light_serializer(parent, instance, obj_id, context, depth):
         "parent": reference_id(parent),
         "id": obj_id,
         "type": class_name(instance),
-        "properties": {
-            # 'specular_color': instance.GetSpecularColor(),
-            # 'ambient_color': instance.GetAmbientColor(),
-            "switch": instance.GetSwitch(),
-            "intensity": instance.GetIntensity(),
-            "color": instance.GetDiffuseColor(),
-            "position": instance.GetPosition(),
-            "focalPoint": instance.GetFocalPoint(),
-            "positional": instance.GetPositional(),
-            "exponent": instance.GetExponent(),
-            "coneAngle": instance.GetConeAngle(),
-            "attenuationValues": instance.GetAttenuationValues(),
-            "lightType": light_type_to_string(instance.GetLightType()),
-            "shadowAttenuation": instance.GetShadowAttenuation(),
-        },
+        "properties": cache_properties(
+            obj_id,
+            context,
+            {
+                # 'specular_color': instance.GetSpecularColor(),
+                # 'ambient_color': instance.GetAmbientColor(),
+                "switch": instance.GetSwitch(),
+                "intensity": instance.GetIntensity(),
+                "color": instance.GetDiffuseColor(),
+                "position": instance.GetPosition(),
+                "focalPoint": instance.GetFocalPoint(),
+                "positional": instance.GetPositional(),
+                "exponent": instance.GetExponent(),
+                "coneAngle": instance.GetConeAngle(),
+                "attenuationValues": instance.GetAttenuationValues(),
+                "lightType": light_type_to_string(instance.GetLightType()),
+                "shadowAttenuation": instance.GetShadowAttenuation(),
+            },
+        ),
     }

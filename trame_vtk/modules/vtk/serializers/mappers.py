@@ -5,6 +5,7 @@ from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 from .registry import class_name
 from .serialize import serialize
 from .utils import reference_id, wrap_id
+from .cache import cache_properties
 
 logger = logging.getLogger(__name__)
 
@@ -68,22 +69,26 @@ def generic_mapper_serializer(parent, mapper, mapper_id, context, depth):
             "parent": reference_id(parent),
             "id": mapper_id,
             "type": class_name(mapper),
-            "properties": {
-                "resolveCoincidentTopology": mapper.GetResolveCoincidentTopology(),
-                "renderTime": mapper.GetRenderTime(),
-                "arrayAccessMode": mapper.GetArrayAccessMode(),
-                "scalarRange": mapper.GetScalarRange(),
-                "useLookupTableScalarRange": 1
-                if mapper.GetUseLookupTableScalarRange()
-                else 0,
-                "scalarVisibility": mapper.GetScalarVisibility(),
-                "colorByArrayName": color_array_name,
-                "colorMode": mapper.GetColorMode(),
-                "scalarMode": mapper.GetScalarMode(),
-                "interpolateScalarsBeforeMapping": 1
-                if mapper.GetInterpolateScalarsBeforeMapping()
-                else 0,
-            },
+            "properties": cache_properties(
+                mapper_id,
+                context,
+                {
+                    "resolveCoincidentTopology": mapper.GetResolveCoincidentTopology(),
+                    "renderTime": mapper.GetRenderTime(),
+                    "arrayAccessMode": mapper.GetArrayAccessMode(),
+                    "scalarRange": mapper.GetScalarRange(),
+                    "useLookupTableScalarRange": 1
+                    if mapper.GetUseLookupTableScalarRange()
+                    else 0,
+                    "scalarVisibility": mapper.GetScalarVisibility(),
+                    "colorByArrayName": color_array_name,
+                    "colorMode": mapper.GetColorMode(),
+                    "scalarMode": mapper.GetScalarMode(),
+                    "interpolateScalarsBeforeMapping": 1
+                    if mapper.GetInterpolateScalarsBeforeMapping()
+                    else 0,
+                },
+            ),
             "calls": calls,
             "dependencies": dependencies,
         }
@@ -128,17 +133,21 @@ def generic_volume_mapper_serializer(parent, mapper, mapper_id, context, depth):
             "parent": reference_id(parent),
             "id": mapper_id,
             "type": class_name(mapper),
-            "properties": {
-                # VolumeMapper
-                "sampleDistance": mapper.GetSampleDistance(),
-                "imageSampleDistance": image_sample_distance,
-                # "maximumSamplesPerRay": mapper.GetMaximumSamplesPerRay(),
-                "autoAdjustSampleDistances": mapper.GetAutoAdjustSampleDistances(),
-                "blendMode": mapper.GetBlendMode(),
-                # "ipScalarRange": mapper.GetIpScalarRange(),
-                # "filterMode": mapper.GetFilterMode(),
-                # "preferSizeOverAccuracy": mapper.Get(),
-            },
+            "properties": cache_properties(
+                mapper_id,
+                context,
+                {
+                    # VolumeMapper
+                    "sampleDistance": mapper.GetSampleDistance(),
+                    "imageSampleDistance": image_sample_distance,
+                    # "maximumSamplesPerRay": mapper.GetMaximumSamplesPerRay(),
+                    "autoAdjustSampleDistances": mapper.GetAutoAdjustSampleDistances(),
+                    "blendMode": mapper.GetBlendMode(),
+                    # "ipScalarRange": mapper.GetIpScalarRange(),
+                    # "filterMode": mapper.GetFilterMode(),
+                    # "preferSizeOverAccuracy": mapper.Get(),
+                },
+            ),
             "calls": calls,
             "dependencies": dependencies,
         }
