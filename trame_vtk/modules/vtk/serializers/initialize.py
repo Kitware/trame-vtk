@@ -16,7 +16,7 @@ from .lights import light_serializer
 from .lookup_tables import (
     color_transfer_function_serializer,
     discretizable_color_transfer_function_serializer,
-    lookup_table_serializer2,
+    lookup_table_serializer,
     pwf_serializer,
 )
 from .mappers import generic_mapper_serializer, generic_volume_mapper_serializer
@@ -87,7 +87,7 @@ def initialize_serializers():
             "vtkOffscreenOpenGLRenderWindow",
         ],
         # LookupTables/TransferFunctions
-        lookup_table_serializer2: "vtkLookupTable",
+        lookup_table_serializer: "vtkLookupTable",
         discretizable_color_transfer_function_serializer: "vtkPVDiscretizableColorTransferFunction",
         color_transfer_function_serializer: "vtkColorTransferFunction",
         pwf_serializer: "vtkPiecewiseFunction",
