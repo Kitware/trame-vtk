@@ -18,10 +18,10 @@ class SynchronizationContext:
     def __init__(self):
         self.data_array_cache = {}
         self.last_dependencies_mapping = {}
-        self.ingore_last_dependencies = False
+        self.ignore_last_dependencies = False
 
     def set_ignore_last_dependencies(self, force):
-        self.ingore_last_dependencies = force
+        self.ignore_last_dependencies = force
 
     def cache_data_array(self, p_md5, data):
         self.data_array_cache[p_md5] = data
@@ -78,7 +78,7 @@ class SynchronizationContext:
         last_deps = []
         if (
             idstr in self.last_dependencies_mapping
-            and not self.ingore_last_dependencies
+            and not self.ignore_last_dependencies
         ):
             last_deps = self.last_dependencies_mapping[idstr]
         return last_deps
