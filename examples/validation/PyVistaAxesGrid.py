@@ -26,7 +26,7 @@ plotter = pv.Plotter(off_screen=True)
 actor = plotter.add_mesh(mesh)
 plotter.set_background("lightgrey")  # To see problematic white default set by VTK.js
 plotter.show_grid()
-plotter.reset_camera(render=False) # <<< Needed to have a valid initial camera
+plotter.reset_camera(render=False)  # <<< Needed to have a valid initial camera
 
 # -----------------------------------------------------------------------------
 # GUI
