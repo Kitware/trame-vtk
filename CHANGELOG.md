@@ -2,6 +2,24 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.0 (2023-06-16)
+
+### Feature
+
+* **local:** Enable prop caching ([`be29552`](https://github.com/Kitware/trame-vtk/commit/be29552102b0394ae3e45bcc96a0c6b4f2af73dc))
+* **local:** Add caching with delta compute for local state ([`0d64fbb`](https://github.com/Kitware/trame-vtk/commit/0d64fbb836bec479c17045be57d4143734330aa3))
+
+### Fix
+
+* **vue-vtk-js:** Update vtk.js ([`96e569a`](https://github.com/Kitware/trame-vtk/commit/96e569ac37140baa643cfa14bf270c3fa388d2e2))
+* **LookupTable:** Add support for color Table ([`46e3d6d`](https://github.com/Kitware/trame-vtk/commit/46e3d6d7ee05e4adcf7f664ae1e2f4ffe3188b7d))
+* **local:** Keep vtkLookupTable as-is for vtk.js ([`a3b1904`](https://github.com/Kitware/trame-vtk/commit/a3b19046bf26e7e11a8d7d10063301b625cba2a0))
+
+### Documentation
+
+* **validation:** Add lut preset example ([`3250926`](https://github.com/Kitware/trame-vtk/commit/3250926e6c050022cb28c6b60b95e18e2217c66f))
+* **example:** Force reset camera in pyvista ([`d083796`](https://github.com/Kitware/trame-vtk/commit/d08379621902bc541e8f12a5e0716aa70f55249d))
+
 ## v2.4.4 (2023-04-16)
 ### Fix
 * **export:** Handle fields for offline rendering ([`8b9920f`](https://github.com/Kitware/trame-vtk/commit/8b9920fdc7328d8fa20bd3d6c3d2566f1175d883))
