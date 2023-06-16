@@ -1,1 +1,6 @@
 pytest
+seleniumbase
+pytest-xprocess
+trame
+pyvista
+trame-client>=2.9.2
