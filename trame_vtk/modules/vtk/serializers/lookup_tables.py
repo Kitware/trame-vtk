@@ -20,36 +20,33 @@ def lookup_table_serializer(parent, lookup_table, lookup_table_id, context, dept
             pass
 
     lut_sat_range = lookup_table.GetSaturationRange()
+    table = data_table_to_list(lookup_table.GetTable())
+    properties = {
+        "numberOfColors": lookup_table.GetNumberOfColors(),
+        "valueRange": lookup_table_range,
+        "hueRange": lookup_table_hue_range,
+        # 'alpha_range': lut_alpha_range,  # Causes weird rendering artifacts on client
+        "saturationRange": lut_sat_range,
+        "nanColor": lookup_table.GetNanColor(),
+        "belowRangeColor": lookup_table.GetBelowRangeColor(),
+        "aboveRangeColor": lookup_table.GetAboveRangeColor(),
+        "useAboveRangeColor": True if lookup_table.GetUseAboveRangeColor() else False,
+        "useBelowRangeColor": True if lookup_table.GetUseBelowRangeColor() else False,
+        "alpha": lookup_table.GetAlpha(),
+        "vectorSize": lookup_table.GetVectorSize(),
+        "vectorComponent": lookup_table.GetVectorComponent(),
+        "vectorMode": lookup_table.GetVectorMode(),
+        "indexedLookup": lookup_table.GetIndexedLookup(),
+    }
+
+    if table:
+        properties["table"] = table
 
     return {
         "parent": reference_id(parent),
         "id": lookup_table_id,
         "type": class_name(lookup_table),
-        "properties": cache_properties(
-            lookup_table_id,
-            context,
-            {
-                "numberOfColors": lookup_table.GetNumberOfColors(),
-                "valueRange": lookup_table_range,
-                "hueRange": lookup_table_hue_range,
-                # 'alpha_range': lut_alpha_range,  # Causes weird rendering artifacts on client
-                "saturationRange": lut_sat_range,
-                "nanColor": lookup_table.GetNanColor(),
-                "belowRangeColor": lookup_table.GetBelowRangeColor(),
-                "aboveRangeColor": lookup_table.GetAboveRangeColor(),
-                "useAboveRangeColor": True
-                if lookup_table.GetUseAboveRangeColor()
-                else False,
-                "useBelowRangeColor": True
-                if lookup_table.GetUseBelowRangeColor()
-                else False,
-                "alpha": lookup_table.GetAlpha(),
-                "vectorSize": lookup_table.GetVectorSize(),
-                "vectorComponent": lookup_table.GetVectorComponent(),
-                "vectorMode": lookup_table.GetVectorMode(),
-                "indexedLookup": lookup_table.GetIndexedLookup(),
-            },
-        ),
+        "properties": cache_properties(lookup_table_id, context, properties),
     }
 
 
