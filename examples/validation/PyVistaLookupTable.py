@@ -5,7 +5,10 @@ from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify, vtk as vtk_widgets
 
-server = get_server()
+# Just for using this script in testing
+from trame_client.utils.testing import enable_testing
+
+server = enable_testing(get_server())
 state, ctrl = server.state, server.controller
 
 state.trame__title = "PyVista Lookup Table N Colors"

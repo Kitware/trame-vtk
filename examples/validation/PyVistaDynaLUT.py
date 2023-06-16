@@ -7,9 +7,12 @@ import pyvista as pv
 from pyvista import examples
 from pyvista.trame.ui import plotter_ui
 
+# Just for using this script in testing
+from trame_client.utils.testing import enable_testing
+
 pv.OFF_SCREEN = True
 
-server = get_server()
+server = enable_testing(get_server())
 state, ctrl = server.state, server.controller
 
 state.trame__title = "PyVista UI Template"
