@@ -3,15 +3,16 @@
 import pyvista as pv
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, vtk as vtk_widgets
+from trame.widgets import vuetify, html, vtk as vtk_widgets
 
 # Just for using this script in testing
 from trame_client.utils.testing import enable_testing
 
-server = enable_testing(get_server())
+server = enable_testing(get_server(), "local_rendering_ready")
 state, ctrl = server.state, server.controller
 
 state.trame__title = "PyVista Lookup Table N Colors"
+state.local_rendering_ready = 0
 
 # -----------------------------------------------------------------------------
 pv.set_plot_theme("document")
@@ -34,6 +35,7 @@ with SinglePageLayout(server) as layout:
 
     with layout.toolbar:
         vuetify.VSpacer()
+        html.Div("{{ local_rendering_ready }}", classes="readyCount")
 
     with layout.content:
         with vuetify.VContainer(
@@ -45,6 +47,7 @@ with SinglePageLayout(server) as layout:
             ):
                 local = vtk_widgets.VtkLocalView(
                     plotter.ren_win,
+                    on_ready="local_rendering_ready++",
                 )
             with vuetify.VContainer(
                 fluid=True, classes="pa-0 fill-height", style="width: 50%;"

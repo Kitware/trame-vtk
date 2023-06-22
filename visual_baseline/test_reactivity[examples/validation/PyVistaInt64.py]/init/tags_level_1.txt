@@ -1,0 +1,1 @@
+[["noscript"], ["strong"], ["div"], ["div"], ["header"], ["div"], ["button"], ["span"], ["i"], ["div"], ["div"], ["div"], ["main"], ["div"], ["div"], ["div"], ["div"], ["div"], ["canvas"], ["div"], ["div"], ["div"], ["canvas"], ["img"], ["footer"], ["div"], ["svg"], ["circle"], ["circle"], ["div"], ["a"], ["div"], ["span"], ["i"], ["a"], ["script"], ["script"]]

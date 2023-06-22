@@ -4,13 +4,17 @@ import pyvista as pv
 import numpy as np
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify
+from trame.widgets import vuetify, html
 from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
-server = get_server()
+# Just for using this script in testing
+from trame_client.utils.testing import enable_testing
+
+server = enable_testing(get_server(), "local_rendering_ready")
 state, ctrl = server.state, server.controller
 
 state.trame__title = "Int64 Validation"
+state.local_rendering_ready = 0
 
 # -----------------------------------------------------------------------------
 
@@ -32,6 +36,7 @@ with SinglePageLayout(server) as layout:
 
     with layout.toolbar:
         vuetify.VSpacer()
+        html.Div("{{ local_rendering_ready }}", classes="readyCount")
 
     with layout.content:
         with vuetify.VContainer(
@@ -39,7 +44,10 @@ with SinglePageLayout(server) as layout:
             classes="pa-0 fill-height",
         ):
             with vuetify.VCol(classes="fill-height"):
-                view = VtkLocalView(plotter.ren_win)
+                view = VtkLocalView(
+                    plotter.ren_win,
+                    on_ready="local_rendering_ready++",
+                )
                 ctrl.view_update = view.update
                 ctrl.view_reset_camera = view.reset_camera
             with vuetify.VCol(classes="fill-height"):
