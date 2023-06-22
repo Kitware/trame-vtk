@@ -1,6 +1,3 @@
-pytest
-seleniumbase
-pytest-xprocess
 trame
+trame-client[test]
 pyvista
-trame-client>=2.9.2

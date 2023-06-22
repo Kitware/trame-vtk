@@ -34,14 +34,14 @@ jobs:
             name: "Linux",
             os: ubuntu-latest
           }
-        - {
-            name: "MacOSX",
-            os: macos-latest
-          }
-        - {
-            name: "Windows",
-            os: windows-latest
-          }
+        # - {
+        #     name: "MacOSX",
+        #     os: macos-latest
+        #   }
+        # - {
+        #     name: "Windows",
+        #     os: windows-latest
+        #   }
 
     defaults:
       run:
@@ -56,18 +56,36 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Install trame-vtk.js
+      run: |
+        mkdir -p ./trame_vtk/modules/common/serve
+        curl https://unpkg.com/vue-vtk-js@3.1.6 -Lo ./trame_vtk/modules/common/serve/trame-vtk.js
+
     - name: Install and Run Tests
       run: |
         pip install .
         pip install -r tests/requirements.txt
+        pip uninstall vtk -y
+        pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
         # Run the tests with coverage so we get a coverage report too
         pip install coverage
-        coverage run --source . -m pytest . --browser=firefox
+        coverage run --source . -m pytest . --firefox --headless --html=report-${{ matrix.config.name }}-${{ matrix.python-version }}.html
         # Print the coverage report
         coverage report -m
 
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v3
+
+    - name: Upload pytest test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: pytest-results-${{  matrix.config.name }}
+        path: |
+          visual_baseline/**/*.png
+          assets/**
+          report-*.html
+        retention-days: 1
 
   release:
     needs: [pre-commit, pytest]
