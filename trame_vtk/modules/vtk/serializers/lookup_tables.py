@@ -104,8 +104,6 @@ def color_transfer_function_serializer(parent, instance, obj_id, context, depth)
             if hasattr(instance, "GetNumberOfValues")
             else 256
         )
-    elif number_of_values < 256:
-        discretize = 1
 
     return {
         "parent": reference_id(parent),
