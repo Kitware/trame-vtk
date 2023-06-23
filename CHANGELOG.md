@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.1 (2023-06-23)
+
+### Fix
+
+* **LUT:** Do not discretize vtkColorTransferFunction with few control points ([`ebfaee4`](https://github.com/Kitware/trame-vtk/commit/ebfaee4f3abadb0e418beaa56d1de4e410425947))
+
 ## v2.5.0 (2023-06-16)
 
 ### Feature
