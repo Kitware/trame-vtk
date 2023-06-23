@@ -61,14 +61,17 @@ jobs:
         mkdir -p ./trame_vtk/modules/common/serve
         curl https://unpkg.com/vue-vtk-js@3.1.6 -Lo ./trame_vtk/modules/common/serve/trame-vtk.js
 
-    - name: Install and Run Tests
+    - name: Install dependencies
       run: |
         pip install .
         pip install -r tests/requirements.txt
         pip uninstall vtk -y
         pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
-        # Run the tests with coverage so we get a coverage report too
         pip install coverage
+
+    - name: Install and Run Tests
+      run: |
+        # Run the tests with coverage so we get a coverage report too
         coverage run --source . -m pytest . --firefox --headless --html=report-${{ matrix.config.name }}-${{ matrix.python-version }}.html
         # Print the coverage report
         coverage report -m
