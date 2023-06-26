@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.2 (2023-06-26)
+
+### Fix
+
+* **vue-vtk-js:** Update to pick lookuptable fix ([`1ecd65c`](https://github.com/Kitware/trame-vtk/commit/1ecd65cf9539b1dfec912e3d85560e0df794409b))
+* **html:** Add tool for HTML export ([`3705560`](https://github.com/Kitware/trame-vtk/commit/3705560873ee0c9c4b846fe93568391a105d192d))
+
 ## v2.5.1 (2023-06-23)
 
 ### Fix
