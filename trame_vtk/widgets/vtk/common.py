@@ -748,6 +748,9 @@ class VtkRemoteView(HtmlElement):
             opts,
         )
 
+    def release_resources(self):
+        self.__view = None
+
 
 class VtkShareDataset(HtmlElement):
     def __init__(self, children=None, **kwargs):
@@ -948,6 +951,11 @@ class VtkLocalView(HtmlElement):
             format,
             opts,
         )
+
+    def release_resources(self):
+        self._server.controller.on_server_ready.discard(self.update)
+        self.__view = None
+        self._widgets = None
 
 
 class VtkView(HtmlElement):

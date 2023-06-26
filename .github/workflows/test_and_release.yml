@@ -58,8 +58,7 @@ jobs:
 
     - name: Install trame-vtk.js
       run: |
-        mkdir -p ./trame_vtk/modules/common/serve
-        curl https://unpkg.com/vue-vtk-js@3.1.6 -Lo ./trame_vtk/modules/common/serve/trame-vtk.js
+        bash .fetch_externals.sh
 
     - name: Install dependencies
       run: |
@@ -103,8 +102,7 @@ jobs:
 
       - name: Install trame-vtk.js
         run: |
-          mkdir -p ./trame_vtk/modules/common/serve
-          curl https://unpkg.com/vue-vtk-js@3.1.6 -Lo ./trame_vtk/modules/common/serve/trame-vtk.js
+          bash .fetch_externals.sh
 
       - name: Python Semantic Release
         uses: relekang/python-semantic-release@master
