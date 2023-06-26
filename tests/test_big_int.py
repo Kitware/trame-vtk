@@ -2,7 +2,7 @@ from pathlib import Path
 import pytest
 from seleniumbase import SB
 
-from trame_client.utils.testing import set_browser_size  # , baseline_comparison
+from trame_client.utils.testing import set_browser_size, baseline_comparison
 
 BASELINE_TEST = (
     Path(__file__).parent.parent
@@ -20,4 +20,4 @@ def test_reactivity(server, baseline_image):
         sb.check_window(name="init", level=3)
 
         # The CI is not rendering big int... Not sure why
-        # baseline_comparison(sb, BASELINE_TEST, 0.1)
+        baseline_comparison(sb, BASELINE_TEST, 0.1)
