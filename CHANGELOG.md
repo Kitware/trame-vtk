@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.3 (2023-06-28)
+
+### Fix
+
+* **html:** Improve HTML exporting ([#42](https://github.com/Kitware/trame-vtk/issues/42)) ([`3a0184e`](https://github.com/Kitware/trame-vtk/commit/3a0184e86842f275d920827c3e1a5bb62f627655))
+
 ## v2.5.2 (2023-06-26)
 
 ### Fix
