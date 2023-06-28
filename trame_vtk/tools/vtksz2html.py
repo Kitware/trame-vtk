@@ -1,37 +1,34 @@
 import argparse
 import base64
-from pathlib import Path
 import sys
+from pathlib import Path
+from typing import TextIO
 
 HTML_VIEWER_PATH = Path(__file__).with_name("static_viewer.html")
 
 
-def embbed_data_to_viewer(input_data_file_path):
-    input = Path(input_data_file_path)
-    output = input.with_name(f"{input.name}.html")
-    base64Content = ""
+def data_to_base64(data: bytes):
+    base64Content = base64.b64encode(data)
+    return base64Content.decode().replace("\n", "")
 
-    if input.exists():
-        with open(input, "rb") as data:
-            dataContent = data.read()
-            base64Content = base64.b64encode(dataContent)
-            base64Content = base64Content.decode().replace("\n", "")
 
-        with open(HTML_VIEWER_PATH, mode="r", encoding="utf-8") as srcHtml:
-            with open(output, mode="w", encoding="utf-8") as dstHtml:
-                for line in srcHtml:
-                    if "</body>" in line:
-                        dstHtml.write("<script>\n")
-                        dstHtml.write(
-                            "var container = document.querySelector('.content');\n"
-                        )
-                        dstHtml.write('var base64Str = "%s";\n\n' % base64Content)
-                        dstHtml.write(
-                            "OfflineLocalView.load(container, { base64Str });\n"
-                        )
-                        dstHtml.write("</script>\n")
+def write_html(data: bytes, output: TextIO):
+    base64Content = data_to_base64(data)
+    with open(HTML_VIEWER_PATH, mode="r", encoding="utf-8") as srcHtml:
+        for line in srcHtml:
+            if "</body>" in line:
+                output.write("<script>\n")
+                output.write("var container = document.querySelector('.content');\n")
+                output.write('var base64Str = "%s";\n\n' % base64Content)
+                output.write("OfflineLocalView.load(container, { base64Str });\n")
+                output.write("</script>\n")
 
-                    dstHtml.write(line)
+            output.write(line)
+
+
+def embed_data_to_viewer_file(data: bytes, output_file: Path):
+    with open(output_file, mode="w", encoding="utf-8") as dstHtml:
+        write_html(data, dstHtml)
 
 
 def main():
@@ -50,10 +47,15 @@ def main():
 
     input_file = Path(args.input)
     if not input_file.exists():
-        parser.print_help()
-        sys.exit(0)
+        raise FileNotFoundError(f"Input file {input_file.name} not found.")
 
-    embbed_data_to_viewer(input_file)
+    input = Path(input_file)
+    output = input.with_name(f"{input.name}.html")
+
+    with open(input, "rb") as data:
+        data = data.read()
+
+    embed_data_to_viewer_file(data, output)
 
 
 if __name__ == "__main__":
