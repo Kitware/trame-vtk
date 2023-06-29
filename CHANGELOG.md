@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.4 (2023-06-29)
+
+### Fix
+
+* **GC:** Allow to release view resources ([`bfe9c80`](https://github.com/Kitware/trame-vtk/commit/bfe9c8048b04fd41d72e150c009e33137a9e3e64))
+
 ## v2.5.3 (2023-06-28)
 
 ### Fix
