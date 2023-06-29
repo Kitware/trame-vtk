@@ -68,7 +68,7 @@ jobs:
         pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
         pip install coverage
 
-    - name: Install and Run Tests
+    - name: Run Tests
       run: |
         # Run the tests with coverage so we get a coverage report too
         coverage run --source . -m pytest . --firefox --headless --html=report-${{ matrix.config.name }}-${{ matrix.python-version }}.html
