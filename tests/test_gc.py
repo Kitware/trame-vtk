@@ -5,14 +5,14 @@ import pytest
 import pyvista as pv
 
 from trame.app import get_server
-from trame.widgets.vtk import VtkRemoteLocalView
+from trame.widgets import vtk as vtk_widgets
 
 # pytest_plugins = ('pytest_asyncio',)
 
 
 def _is_vtk(obj):
     try:
-        return obj.__class__.__name__.startswith('vtk')
+        return obj.__class__.__name__.startswith("vtk")
     except Exception:  # old Python sometimes no __class__.__name__
         return False
 
@@ -40,7 +40,7 @@ def check_gc():
 
     gc.collect()
     after = [o for o in gc.get_objects() if _is_vtk(o) and id(o) not in before]
-    msg = 'Not all objects GCed:\n'
+    msg = "Not all objects GCed:\n"
     for obj in after:
         cn = obj.__class__.__name__
         cf = inspect.currentframe()
@@ -50,37 +50,44 @@ def check_gc():
             if isinstance(referrer, dict):
                 for k, v in referrer.items():
                     if k is obj:
-                        referrers[ri] = 'dict: d key'
+                        referrers[ri] = "dict: d key"
                         del k, v
                         break
                     elif v is obj:
-                        referrers[ri] = f'dict: d[{k!r}]'
+                        referrers[ri] = f"dict: d[{k!r}]"
                         del k, v
                         break
                     del k, v
                 else:
-                    referrers[ri] = f'dict: len={len(referrer)}'
+                    referrers[ri] = f"dict: len={len(referrer)}"
             else:
                 referrers[ri] = repr(referrer)
             del ri, referrer
-        msg += f'{cn}: {referrers}\n'
+        msg += f"{cn}: {referrers}\n"
         del cn, referrers
     assert len(after) == 0, msg
 
 
-# @pytest.mark.asyncio
-# async
-def test_gc():
+@pytest.mark.asyncio
+async def test_gc():
+    server = get_server("test_gc")
+    server.start(exec_mode="task")
+    await server.ready
+
     plotter = pv.Plotter()
     # Add object with data arrays
     plotter.add_mesh(pv.Wavelet())
 
-    server = get_server()
+    view_local = vtk_widgets.VtkLocalView(plotter.ren_win, trame_server=server)
+    view_local.release_resources()
 
-    view = VtkRemoteLocalView(plotter.ren_win, trame_server=server)
+    view_remote = vtk_widgets.VtkRemoteView(plotter.ren_win, trame_server=server)
+    view_remote.release_resources()
 
-    # await server.ready
+    view_both = vtk_widgets.VtkRemoteLocalView(plotter.ren_win, trame_server=server)
+    view_both.release_resources()
 
-    # view.release_resources()  # TODO: None type isn't callable?
+    # Release global vtkApplication helper
+    view_local.module.HELPER._vtk_core = None
 
     plotter.close()  # Assume this works to free its references

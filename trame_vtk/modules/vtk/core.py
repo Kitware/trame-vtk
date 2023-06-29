@@ -70,3 +70,7 @@ class HybridView:
             # Need to update local camera
             camera = self._helper.camera(self._view)
             self._app.update(ref=self.ref_key, method="setCamera", args=[camera])
+
+    def release_resources(self):
+        self._helper.remove_hybrid_view(self.ref_key)
+        self._view = None
