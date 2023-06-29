@@ -41,6 +41,10 @@ class HtmlElement(AbstractElement):
         if self.server:
             self.server.enable_module(common)
 
+    @property
+    def module(self):
+        return MODULE
+
 
 class VtkPiecewiseEditor(HtmlElement):
     def __init__(self, children=None, **kwargs):
@@ -625,6 +629,10 @@ class VtkRemoteLocalView(HtmlElement):
     def set_widgets(self, value):
         self._widgets = value
         self.update_geometry()
+
+    def release_resources(self):
+        self.__wrapped_view.release_resources()
+        self.__view = None
 
 
 class VtkRemoteView(HtmlElement):

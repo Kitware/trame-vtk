@@ -186,6 +186,10 @@ class Helper:
         self._hybrid_views[name] = view_helper
         return view_helper
 
+    def remove_hybrid_view(self, name):
+        if name in self._hybrid_views:
+            self._hybrid_views.pop(name)
+
 
 # -----------------------------------------------------------------------------
 # Module advanced initialization
