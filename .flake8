@@ -7,6 +7,7 @@ ignore =
 per-file-ignores =
     # These directories will always contain "from ... import *"
     trame/*:F401,F403
+    examples/*:F401,F403
 
 # Black sometimes conflicts with flake8 here
 # Ignore white space after binary operator and assigning lambda expressions

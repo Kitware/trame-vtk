@@ -132,7 +132,10 @@ def initialize_serializers():
             "vtkOpenGLPolyDataMapper",
             "vtkPolyDataMapper",
         ],
-        "vtkVolumeMapper": "vtkFixedPointVolumeRayCastMapper",
+        "vtkVolumeMapper": [
+            "vtkFixedPointVolumeRayCastMapper",
+            "vtkSmartVolumeMapper",
+        ],
         "vtkImageData": "vtkStructuredPoints",
     }
 
