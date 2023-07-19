@@ -86,7 +86,7 @@ class Helper:
         )
 
     def push_image(self, view_proxy, reset_camera=False):
-        if view_proxy.EnableRenderOnInteraction:
+        if view_proxy.GetPropertyValue("EnableRenderOnInteraction"):
             view_proxy.EnableRenderOnInteraction = 0
 
         if reset_camera:
