@@ -2,13 +2,17 @@ import vtk
 
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify
+from trame.widgets import vuetify, html
 from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
-server = get_server()
+# Just for using this script in testing
+from trame_client.utils.testing import enable_testing
+
+server = enable_testing(get_server(), "local_rendering_ready")
 state, ctrl = server.state, server.controller
 
 state.trame__title = "VTK Volume Rendering"
+state.local_rendering_ready = 0
 
 # MAPPER_TYPE = "FixedPoint"
 MAPPER_TYPE = "Smart"
@@ -78,6 +82,7 @@ with SinglePageLayout(server) as layout:
 
     with layout.toolbar:
         vuetify.VSpacer()
+        html.Div("{{ local_rendering_ready }}", classes="readyCount")
 
     with layout.content:
         with vuetify.VContainer(
@@ -87,7 +92,7 @@ with SinglePageLayout(server) as layout:
             with vuetify.VContainer(
                 fluid=True, classes="pa-0 fill-height", style="width: 50%;"
             ):
-                local = VtkLocalView(renWin)
+                local = VtkLocalView(renWin, on_ready="local_rendering_ready++")
             with vuetify.VContainer(
                 fluid=True, classes="pa-0 fill-height", style="width: 50%;"
             ):

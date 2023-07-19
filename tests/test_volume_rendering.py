@@ -6,11 +6,11 @@ from trame_client.utils.testing import set_browser_size, baseline_comparison
 
 BASELINE_TEST = (
     Path(__file__).parent.parent
-    / "visual_baseline/test_rendering[examples/validation/PyVistaLookupTable.py]/init/baseline.png"
+    / "visual_baseline/test_rendering[examples/validation/VolumeRendering.py]/init/baseline.png"
 )
 
 
-@pytest.mark.parametrize("server_path", ["examples/validation/PyVistaLookupTable.py"])
+@pytest.mark.parametrize("server_path", ["examples/validation/VolumeRendering.py"])
 def test_rendering(server, baseline_image):
     with SB() as sb:
         url = f"http://127.0.0.1:{server.port}/"
