@@ -10,9 +10,9 @@
 
 ### Ci
 
-* ci: upate baselines ([`68e1a2d`](https://github.com/Kitware/trame-vtk/commit/68e1a2db3a86742fa353d1032807459da57557e9))
+* ci: update baselines ([`68e1a2d`](https://github.com/Kitware/trame-vtk/commit/68e1a2db3a86742fa353d1032807459da57557e9))
 
-* ci: upate baselines ([`082de9c`](https://github.com/Kitware/trame-vtk/commit/082de9c79f8a7b653bb5c71482e2bea97b050a49))
+* ci: update baselines ([`082de9c`](https://github.com/Kitware/trame-vtk/commit/082de9c79f8a7b653bb5c71482e2bea97b050a49))
 
 ### Fix
 
