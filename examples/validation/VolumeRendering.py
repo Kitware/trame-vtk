@@ -10,12 +10,15 @@ state, ctrl = server.state, server.controller
 
 state.trame__title = "VTK Volume Rendering"
 
-MAPPER_TYPE = "FixedPoint"
+# MAPPER_TYPE = "FixedPoint"
+MAPPER_TYPE = "Smart"
+# MAPPER_TYPE = "GPU"
+# MAPPER_TYPE = "RayCast"
 MAPPERS = {
-    "FixedPoint": vtk.vtkFixedPointVolumeRayCastMapper(),  # works!
-    "Smart": vtk.vtkSmartVolumeMapper(),  # fails
-    "GPU": vtk.vtkOpenGLGPUVolumeRayCastMapper(),  # fails
-    "RayCast": vtk.vtkGPUVolumeRayCastMapper(),  # fails
+    "FixedPoint": vtk.vtkFixedPointVolumeRayCastMapper(),
+    "Smart": vtk.vtkSmartVolumeMapper(),
+    "GPU": vtk.vtkOpenGLGPUVolumeRayCastMapper(),
+    "RayCast": vtk.vtkGPUVolumeRayCastMapper(),
 }
 
 # -----------------------------------------------------------------------------

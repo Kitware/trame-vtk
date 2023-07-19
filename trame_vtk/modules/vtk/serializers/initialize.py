@@ -135,6 +135,7 @@ def initialize_serializers():
         "vtkVolumeMapper": [
             "vtkFixedPointVolumeRayCastMapper",
             "vtkSmartVolumeMapper",
+            "vtkOpenGLGPUVolumeRayCastMapper",
         ],
         "vtkImageData": "vtkStructuredPoints",
     }
