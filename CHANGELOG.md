@@ -2,6 +2,28 @@
 
 
 
+## v2.5.6 (2023-07-19)
+
+### Ci
+
+* ci(baseline): Add ref baseline for volume ([`4ceb45c`](https://github.com/Kitware/trame-vtk/commit/4ceb45c968a51e0cc5482160bc3ded3de23db352))
+
+* ci(baseline): Add ref baselines ([`8b305e6`](https://github.com/Kitware/trame-vtk/commit/8b305e64550ed62a68db6589b0f6b9b9de386d07))
+
+* ci: changelog spelling ([`6d3b6f5`](https://github.com/Kitware/trame-vtk/commit/6d3b6f5c7acce73d81307f58091d64f9750311c0))
+
+* ci(testing): rendering testing
+
+fix #45 ([`70aeafa`](https://github.com/Kitware/trame-vtk/commit/70aeafa443617c2ac7e6f017769e6d7751d8a7b5))
+
+### Fix
+
+* fix(VolumeRendering): Add alias to support different mappers
+
+fix #46
+fix #44 ([`cf540bc`](https://github.com/Kitware/trame-vtk/commit/cf540bc7472072ff9d8d379ca4905ee8b0fb82f2))
+
+
 ## v2.5.5 (2023-07-19)
 
 ### Chore
@@ -10,9 +32,9 @@
 
 ### Ci
 
-* ci: update baselines ([`68e1a2d`](https://github.com/Kitware/trame-vtk/commit/68e1a2db3a86742fa353d1032807459da57557e9))
+* ci: upate baselines ([`68e1a2d`](https://github.com/Kitware/trame-vtk/commit/68e1a2db3a86742fa353d1032807459da57557e9))
 
-* ci: update baselines ([`082de9c`](https://github.com/Kitware/trame-vtk/commit/082de9c79f8a7b653bb5c71482e2bea97b050a49))
+* ci: upate baselines ([`082de9c`](https://github.com/Kitware/trame-vtk/commit/082de9c79f8a7b653bb5c71482e2bea97b050a49))
 
 ### Fix
 
