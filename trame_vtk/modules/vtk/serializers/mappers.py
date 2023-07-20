@@ -138,7 +138,7 @@ def generic_volume_mapper_serializer(parent, mapper, mapper_id, context, depth):
                 context,
                 {
                     # VolumeMapper
-                    "sampleDistance": mapper.GetSampleDistance(),
+                    "sampleDistance": abs(mapper.GetSampleDistance()),
                     "imageSampleDistance": image_sample_distance,
                     # "maximumSamplesPerRay": mapper.GetMaximumSamplesPerRay(),
                     "autoAdjustSampleDistances": mapper.GetAutoAdjustSampleDistances(),
