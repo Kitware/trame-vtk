@@ -102,6 +102,7 @@ sphere_window = sphere()
 # -----------------------------------------------------------------------------
 
 server = get_server()
+server.client_type = "vue2"
 state, ctrl = server.state, server.controller
 
 # Initial VTK window width and height values

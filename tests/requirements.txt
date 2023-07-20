@@ -2,3 +2,4 @@ trame
 trame-client[test]
 pyvista
 pytest-asyncio
+trame-vuetify

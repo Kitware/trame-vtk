@@ -13,6 +13,7 @@ from trame_client.utils.testing import enable_testing
 pv.OFF_SCREEN = True
 
 server = enable_testing(get_server())
+server.client_type = "vue2"
 state, ctrl = server.state, server.controller
 
 state.trame__title = "PyVista UI Template"

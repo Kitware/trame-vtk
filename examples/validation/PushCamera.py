@@ -22,6 +22,7 @@ import vtkmodules.vtkRenderingOpenGL2  # noqa
 TITLE = "Remote/Local camera sync"
 
 server = get_server()
+server.client_type = "vue2"
 state, ctrl = server.state, server.controller
 
 state.trame__title = TITLE

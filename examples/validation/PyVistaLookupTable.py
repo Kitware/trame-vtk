@@ -9,6 +9,7 @@ from trame.widgets import vuetify, html, vtk as vtk_widgets
 from trame_client.utils.testing import enable_testing
 
 server = enable_testing(get_server(), "local_rendering_ready")
+server.client_type = "vue2"
 state, ctrl = server.state, server.controller
 
 state.trame__title = "PyVista Lookup Table N Colors"

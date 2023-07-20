@@ -7,6 +7,7 @@ from trame.widgets import vuetify
 from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 server = get_server()
+server.client_type = "vue2"
 state, ctrl = server.state, server.controller
 
 state.trame__title = "Axes Widget Validation"

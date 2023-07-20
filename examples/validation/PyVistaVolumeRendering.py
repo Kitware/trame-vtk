@@ -14,6 +14,7 @@ if os.environ.get("PYTEST_CURRENT_TEST") or "--test" in sys.argv:
     server = enable_testing(get_server(), "local_rendering_ready")
 else:
     server = get_server()
+server.client_type = "vue2"
 state, ctrl = server.state, server.controller
 
 state.trame__title = "Volume Validation"

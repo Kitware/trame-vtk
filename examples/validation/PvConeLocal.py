@@ -12,6 +12,7 @@ from paraview import simple
 # -----------------------------------------------------------------------------
 
 server = get_server()
+server.client_type = "vue2"
 state, ctrl = server.state, server.controller
 
 # -----------------------------------------------------------------------------

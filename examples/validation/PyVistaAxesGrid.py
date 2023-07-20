@@ -12,6 +12,7 @@ from trame.widgets.vtk import VtkLocalView
 import pyvista as pv
 
 server = get_server()
+server.client_type = "vue2"
 state, ctrl = server.state, server.controller
 
 state.trame__title = "PyVista Local View Grid Lines"
