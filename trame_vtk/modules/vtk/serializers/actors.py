@@ -16,6 +16,7 @@ def generic_actor_serializer(parent, actor, actor_id, context, depth):
     property_instance = None
     calls = []
     dependencies = []
+    add_on = {}
 
     if actor_visibility:
         mapper = None
@@ -59,13 +60,14 @@ def generic_actor_serializer(parent, actor, actor_id, context, depth):
                 calls.append(["addTexture", [wrap_id(texture_id)]])
 
     # Apply transform
-    user_matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
     if actor.GetUserMatrix():
+        user_matrix = [0] * 16
         matrix = actor.GetUserMatrix()
         for i in range(4):
             for j in range(4):
-                idx = i + 4*j
+                idx = i + 4 * j
                 user_matrix[idx] = matrix.GetElement(i, j)
+        add_on["userMatrix"] = user_matrix
 
     if actor_visibility == 0 or (mapper_instance and property_instance):
         return {
@@ -89,6 +91,8 @@ def generic_actor_serializer(parent, actor, actor_id, context, depth):
                     # vtkActor
                     "forceOpaque": actor.GetForceOpaque(),
                     "forceTranslucent": actor.GetForceTranslucent(),
+                    # additional context
+                    **add_on,
                 },
             ),
             "calls": calls,
