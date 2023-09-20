@@ -90,7 +90,7 @@ def generic_actor_serializer(parent, actor, actor_id, context, depth):
                     # vtkActor
                     "forceOpaque": actor.GetForceOpaque(),
                     "forceTranslucent": actor.GetForceTranslucent(),
-                    # additional context
+                    # additional properties
                     **add_on,
                 },
             ),
