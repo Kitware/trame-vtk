@@ -87,7 +87,6 @@ def generic_actor_serializer(parent, actor, actor_id, context, depth):
                     "origin": actor.GetOrigin(),
                     "position": actor.GetPosition(),
                     "scale": actor.GetScale(),
-                    "userMatrix": user_matrix,
                     # vtkActor
                     "forceOpaque": actor.GetForceOpaque(),
                     "forceTranslucent": actor.GetForceTranslucent(),
