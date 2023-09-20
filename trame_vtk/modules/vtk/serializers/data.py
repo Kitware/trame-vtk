@@ -139,6 +139,7 @@ def generic_volume_serializer(parent, actor, actor_id, context, depth):
     property_instance = None
     calls = []
     dependencies = []
+    add_on = {}
 
     if actor_visibility:
         mapper = None
@@ -167,6 +168,16 @@ def generic_volume_serializer(parent, actor, actor_id, context, depth):
                 dependencies.append(property_instance)
                 calls.append(["setProperty", [wrap_id(prop_id)]])
 
+    # Apply transform
+    if actor.GetUserMatrix():
+        user_matrix = [0] * 16
+        matrix = actor.GetUserMatrix()
+        for i in range(4):
+            for j in range(4):
+                idx = i + 4 * j
+                user_matrix[idx] = matrix.GetElement(i, j)
+        add_on["userMatrix"] = user_matrix
+
     if actor_visibility == 0 or (mapper_instance and property_instance):
         return {
             "parent": reference_id(parent),
@@ -182,6 +193,8 @@ def generic_volume_serializer(parent, actor, actor_id, context, depth):
                 "origin": actor.GetOrigin(),
                 "position": actor.GetPosition(),
                 "scale": actor.GetScale(),
+                # additional properties
+                **add_on,
             },
             "calls": calls,
             "dependencies": dependencies,
