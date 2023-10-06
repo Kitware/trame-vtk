@@ -1,7 +1,5 @@
 import logging
 
-from vtkmodules.vtkCommonMath import vtkMatrix4x4
-
 from .registry import class_name
 from .serialize import serialize
 from .utils import reference_id, rgb_float_to_hex, wrap_id
