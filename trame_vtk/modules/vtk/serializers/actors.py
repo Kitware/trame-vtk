@@ -315,9 +315,9 @@ def axes_actor_serializer(parent, actor, actor_id, context, depth):
 
     # Apply transform
     user_matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-    if actor.GetUserTransform():
-        matrix = vtkMatrix4x4()
-        actor.GetUserTransform().GetTranspose(matrix)
+    if actor.GetUserMatrix():
+        matrix = actor.GetUserMatrix()
+        matrix.Transpose()
         for i in range(4):
             for j in range(4):
                 idx = i + 4 * j
