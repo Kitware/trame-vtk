@@ -33,6 +33,8 @@ def activate_module_for(server, vtk_or_paraview_obj):
 
             use_module(vtk)
             server.enable_module(vtk)
+    else:
+        server.enable_module(MODULE)
 
 
 class HtmlElement(AbstractElement):
