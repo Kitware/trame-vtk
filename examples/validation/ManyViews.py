@@ -232,9 +232,11 @@ with SinglePageLayout(server) as layout:
                 ):
                     render_window = VIEWS[c].get("render_window")
                     view = vtk_widgets.VtkLocalView(
-                        render_window, ref=f"view_{c}", v_if=(f"widget_on_{c}", True)
+                        render_window, v_if=(f"widget_on_{c}", True)
                     )
-                    # view = vtk_widgets.VtkRemoteView(render_window, ref=f"view_{c}", v_if=(f"widget_on_{c}", True))
+                    # view = vtk_widgets.VtkRemoteView(
+                    #     render_window, v_if=(f"widget_on_{c}", True)
+                    # )
                     ctrl[f"view_{c}_update"] = view.update
                     ctrl[f"view_{c}_reset"] = view.reset_camera
 

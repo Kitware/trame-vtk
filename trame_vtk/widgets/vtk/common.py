@@ -367,6 +367,8 @@ class VtkRemoteLocalView(HtmlElement):
     ... )
     """
 
+    _next_id = 0
+
     def __init__(self, view, enable_rendering=True, widgets=[], **kwargs):
         super().__init__("vtk-remote-local-view", **kwargs)
 
@@ -375,6 +377,12 @@ class VtkRemoteLocalView(HtmlElement):
         MODULE.has_capabilities("web", "rendering")
 
         __ns = kwargs.get("namespace", "view")
+
+        if __ns == "view":
+            VtkRemoteLocalView._next_id += 1
+            if VtkRemoteLocalView._next_id > 1:
+                __ns = f"view{VtkRemoteLocalView._next_id}"
+
         self.__mode_key = f"{__ns}Mode"
         self.__scene_id = f"{__ns}Scene"
         self.__view_key_id = f"{__ns}Id"
@@ -659,6 +667,8 @@ class VtkRemoteView(HtmlElement):
     ... )
     """
 
+    _next_id = 0
+
     @staticmethod
     def push_image(view):
         """
@@ -667,12 +677,16 @@ class VtkRemoteView(HtmlElement):
         if MODULE:
             MODULE.push_image(view)
 
-    def __init__(self, view, ref="view", **kwargs):
+    def __init__(self, view, ref=None, **kwargs):
         super().__init__("vtk-remote-view", **kwargs)
 
         activate_module_for(self.server, view)
 
         MODULE.has_capabilities("web", "rendering")
+
+        if ref is None:
+            VtkRemoteView._next_id += 1
+            ref = f"trame__remote_view_{VtkRemoteView._next_id}"
 
         self.__view = view
         self.__ref = ref
@@ -761,6 +775,10 @@ class VtkRemoteView(HtmlElement):
     def release_resources(self):
         self.__view = None
 
+    @property
+    def ref_name(self):
+        return self.__ref
+
 
 class VtkShareDataset(HtmlElement):
     def __init__(self, children=None, **kwargs):
@@ -790,12 +808,18 @@ class VtkLocalView(HtmlElement):
     ... )
     """
 
-    def __init__(self, view, ref="view", widgets=[], **kwargs):
+    _next_id = 0
+
+    def __init__(self, view, ref=None, widgets=[], **kwargs):
         super().__init__("vtk-local-view", **kwargs)
 
         activate_module_for(self.server, view)
 
         MODULE.has_capabilities("web")
+
+        if ref is None:
+            VtkLocalView._next_id += 1
+            ref = f"trame__local_view_{VtkLocalView._next_id}"
 
         self.__scene_id = f"scene_{ref}"
         self.__view = view
@@ -967,10 +991,21 @@ class VtkLocalView(HtmlElement):
         self.__view = None
         self._widgets = None
 
+    @property
+    def ref_name(self):
+        return self.__ref
+
 
 class VtkView(HtmlElement):
-    def __init__(self, children=None, ref="view", **kwargs):
+    _next_id = 0
+
+    def __init__(self, children=None, ref=None, **kwargs):
         super().__init__("vtk-view", children, **kwargs)
+
+        if ref is None:
+            VtkView._next_id += 1
+            ref = f"trame__client_view_{VtkView._next_id}"
+
         self._ref = ref
         self._attributes["ref"] = f'ref="{ref}"'
         self._attr_names += [
@@ -1029,3 +1064,7 @@ class VtkView(HtmlElement):
         Move camera to center actors within the frame
         """
         self.server.js_call(ref=self._ref, method="resetCamera")
+
+    @property
+    def ref_name(self):
+        return self._ref
