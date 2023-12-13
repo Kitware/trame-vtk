@@ -3,11 +3,16 @@ import logging
 import time
 import zipfile
 
-from vtkmodules.vtkCommonCore import vtkTypeUInt32Array
+from vtkmodules.vtkCommonCore import vtkTypeUInt32Array, vtkFloatArray, vtkDoubleArray
 
 from .utils import base64_encode, wrap_id
 
 logger = logging.getLogger(__name__)
+
+JS_VTK_ARRAY = {
+    "Float32Array": vtkFloatArray,
+    "Float64Array": vtkDoubleArray,
+}
 
 
 class SynchronizationContext:
@@ -30,11 +35,19 @@ class SynchronizationContext:
         cache_obj = self.data_array_cache[p_md5]
         array = cache_obj["array"]
         cache_time = cache_obj["mTime"]
+        array_js_datatype = cache_obj.get("dataType")
 
         if cache_time != array.GetMTime():
             logger.debug(" ***** ERROR: you asked for an old cache key! ***** ")
 
-        if array.GetDataType() == 12:
+        if array_js_datatype and array_js_datatype in JS_VTK_ARRAY:
+            logger.debug(
+                "Convert Array %s to %s", array.GetClassName(), array_js_datatype
+            )
+            new_array = JS_VTK_ARRAY[array_js_datatype]()
+            new_array.DeepCopy(array)
+            p_buffer = memoryview(new_array)
+        elif array.GetDataType() == 12:
             # IdType need to be converted to Uint32
             array_size = array.GetNumberOfTuples() * array.GetNumberOfComponents()
             new_array = vtkTypeUInt32Array()

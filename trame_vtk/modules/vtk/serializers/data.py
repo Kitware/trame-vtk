@@ -6,7 +6,7 @@ from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 from .helpers import extract_required_fields, get_array_description
 from .registry import class_name
 from .serialize import serialize
-from .utils import reference_id, wrap_id
+from .utils import reference_id, wrap_id, get_js_array_type
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,17 @@ def polydata_serializer(
         properties = {}
 
         # Points
-        points = get_array_description(dataset.GetPoints().GetData(), context)
+        # Handle coordinate conversion if needed
+        convert = {}
+        js_point_types = get_js_array_type(dataset.GetPoints().GetData())
+        if js_point_types not in ["Float32Array", "Float64Array"]:
+            convert["dataType"] = (
+                "Float32Array" if "32" in js_point_types else "Float64Array"
+            )
+
+        points = get_array_description(
+            dataset.GetPoints().GetData(), context, **convert
+        )
         points["vtkClass"] = "vtkPoints"
         properties["points"] = points
 

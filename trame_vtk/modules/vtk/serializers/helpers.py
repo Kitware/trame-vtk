@@ -69,20 +69,20 @@ def get_range_info(array, component):
 # -----------------------------------------------------------------------------
 
 
-def get_array_description(array, context):
+def get_array_description(array, context, **kwargs):
     if not array:
         return None
 
     p_md5 = digest(array)
     context.cache_data_array(
-        p_md5, {"array": array, "mTime": array.GetMTime(), "ts": time.time()}
+        p_md5, {"array": array, "mTime": array.GetMTime(), "ts": time.time(), **kwargs}
     )
 
     root = {}
     root["hash"] = p_md5
     root["vtkClass"] = "vtkDataArray"
     root["name"] = array.GetName()
-    root["dataType"] = get_js_array_type(array)
+    root["dataType"] = kwargs.get("dataType", get_js_array_type(array))
     root["numberOfComponents"] = array.GetNumberOfComponents()
     root["size"] = array.GetNumberOfComponents() * array.GetNumberOfTuples()
     root["ranges"] = []
