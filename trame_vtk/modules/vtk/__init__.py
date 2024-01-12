@@ -44,6 +44,9 @@ class Helper:
             # Link our custom protocols initialization
             trame_server.add_protocol_to_configure(self.configure_protocol)
 
+    def has_capabilities(self, *features):
+        has_capabilities(*features)
+
     def id(self, vtk_obj):
         if not vtk_obj:
             return ""
@@ -64,15 +67,24 @@ class Helper:
         )
 
     def scene(
-        self, render_window, new_state=False, widgets=None, orientation_axis=0, **kwargs
+        self,
+        render_window,
+        reset_camera=False,
+        new_state=False,
+        widgets=None,
+        orientation_axis=0,
+        **kwargs,
     ):
-        return self._trame_server.protocol_call(
+        scene_state = self._trame_server.protocol_call(
             "viewport.geometry.view.get.state",
             self.id(render_window),
             new_state,
             widgets=widgets,
             orientation_axis=orientation_axis,
         )
+        if reset_camera:
+            scene_state.setdefault("extra", {})["resetCamera"] = 1
+        return scene_state
 
     def export(self, render_window, widgets=None, orientation_axis=0, **kwargs):
         return self._trame_server.protocol_call(
@@ -120,6 +132,9 @@ class Helper:
         for key, setter in key_to_setter.items():
             if key in kwargs:
                 getattr(camera, setter)(kwargs[key])
+
+    def view(self, view, name="view", **kwargs):
+        return self.add_hybrid_view(name, view, **kwargs)
 
     def configure_protocol(self, protocol):
         self._root_protocol = protocol
@@ -188,65 +203,14 @@ class Helper:
 # Module advanced initialization
 # -----------------------------------------------------------------------------
 
-HELPER = None
+HELPERS_PER_SERVER = {}
 
 
 def setup(trame_server, **kwargs):
-    global HELPER
+    global HELPERS_PER_SERVER
     if HAS_VTK_WEB:
-        HELPER = Helper(trame_server)
+        HELPERS_PER_SERVER[trame_server.name] = Helper(trame_server)
 
 
-def reload_app():
-    if HELPER:
-        HELPER.reload_app()
-
-
-# -----------------------------------------------------------------------------
-# Helper methods only valid once the module has been enabled
-# -----------------------------------------------------------------------------
-
-
-def id(vtk_obj):
-    return HELPER.id(vtk_obj)
-
-
-def object(vtk_id):
-    return HELPER.object(vtk_id)
-
-
-def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
-    return HELPER.mesh(dataset, field_to_keep, point_arrays, cell_arrays)
-
-
-def scene(
-    render_window, reset_camera=False, new_state=True, widgets=None, orientation_axis=0
-):
-    scene_state = HELPER.scene(
-        render_window, new_state, widgets=widgets, orientation_axis=orientation_axis
-    )
-    if reset_camera:
-        scene_state.setdefault("extra", {})["resetCamera"] = 1
-    return scene_state
-
-
-def export(render_window, widgets=None, orientation_axis=0):
-    return HELPER.export(
-        render_window, widgets=widgets, orientation_axis=orientation_axis
-    )
-
-
-def push_image(render_window, reset_camera=False):
-    return HELPER.push_image(render_window, reset_camera)
-
-
-def camera(render_window):
-    return HELPER.camera(render_window)
-
-
-def set_camera(render_window, **kwargs):
-    return HELPER.set_camera(render_window, **kwargs)
-
-
-def view(view, name="view", **kwargs):
-    return HELPER.add_hybrid_view(name, view, **kwargs)
+def get_helper(server):
+    return HELPERS_PER_SERVER.get(server.name)
