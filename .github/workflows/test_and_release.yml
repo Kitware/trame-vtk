@@ -71,7 +71,7 @@ jobs:
     - name: Run Tests
       run: |
         # Run the tests with coverage so we get a coverage report too
-        coverage run --source . -m pytest . --firefox --headless --html=report-${{ matrix.config.name }}-${{ matrix.python-version }}.html
+        coverage run --source . -m pytest ./tests --firefox --headless --html=report-${{ matrix.config.name }}-${{ matrix.python-version }}.html
         # Print the coverage report
         coverage report -m
 

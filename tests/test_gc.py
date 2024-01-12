@@ -88,6 +88,6 @@ async def test_gc():
     view_both.release_resources()
 
     # Release global vtkApplication helper
-    view_local.module.HELPER._vtk_core = None
+    view_local.module._vtk_core = None
 
     plotter.close()  # Assume this works to free its references

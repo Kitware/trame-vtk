@@ -33,8 +33,13 @@ def activate_module_for(helper, server, vtk_or_paraview_obj):
 class HtmlElement(AbstractElement):
     def __init__(self, _elem_name, children=None, **kwargs):
         super().__init__(_elem_name, children, **kwargs)
+        self._helper = None
         if self.server:
             self.server.enable_module(common)
+
+    @property
+    def module(self):
+        return self._helper
 
 
 class VtkPiecewiseEditor(HtmlElement):
