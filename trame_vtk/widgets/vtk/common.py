@@ -13,28 +13,21 @@ try:
 except ImportError:
     ZIP_COMPRESSION = zipfile.ZIP_STORED
 
-MODULE = None
 
+def activate_module_for(helper, server, vtk_or_paraview_obj):
+    if helper is not None:
+        return helper
 
-def use_module(m):
-    global MODULE
-    MODULE = m
+    if vtk_or_paraview_obj.IsA("vtkSMRemoteObject"):
+        from trame_vtk.modules import paraview
 
-
-def activate_module_for(server, vtk_or_paraview_obj):
-    if MODULE is None:
-        if vtk_or_paraview_obj.IsA("vtkSMRemoteObject"):
-            from trame_vtk.modules import paraview
-
-            use_module(paraview)
-            server.enable_module(paraview)
-        else:
-            from trame_vtk.modules import vtk
-
-            use_module(vtk)
-            server.enable_module(vtk)
+        server.enable_module(paraview)
+        return paraview.get_helper(server)
     else:
-        server.enable_module(MODULE)
+        from trame_vtk.modules import vtk
+
+        server.enable_module(vtk)
+        return vtk.get_helper(server)
 
 
 class HtmlElement(AbstractElement):
@@ -42,10 +35,6 @@ class HtmlElement(AbstractElement):
         super().__init__(_elem_name, children, **kwargs)
         if self.server:
             self.server.enable_module(common)
-
-    @property
-    def module(self):
-        return MODULE
 
 
 class VtkPiecewiseEditor(HtmlElement):
@@ -219,8 +208,9 @@ class VtkMesh(HtmlElement):
         self.__point_arrays = point_arrays
         self.__cell_arrays = cell_arrays
         self._attr_names += ["port", "state"]
+        self._helper = None
         if dataset:
-            activate_module_for(self.server, dataset)
+            self._helper = activate_module_for(self._helper, self.server, dataset)
             self._attributes["state"] = f':state="{name}"'
             self.update()
 
@@ -228,6 +218,7 @@ class VtkMesh(HtmlElement):
         """
         Change this mesh's internal dataset and update shared state"""
         self.__dataset = dataset
+        self._helper = activate_module_for(self._helper, self.server, dataset)
         self.update()
 
     def update(self, **kwargs):
@@ -235,7 +226,7 @@ class VtkMesh(HtmlElement):
         Propagate changes in internal data to shared state
         """
         if self.__dataset:
-            self.server.state[self.__name] = MODULE.mesh(
+            self.server.state[self.__name] = self._helper.mesh(
                 self.__dataset,
                 field_to_keep=kwargs.get("field_to_keep", self.__field_to_keep),
                 point_arrays=kwargs.get("point_arrays", self.__point_arrays),
@@ -288,8 +279,9 @@ class VtkPolyData(HtmlElement):
             "strips",
             "connectivity",
         ]
+        self._helper = None
         if dataset:
-            activate_module_for(self.server, dataset)
+            self._helper = activate_module_for(self._helper, self.server, dataset)
             self._attributes["bind"] = f'v-bind="{name}.mesh"'
             self.update()
 
@@ -298,6 +290,7 @@ class VtkPolyData(HtmlElement):
         Change this polydata's internal dataset and update shared state
         """
         self.__dataset = dataset
+        self._helper = activate_module_for(self._helper, self.server, dataset)
         self.update()
 
     def update(self):
@@ -305,7 +298,7 @@ class VtkPolyData(HtmlElement):
         Propagate changes in internal data to shared state
         """
         if self.__dataset:
-            self.server.state[self.__name] = MODULE.mesh(self.__dataset)
+            self.server.state[self.__name] = self._helper.mesh(self.__dataset)
 
 
 class VtkReader(HtmlElement):
@@ -371,10 +364,10 @@ class VtkRemoteLocalView(HtmlElement):
 
     def __init__(self, view, enable_rendering=True, widgets=[], **kwargs):
         super().__init__("vtk-remote-local-view", **kwargs)
+        self._helper = None
+        self._helper = activate_module_for(self._helper, self.server, view)
 
-        activate_module_for(self.server, view)
-
-        MODULE.has_capabilities("web", "rendering")
+        self._helper.has_capabilities("web", "rendering")
 
         __ns = kwargs.get("namespace", "view")
 
@@ -407,9 +400,9 @@ class VtkRemoteLocalView(HtmlElement):
         self._attributes["mode"] = f':mode="{__mode_expression}"'
         # !!! HACK !!!
 
-        self.server.state[self.__view_key_id] = MODULE.id(view)
+        self.server.state[self.__view_key_id] = self._helper.id(view)
         self.__view = view
-        self.__wrapped_view = MODULE.view(view, name=__ns, mode=__mode_start)
+        self.__wrapped_view = self._helper.view(view, name=__ns, mode=__mode_start)
 
         # Provide mandatory attributes
         self._attributes["ref"] = f'ref="{self.__ref}"'
@@ -498,7 +491,7 @@ class VtkRemoteLocalView(HtmlElement):
             widgets = self._widgets
 
         if self.server.protocol:
-            delta_state = MODULE.scene(
+            delta_state = self._helper.scene(
                 self.__view,
                 new_state=False,
                 widgets=widgets,
@@ -506,7 +499,7 @@ class VtkRemoteLocalView(HtmlElement):
             )
             self.server.protocol.publish("trame.vtk.delta", delta_state)
 
-        full_state = MODULE.scene(
+        full_state = self._helper.scene(
             self.__view,
             new_state=True,
             widgets=widgets,
@@ -525,7 +518,7 @@ class VtkRemoteLocalView(HtmlElement):
             widgets = self._widgets
 
         if self.server.protocol:
-            encoded_data = MODULE.export(
+            encoded_data = self._helper.export(
                 self.__view,
                 widgets=widgets,
                 orientation_axis=orientation_axis,
@@ -546,7 +539,7 @@ class VtkRemoteLocalView(HtmlElement):
         """
         Force update to image
         """
-        MODULE.push_image(self.__view, reset_camera)
+        self._helper.push_image(self.__view, reset_camera)
 
     def set_local_rendering(self, local=True, **kwargs):
         self.server.state[self.__mode_key] = "local" if local else "remote"
@@ -568,7 +561,7 @@ class VtkRemoteLocalView(HtmlElement):
             self.server.js_call(
                 self.__ref,
                 "setCamera",
-                MODULE.camera(self.__view),
+                self._helper.camera(self.__view),
             )
 
     def _push_camera(self, *args, **kwargs):
@@ -603,10 +596,10 @@ class VtkRemoteLocalView(HtmlElement):
         )
 
     def replace_view(self, new_view, **kwargs):
-        self.server.state[self.__view_key_id] = MODULE.id(new_view)
+        self.server.state[self.__view_key_id] = self._helper.id(new_view)
         _mode = self.server.state[self.__mode_key]
         self.__view = new_view
-        self.__wrapped_view = MODULE.view(
+        self.__wrapped_view = self._helper.view(
             new_view, name=self.__namespace, mode=_mode, force_replace=True
         )
         self.update()
@@ -669,20 +662,10 @@ class VtkRemoteView(HtmlElement):
 
     _next_id = 0
 
-    @staticmethod
-    def push_image(view):
-        """
-        Force image `view` to be pushed to the client
-        """
-        if MODULE:
-            MODULE.push_image(view)
-
     def __init__(self, view, ref=None, **kwargs):
         super().__init__("vtk-remote-view", **kwargs)
-
-        activate_module_for(self.server, view)
-
-        MODULE.has_capabilities("web", "rendering")
+        self._helper = activate_module_for(None, self.server, view)
+        self._helper.has_capabilities("web", "rendering")
 
         if ref is None:
             VtkRemoteView._next_id += 1
@@ -691,7 +674,7 @@ class VtkRemoteView(HtmlElement):
         self.__view = view
         self.__ref = ref
         self.__view_key_id = f"{ref}Id"
-        self.server.state[self.__view_key_id] = MODULE.id(view)
+        self.server.state[self.__view_key_id] = self._helper.id(view)
         self._attributes["ref"] = f'ref="{ref}"'
         self._attributes["view_id"] = f':viewId="{self.__view_key_id}"'
 
@@ -750,14 +733,14 @@ class VtkRemoteView(HtmlElement):
         """
         Force image to be pushed to client
         """
-        MODULE.push_image(self.__view)
+        self._helper.push_image(self.__view)
 
     def reset_camera(self, **kwargs):
         self.server.js_call(ref=self.__ref, method="resetCamera")
 
     def replace_view(self, new_view, **kwargs):
         self.__view = new_view
-        self.server.state[self.__view_key_id] = MODULE.id(new_view)
+        self.server.state[self.__view_key_id] = self._helper.id(new_view)
         self.update()
         self.resize()
 
@@ -812,10 +795,8 @@ class VtkLocalView(HtmlElement):
 
     def __init__(self, view, ref=None, widgets=[], **kwargs):
         super().__init__("vtk-local-view", **kwargs)
-
-        activate_module_for(self.server, view)
-
-        MODULE.has_capabilities("web")
+        self._helper = activate_module_for(None, self.server, view)
+        self._helper.has_capabilities("web")
 
         if ref is None:
             VtkLocalView._next_id += 1
@@ -898,7 +879,7 @@ class VtkLocalView(HtmlElement):
             widgets = self._widgets
 
         if self.server.protocol:
-            delta_state = MODULE.scene(
+            delta_state = self._helper.scene(
                 self.__view,
                 new_state=False,
                 widgets=widgets,
@@ -906,7 +887,7 @@ class VtkLocalView(HtmlElement):
             )
             self.server.protocol.publish("trame.vtk.delta", delta_state)
 
-        full_state = MODULE.scene(
+        full_state = self._helper.scene(
             self.__view,
             new_state=True,
             widgets=widgets,
@@ -925,7 +906,7 @@ class VtkLocalView(HtmlElement):
             widgets = self._widgets
 
         if self.server.protocol:
-            encoded_data = MODULE.export(
+            encoded_data = self._helper.export(
                 self.__view,
                 widgets=widgets,
                 orientation_axis=orientation_axis,
@@ -950,7 +931,9 @@ class VtkLocalView(HtmlElement):
 
     def replace_view(self, new_view, **kwargs):
         self.__view = new_view
-        self.server.js_call(self.__ref, "setSynchronizedViewId", MODULE.id(new_view))
+        self.server.js_call(
+            self.__ref, "setSynchronizedViewId", self._helper.id(new_view)
+        )
         self.update()
 
     def resize(self, **kwargs):
