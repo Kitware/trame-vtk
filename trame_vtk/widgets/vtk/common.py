@@ -776,10 +776,17 @@ class VtkShareDataset(HtmlElement):
 
 class VtkLocalView(HtmlElement):
     """
-        The VtkLocalView component relies on the server for defining the vtkRenderWindow but then only the geometry is exchanged with the client. The server does not need a GPU as no rendering is happening on the server. The vtkRenderWindow is only used to retrieve the scene data and parameters (coloring by, representations, ...). By relying on the same vtkRenderWindow, you can easily switch from a ``VtkRemoteView`` to a ``VtkLocalView`` or vice-versa. This component gives you controls on how you want to map mouse interaction with the camera. The default setting mimic default VTK interactor style so you will rarely have to override to the ``interactor_settings``.
+        The VtkLocalView component relies on the server for defining the vtkRenderWindow but then only the geometry is exchanged with the client.
+        The server does not need a GPU as no rendering is happening on the server.
+        The vtkRenderWindow is only used to retrieve the scene data and parameters (coloring by, representations, ...).
+        By relying on the same vtkRenderWindow, you can easily switch from a ``VtkRemoteView`` to a ``VtkLocalView`` or vice-versa.
+        This component gives you controls on how you want to map mouse interaction with the camera.
+        The default setting mimic default VTK interactor style so you will rarely have to override to the ``interactor_settings``.
+        The widgets argument allow to properly capture behavior for those assuming they can be handled by the client side.
 
     >>> local_view = vtk.VtkLocalView(
     ...   view=...,                # Instance of the view (required)
+    ...   widgets=[],              # List of vtkWidgets in view
     ...                            # - VTK: vtkRenderWindow
     ...                            # - Paraview: viewProxy
     ...   ref=...,                 # Identifier for this component
