@@ -17,6 +17,7 @@ from .lookup_tables import (
     color_transfer_function_serializer,
     discretizable_color_transfer_function_serializer,
     lookup_table_serializer,
+    lookup_table_serializer2,
     pwf_serializer,
 )
 from .mappers import generic_mapper_serializer, generic_volume_mapper_serializer
@@ -30,6 +31,20 @@ from .render_windows import (
 from .textures import texture_serializer
 
 logger = logging.getLogger(__name__)
+
+CONVERT_LUT = False
+
+
+def encode_lut(value=True):
+    global CONVERT_LUT
+    CONVERT_LUT = value
+
+
+def lookup_table_serializer_selector(*args, **kwargs):
+    global CONVERT_LUT
+    if CONVERT_LUT:
+        return lookup_table_serializer2(*args, **kwargs)
+    return lookup_table_serializer(*args, **kwargs)
 
 
 def initialize_serializers():
@@ -87,7 +102,8 @@ def initialize_serializers():
             "vtkOffscreenOpenGLRenderWindow",
         ],
         # LookupTables/TransferFunctions
-        lookup_table_serializer: "vtkLookupTable",
+        # lookup_table_serializer: "vtkLookupTable",
+        lookup_table_serializer_selector: "vtkLookupTable",
         discretizable_color_transfer_function_serializer: "vtkPVDiscretizableColorTransferFunction",
         color_transfer_function_serializer: "vtkColorTransferFunction",
         pwf_serializer: "vtkPiecewiseFunction",

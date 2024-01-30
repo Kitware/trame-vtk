@@ -7,6 +7,7 @@ from .serialize import serialize, serialize_widget
 from .export import extract_array_hash
 from .synchronization_context import SynchronizationContext
 from .utils import reference_id
+from .initialize import encode_lut
 
 logger = logging.getLogger(__name__)
 # By default, only show critical messages for serializers
@@ -17,6 +18,7 @@ if "TRAME_SERIALIZE_DEBUG" in os.environ:
     logger.setLevel(logging.DEBUG)
 
 __all__ = [
+    "encode_lut",
     "reference_id",
     "initialize_serializers",
     "mesh",
