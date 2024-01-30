@@ -5,6 +5,7 @@ import zipfile
 from trame_client.widgets.core import AbstractElement
 
 from trame_vtk.modules import common
+from trame_vtk.modules.vtk.serializers.utils import reference_id
 
 try:
     import zlib  # noqa
@@ -430,8 +431,12 @@ class VtkRemoteLocalView(HtmlElement):
             "interactor_settings",
             ("box_selection", "boxSelection"),
             ("disable_auto_switch", "disableAutoSwitch"),
+            ("picking_modes", "pickingModes"),
         ]
         self._event_names += [
+            "click",
+            "hover",
+            "select",
             ("on_local_image_capture", "onLocalImageCapture"),
             ("on_remote_image_capture", "onRemoteImageCapture"),
             "resize",
@@ -642,6 +647,9 @@ class VtkRemoteLocalView(HtmlElement):
         self.__wrapped_view.release_resources()
         self.__view = None
 
+    def get_scene_object_id(self, vtk_obj):
+        return reference_id(vtk_obj)
+
 
 class VtkRemoteView(HtmlElement):
     """
@@ -692,10 +700,14 @@ class VtkRemoteView(HtmlElement):
             ("interactor_events", "interactorEvents"),
             ("box_selection", "boxSelection"),
             "visible",
+            ("picking_modes", "pickingModes"),
         ]
         self._event_names += [
             ("on_image_capture", "onImageCapture"),
             ("box_selection_change", "BoxSelection"),
+            "click",
+            "hover",
+            "select",
             "StartAnimation",
             "Animation",
             "EndAnimation",
@@ -826,6 +838,7 @@ class VtkLocalView(HtmlElement):
             "interactor_settings",
             ("context_name", "contextName"),
             ("box_selection", "boxSelection"),
+            ("picking_modes", "pickingModes"),
         ]
         self._event_names += [
             ("on_image_capture", "onImageCapture"),
@@ -836,6 +849,9 @@ class VtkLocalView(HtmlElement):
             ("after_scene_loaded", "afterSceneLoaded"),
             ("on_ready", "onReady"),
             ("box_selection_change", "BoxSelection"),
+            "select",
+            "hover",
+            "click",
             "StartAnimation",
             "Animation",
             "EndAnimation",
@@ -989,6 +1005,9 @@ class VtkLocalView(HtmlElement):
     @property
     def ref_name(self):
         return self.__ref
+
+    def get_scene_object_id(self, vtk_object):
+        return reference_id(vtk_object)
 
 
 class VtkView(HtmlElement):
