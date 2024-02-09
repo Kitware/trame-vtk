@@ -5,7 +5,7 @@ import zipfile
 from trame_client.widgets.core import AbstractElement
 
 from trame_vtk.modules import common
-from trame_vtk.modules.vtk.serializers.utils import reference_id
+from trame_vtk import reference_id
 
 try:
     import zlib  # noqa
