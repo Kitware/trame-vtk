@@ -2,6 +2,7 @@ from trame.app import get_server
 from trame.ui.html import DivLayout
 from trame.widgets import html, client, vtk as vtk_widgets
 
+from vtkmodules.vtkCommonDataModel import vtkDataObject
 from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
 from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
@@ -9,6 +10,8 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindowInteractor,
     vtkPolyDataMapper,
     vtkActor,
+    vtkPropPicker,
+    vtkHardwareSelector,
 )
 
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
@@ -18,6 +21,7 @@ import vtkmodules.vtkRenderingOpenGL2  # noqa
 class PickingExample:
     def __init__(self, server=None):
         self.server = get_server(server, client_type="vue3")
+        self.active_selection = False
 
         # VTK
         renderer = vtkRenderer()
@@ -46,18 +50,61 @@ class PickingExample:
         renderWindow.Render()
 
         self.render_window = renderWindow
+        self.picker = vtkPropPicker()
+        self.select = vtkHardwareSelector()
+        self.renderer = renderer
+        self.actor_map = {
+            "Sphere": sphere_actor,
+            "Cone": cone_actor,
+        }
+
+        # Configure hardware selector for actor picking
+        self.select.SetFieldAssociation(vtkDataObject.FIELD_ASSOCIATION_CELLS)
+        self.select.SetRenderer(renderer)
+        self.select.SetActorPassOnly(True)
 
         # UI
         self.ui = self._build_ui()
 
+    def _find_actor_name(self, actor):
+        if actor:
+            for name, a in self.actor_map.items():
+                if a == actor:
+                    return name
+        return None
+
+    def _get_picked_actor_name(self, position):
+        self.picker.Pick(position.get("x"), position.get("y"), 0, self.renderer)
+        return self._find_actor_name(self.picker.GetActor())
+
     def on_click(self, event):
-        print(f"picking-click: {event}")
+        selected_actor_name = self._get_picked_actor_name(event.get("position"))
+        if selected_actor_name:
+            print(f"Clicked {selected_actor_name}")
+        else:
+            print("Clicked -- nothing")
 
     def on_select(self, event):
-        print("picking-select:", event)
+        x_min, x_max, y_min, y_max = event.get("selection")
+        self.select.SetArea(int(x_min), int(y_min), int(x_max), int(y_max))
+        selection = self.select.Select()
+        nb_selections = selection.GetNumberOfNodes()
+        for i in range(nb_selections):
+            node = selection.GetNode(i)
+            actor = node.GetProperties().Get(node.PROP())
+            print(f"selected: {self._find_actor_name(actor)}")
+
+        if nb_selections == 0:
+            print("No actor selected")
 
     def on_hover(self, event):
-        print(f"picking-hover: {event}")
+        selected_actor_name = self._get_picked_actor_name(event.get("position"))
+        if selected_actor_name:
+            self.active_selection = True
+            print(f"Hover {selected_actor_name}")
+        elif self.active_selection:
+            self.active_selection = False
+            print("Hover -- exited actor")
 
     def _build_ui(self):
         with DivLayout(self.server) as layout:

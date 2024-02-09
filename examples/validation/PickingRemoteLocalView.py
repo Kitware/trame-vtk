@@ -2,6 +2,7 @@ from trame.app import get_server
 from trame.ui.html import DivLayout
 from trame.widgets import html, client, vtk as vtk_widgets
 
+from vtkmodules.vtkCommonDataModel import vtkDataObject
 from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
 from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
@@ -9,15 +10,57 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindowInteractor,
     vtkPolyDataMapper,
     vtkActor,
+    vtkPropPicker,
+    vtkHardwareSelector,
 )
 
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
 import vtkmodules.vtkRenderingOpenGL2  # noqa
 
+from trame_vtk.modules.vtk.serializers.utils import reference_id
+
+INTERACTOR_SETTINGS_WITH_SELECT = [
+    {
+        "button": 1,
+        "action": "Rotate",
+    },
+    {
+        "button": 2,
+        "action": "Pan",
+    },
+    {
+        "button": 3,
+        "action": "Zoom",
+        "scrollEnabled": True,
+    },
+    {
+        "button": 1,
+        "action": "Pan",
+        "alt": True,
+    },
+    {
+        "button": 1,
+        "action": "Zoom",
+        "control": True,
+    },
+    {
+        "button": 1,
+        "action": "Select",
+        "shift": True,
+    },
+    {
+        "button": 1,
+        "action": "Roll",
+        "alt": True,
+        "shift": True,
+    },
+]
+
 
 class PickingExample:
     def __init__(self, server=None):
         self.server = get_server(server, client_type="vue3")
+        self._hover_something = False
 
         # VTK
         renderer = vtkRenderer()
@@ -46,18 +89,82 @@ class PickingExample:
         renderWindow.Render()
 
         self.render_window = renderWindow
+        self.picker = vtkPropPicker()
+        self.select = vtkHardwareSelector()
+        self.renderer = renderer
+
+        self.id_to_actor_name = {
+            reference_id(cone_actor): "Cone",
+            reference_id(sphere_actor): "Sphere",
+        }
+
+        # Configure hardware selector for actor picking
+        self.select.SetFieldAssociation(vtkDataObject.FIELD_ASSOCIATION_CELLS)
+        self.select.SetRenderer(renderer)
+        self.select.SetActorPassOnly(True)
 
         # UI
         self.ui = self._build_ui()
 
+    def _get_name_from_refid(self, ref_id):
+        return self.id_to_actor_name.get(ref_id)
+
+    def _get_name_from_actor(self, actor):
+        return self._get_name_from_refid(reference_id(actor))
+
+    def _get_picked_actor(self, position):
+        self.picker.Pick(position.get("x"), position.get("y"), 0, self.renderer)
+        return self.picker.GetActor()
+
     def on_click(self, event):
-        print(f"picking-click: {event}")
+        mode = "local"
+        name = "Nothing"
+        if event:
+            mode = event.get("mode")
+            if mode == "local":
+                name = self._get_name_from_refid(event.get("remoteId"))
+            elif mode == "remote":
+                actor = self._get_picked_actor(event.get("position"))
+                name = self._get_name_from_actor(actor)
+
+        print(f"Clicked on {name} - {mode=}")
 
     def on_select(self, event):
-        print("picking-select:", event)
+        mode = event.get("mode", "local")
+        names = []
+        if mode == "local":
+            names = [self._get_name_from_refid(rid) for rid in event.get("remoteIds")]
+        elif mode == "remote":
+            x_min, x_max, y_min, y_max = event.get("selection")
+            self.select.SetArea(int(x_min), int(y_min), int(x_max), int(y_max))
+            selection = self.select.Select()
+            nb_selections = selection.GetNumberOfNodes()
+            for i in range(nb_selections):
+                node = selection.GetNode(i)
+                actor = node.GetProperties().Get(node.PROP())
+                names.append(self._get_name_from_actor(actor))
+
+        print(f"Selecting ({mode=}): {names}")
 
     def on_hover(self, event):
-        print(f"picking-hover: {event}")
+        if event is None:
+            if self._hover_something:
+                self._hover_something = False
+                print("Hover nothing - mode=local")
+
+            return
+
+        name = "Nothing"
+        mode = event.get("mode")
+        if mode == "local":
+            self._hover_something = True
+            name = self._get_name_from_refid(event.get("remoteId"))
+        elif mode == "remote":
+            actor = self._get_picked_actor(event.get("position"))
+            name = self._get_name_from_actor(actor)
+            self._hover_something = name is not None
+
+        print(f"Hovering on {name} - {mode=}")
 
     def _build_ui(self):
         with DivLayout(self.server) as layout:
@@ -90,9 +197,9 @@ class PickingExample:
                 select=(self.on_select, "[$event]"),
                 hover=(self.on_hover, "[$event]"),
                 click=(self.on_click, "[$event]"),
+                interactor_settings=("settings", INTERACTOR_SETTINGS_WITH_SELECT),
             ) as view:
                 self.get_scene_object_id = view.get_scene_object_id
-                print(view)
 
 
 def main():
