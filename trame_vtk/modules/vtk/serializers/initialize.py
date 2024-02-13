@@ -33,11 +33,17 @@ from .textures import texture_serializer
 logger = logging.getLogger(__name__)
 
 CONVERT_LUT = False
+SKIP_LIGHT = False
 
 
 def encode_lut(value=True):
     global CONVERT_LUT
     CONVERT_LUT = value
+
+
+def skip_light(value=True):
+    global SKIP_LIGHT
+    SKIP_LIGHT = value
 
 
 def lookup_table_serializer_selector(*args, **kwargs):
@@ -125,7 +131,9 @@ def initialize_serializers():
             "vtkOpenGLRenderer",
         ],
         # Lights
-        light_serializer: [
+        light_serializer: []
+        if SKIP_LIGHT
+        else [
             "vtkLight",
             "vtkPVLight",
             "vtkOpenGLLight",
