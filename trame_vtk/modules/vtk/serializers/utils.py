@@ -48,7 +48,7 @@ def base64_encode(x):
 
 
 def hash_data_array(data_array):
-    hashed_bit = hashlib.md5(memoryview(data_array)).hexdigest()
+    hashed_bit = hashlib.md5(memoryview(data_array), usedforsecurity=False).hexdigest()
     type_code = array_types_mapping[data_array.GetDataType()]
     return "%s_%d%s" % (hashed_bit, data_array.GetSize(), type_code)
 
