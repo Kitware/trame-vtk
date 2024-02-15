@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import sys
 
 
 def rgb_float_to_hex(r, g, b):
