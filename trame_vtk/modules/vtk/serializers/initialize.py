@@ -70,6 +70,7 @@ def initialize_serializers():
             "vtkImageDataMapper",
             "vtkOpenGLPolyDataMapper",
             "vtkCompositePolyDataMapper2",
+            "vtkCompositePolyDataMapper",
         ],
         # Volume mappers
         generic_volume_mapper_serializer: [
@@ -151,6 +152,7 @@ def initialize_serializers():
 
     js_classes = {
         "vtkMapper": [
+            "vtkCompositePolyDataMapper",
             "vtkCompositePolyDataMapper2",
             "vtkDataSetMapper",
             "vtkOpenGLPolyDataMapper",
