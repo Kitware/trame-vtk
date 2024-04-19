@@ -42,7 +42,9 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
         ratio = self.tracking_views[v_id]["ratio"]
         mtime = self.tracking_views[v_id]["mtime"]
         quality = self.tracking_views[v_id]["quality"]
-        size = [int(s * ratio) for s in self.tracking_views[v_id]["originalSize"]]
+        size = [
+            int((s * ratio) + 0.5) for s in self.tracking_views[v_id]["originalSize"]
+        ]
 
         reply = self.still_render(
             {"view": v_id, "mtime": mtime, "quality": quality, "size": size}
@@ -291,7 +293,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
         # Update image size right now!
         if "originalSize" in self.tracking_views[real_view_id]:
             size = [
-                int(s * ratio)
+                int((s * ratio) + 0.5)
                 for s in self.tracking_views[real_view_id]["originalSize"]
             ]
             if hasattr(s_view, "SetSize"):
