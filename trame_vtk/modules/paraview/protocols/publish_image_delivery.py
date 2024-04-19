@@ -51,8 +51,8 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
         if "originalSize" not in self.tracking_views[v_id]:
             view = self.get_view(v_id)
             self.tracking_views[v_id]["originalSize"] = (
-                int(view.ViewSize[0]),
-                int(view.ViewSize[1]),
+                int(view.ViewSize[0] + 0.5),
+                int(view.ViewSize[1] + 0.5),
             )
 
         if "ratio" not in self.tracking_views[v_id]:
@@ -61,7 +61,9 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
         ratio = self.tracking_views[v_id]["ratio"]
         mtime = self.tracking_views[v_id]["mtime"]
         quality = self.tracking_views[v_id]["quality"]
-        size = [int(s * ratio) for s in self.tracking_views[v_id]["originalSize"]]
+        size = [
+            int((s * ratio) + 0.5) for s in self.tracking_views[v_id]["originalSize"]
+        ]
 
         reply = self.still_render(
             {"view": v_id, "mtime": mtime, "quality": quality, "size": size}
@@ -412,7 +414,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
         # Update image size right now!
         if "originalSize" in self.tracking_views[real_view_id]:
             size = [
-                int(s * ratio)
+                int((s * ratio) + 0.5)
                 for s in self.tracking_views[real_view_id]["originalSize"]
             ]
             if "SetSize" in s_view:
@@ -439,7 +441,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
         if not observer_info:
             return {"error": "Unable to find subscription for view %s" % real_view_id}
 
-        observer_info["originalSize"] = (int(width), int(height))
+        observer_info["originalSize"] = (int(width + 0.5), int(height + 0.5))
 
         return {"result": "success"}
 
