@@ -1079,6 +1079,12 @@ class VtkView(HtmlElement):
         """
         self.server.js_call(ref=self._ref, method="resetCamera")
 
+    def set_camera(self, camera):
+        """
+        Update camera (position, focalPoint, viewUp)
+        """
+        self.server.js_call(self._ref, "setCamera", camera)
+
     @property
     def ref_name(self):
         return self._ref
