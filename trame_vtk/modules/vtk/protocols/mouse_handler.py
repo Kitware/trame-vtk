@@ -7,6 +7,13 @@ from wslink import register as export_rpc
 from .web_protocol import vtkWebProtocol
 
 
+def apply_modifiers(event, interactor):
+    interactor.SetShiftKey(1 if event.get("shiftKey") else 0)
+    interactor.SetControlKey(1 if event.get("ctrlKey") else 0)
+    interactor.SetAltKey(1 if event.get("altKey") else 0)
+    # interactor.SetMetaKey(1 if event.get("metaKey") else 0)
+
+
 class vtkWebMouseHandler(vtkWebProtocol):
     """Handle Mouse interaction on any type of view"""
 
@@ -77,6 +84,7 @@ class vtkWebMouseHandler(vtkWebProtocol):
             return
 
         interactor = render_window.GetInteractor()
+        apply_modifiers(event, interactor)
 
         if "x" in event and "y" in event:
             # Set the mouse position, so that if there are multiple

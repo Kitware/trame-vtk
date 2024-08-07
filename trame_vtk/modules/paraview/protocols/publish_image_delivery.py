@@ -11,6 +11,13 @@ from vtkmodules.vtkWebCore import vtkWebInteractionEvent
 from .web_protocol import ParaViewWebProtocol
 
 
+def apply_modifiers(event, interactor):
+    interactor.SetShiftKey(1 if event.get("shiftKey") else 0)
+    interactor.SetControlKey(1 if event.get("ctrlKey") else 0)
+    interactor.SetAltKey(1 if event.get("altKey") else 0)
+    # interactor.SetMetaKey(1 if event.get("metaKey") else 0)
+
+
 class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
     def __init__(self, decode=True, **kwargs):
         super().__init__()
@@ -599,6 +606,8 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
         if not interactor:
             # Can't do anything.
             return
+
+        apply_modifiers(event, interactor)
 
         if "x" in event and "y" in event and interactor.GetRenderWindow():
             # Set the mouse position, so that if there are multiple
