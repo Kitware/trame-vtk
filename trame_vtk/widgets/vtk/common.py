@@ -677,6 +677,8 @@ class VtkRemoteView(HtmlElement):
 
     def __init__(self, view, ref=None, **kwargs):
         super().__init__("vtk-remote-view", **kwargs)
+        self._is_animating = False
+        self._img_quality = None
         self._helper = activate_module_for(None, self.server, view)
         self._helper.has_capabilities("web", "rendering")
 
@@ -751,6 +753,23 @@ class VtkRemoteView(HtmlElement):
         Force image to be pushed to client
         """
         self._helper.push_image(self.__view)
+
+    def start_animation(self, fps=30, quality=100, ratio=1):
+        if self._is_animating:
+            return
+
+        self._is_animating = True
+        self._img_quality = self._helper.get_current_image_quality(self.__view)
+        self._helper.start_animation(self.__view, fps, quality, ratio)
+
+    def stop_animation(self):
+        if not self._is_animating:
+            return
+
+        self._is_animating = False
+        self._helper.set_image_quality(self.__view, **self._img_quality)
+        self._helper.stop_animation(self.__view)
+        self.update()
 
     def reset_camera(self, **kwargs):
         self.server.js_call(ref=self.__ref, method="resetCamera")

@@ -396,6 +396,20 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
 
         return {"result": "success"}
 
+    @export_rpc("viewport.image.push.quality.get")
+    def get_view_quality(self, view_id):
+        response = dict(quality=1, ratio=1)
+        s_view = self.get_view(view_id)
+
+        if s_view:
+            real_view_id = s_view.GetGlobalIDAsString()
+            if real_view_id in self.tracking_views:
+                observer_info = self.tracking_views[real_view_id]
+                response["quality"] = observer_info.get("quality", 100)
+                response["ratio"] = observer_info.get("ratio", 1)
+
+        return response
+
     @export_rpc("viewport.image.push.quality")
     def set_view_quality(self, view_id, quality, ratio=1, update_linked_view=True):
         s_view = self.get_view(view_id)

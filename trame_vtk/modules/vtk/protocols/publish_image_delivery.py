@@ -93,6 +93,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
 
         next_animate_time = time.time() + 1.0 / self.target_frame_rate
         for v_id in self.views_in_animations:
+            self.tracking_views[v_id]["mtime"] = 0
             self.push_render(v_id, True)
 
         next_animate_time -= time.time()
@@ -272,6 +273,20 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
             del self.tracking_views[real_view_id]
 
         return {"result": "success"}
+
+    @export_rpc("viewport.image.push.quality.get")
+    def get_view_quality(self, view_id):
+        response = dict(quality=1, ratio=1)
+        s_view = self.get_view(view_id)
+
+        if s_view:
+            real_view_id = str(self.get_global_id(s_view))
+            if real_view_id in self.tracking_views:
+                observer_info = self.tracking_views[real_view_id]
+                response["quality"] = observer_info.get("quality", 100)
+                response["ratio"] = observer_info.get("ratio", 1)
+
+        return response
 
     @export_rpc("viewport.image.push.quality")
     def set_view_quality(self, view_id, quality, ratio=1):

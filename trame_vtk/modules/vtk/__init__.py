@@ -107,6 +107,31 @@ class Helper:
             "viewport.image.push", {"view": self.id(render_window)}
         )
 
+    def get_current_image_quality(self, render_window):
+        return self._trame_server.protocol_call(
+            "viewport.image.push.quality.get", self.id(render_window)
+        )
+
+    def set_image_quality(self, render_window, quality, ratio):
+        self._trame_server.protocol_call(
+            "viewport.image.push.quality",
+            self.id(render_window),
+            quality,
+            ratio,
+        )
+
+    def start_animation(self, render_window, fps=30, quality=100, ratio=1):
+        self._trame_server.protocol_call("viewport.image.animation.fps.max", fps)
+        self.set_image_quality(render_window, quality, ratio)
+        self._trame_server.protocol_call(
+            "viewport.image.animation.start", self.id(render_window)
+        )
+
+    def stop_animation(self, render_window):
+        self._trame_server.protocol_call(
+            "viewport.image.animation.stop", self.id(render_window)
+        )
+
     def camera(self, render_window):
         camera = render_window.GetRenderers().GetFirstRenderer().GetActiveCamera()
         return {
