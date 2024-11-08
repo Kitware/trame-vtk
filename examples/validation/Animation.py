@@ -40,6 +40,7 @@ async def animate():
         await asyncio.sleep(1.0 / state.anime_rate)
         if state.mode == "animate":
             renderer.GetActiveCamera().Azimuth(1)
+            renderWindow.Modified()
         if state.mode == "update":
             renderer.GetActiveCamera().Azimuth(1)
             ctrl.view_update()

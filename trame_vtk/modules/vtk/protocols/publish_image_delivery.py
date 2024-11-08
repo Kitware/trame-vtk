@@ -93,7 +93,6 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
 
         next_animate_time = time.time() + 1.0 / self.target_frame_rate
         for v_id in self.views_in_animations:
-            self.tracking_views[v_id]["mtime"] = 0
             self.push_render(v_id, True)
 
         next_animate_time -= time.time()
