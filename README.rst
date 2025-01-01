@@ -1,4 +1,6 @@
-VTK/ParaView widgets for trame
+.. |pypi_download| image:: https://img.shields.io/pypi/dm/trame-vtk
+
+VTK/ParaView widgets for trame |pypi_download|
 ===========================================================
 
 .. image:: https://github.com/Kitware/trame-vtk/actions/workflows/test_and_release.yml/badge.svg
