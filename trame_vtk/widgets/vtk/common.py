@@ -925,14 +925,16 @@ class VtkLocalView(HtmlElement):
         if widgets is None:
             widgets = self._widgets
 
-        if self.server.protocol:
-            delta_state = self._helper.scene(
-                self.__view,
-                new_state=False,
-                widgets=widgets,
-                orientation_axis=orientation_axis,
-            )
-            self.server.protocol.publish("trame.vtk.delta", delta_state)
+        if not self.server.protocol:
+            return
+
+        delta_state = self._helper.scene(
+            self.__view,
+            new_state=False,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
+        )
+        self.server.protocol.publish("trame.vtk.delta", delta_state)
 
         full_state = self._helper.scene(
             self.__view,
