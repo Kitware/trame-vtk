@@ -4,7 +4,6 @@ from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify
 
 import pyvista as pv
-from pyvista import examples
 from pyvista.trame.ui import plotter_ui
 
 # -----------------------------------------------------------------------------

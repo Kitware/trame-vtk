@@ -1,6 +1,5 @@
 """Validate Int64 usage with VTK.js."""
 
-import numpy as np
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify

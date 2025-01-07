@@ -1,4 +1,3 @@
-import numpy as np
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify
@@ -43,8 +42,7 @@ def toggle_edges():
 
 
 @ctrl.set("on_selection_change")
-def on_box_selection(event):
-    ...
+def on_box_selection(event): ...
 
 
 @state.change("selection_mode")

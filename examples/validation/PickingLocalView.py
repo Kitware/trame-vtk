@@ -6,7 +6,6 @@ from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
 from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
     vtkRenderWindow,
-    vtkRenderWindowInteractor,
     vtkPolyDataMapper,
     vtkActor,
 )

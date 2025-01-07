@@ -4,7 +4,6 @@ from trame.app import get_server
 from trame.ui.html import DivLayout
 from trame.widgets import vtk
 
-from vtkmodules.vtkFiltersSources import vtkConeSource
 from vtkmodules.vtkIOXML import vtkXMLRectilinearGridReader
 from vtkmodules.vtkRenderingCore import (
     vtkActor,

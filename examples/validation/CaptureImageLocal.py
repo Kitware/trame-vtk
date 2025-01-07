@@ -94,8 +94,10 @@ with SinglePageLayout(server) as layout:
         ):
             view = vtk_widgets.VtkLocalView(
                 renderWindow,
-                on_image_capture="utils.download('local.png', $event)",  # For client side handling
-                # on_image_capture=(save_image_on_server, "[new File([$event], 'screenshot.png')]"), # For server side handling
+                # For client side handling
+                on_image_capture="utils.download('local.png', $event)",
+                # For server side handling
+                # on_image_capture=(save_image_on_server, "[new File([$event], 'screenshot.png')]"),
             )
             ctrl.view_update = view.update
             ctrl.view_reset_camera = view.reset_camera

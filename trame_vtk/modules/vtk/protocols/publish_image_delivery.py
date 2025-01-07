@@ -224,13 +224,16 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
         real_view_id = str(self.get_global_id(s_view))
 
         if real_view_id not in self.tracking_views:
-            observer_callback = lambda *args, **kwargs: self.push_render(real_view_id)
-            start_callback = lambda *args, **kwargs: self.start_view_animation(
-                real_view_id
-            )
-            stop_callback = lambda *args, **kwargs: self.stop_view_animation(
-                real_view_id
-            )
+
+            def observer_callback(*_, **__):
+                return self.push_render(real_view_id)
+
+            def start_callback(*_, **__):
+                return self.start_view_animation(real_view_id)
+
+            def stop_callback(*_, **__):
+                return self.stop_view_animation(real_view_id)
+
             tag = self.app.AddObserver("UpdateEvent", observer_callback)
             tag_start = self.app.AddObserver("StartInteractionEvent", start_callback)
             tag_stop = self.app.AddObserver("EndInteractionEvent", stop_callback)

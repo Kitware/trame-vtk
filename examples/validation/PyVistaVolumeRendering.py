@@ -1,4 +1,5 @@
 """Validate volume rendering with VTK.js."""
+
 import os
 import sys
 import pyvista as pv

@@ -1,6 +1,7 @@
 """Export scene for offline rendering.
 https://kitware.github.io/vtk-js/examples/OfflineLocalView.html
 """
+
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify

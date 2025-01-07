@@ -47,9 +47,13 @@ class ParaViewWebLocalRendering(ParaViewWebProtocol):
             return state_to_return
 
         if real_view_id not in self.tracking_views:
-            observer_callback = lambda *args, **kwargs: self.publish(
-                "viewport.geometry.view.subscription", push_geometry()
-            )
+
+            def observer_callback(*_, **__):
+                return self.publish(
+                    "viewport.geometry.view.subscription",
+                    push_geometry(),
+                )
+
             tag = self.app.AddObserver("UpdateEvent", observer_callback)
             self.tracking_views[real_view_id] = {"tags": [tag], "observerCount": 1}
         else:
@@ -92,7 +96,7 @@ class ParaViewWebLocalRendering(ParaViewWebProtocol):
         new_subscription=False,
         widgets=None,
         orientation_axis=0,
-        **kwargs
+        **kwargs,
     ):
         s_view = self.get_view(view_id)
         if not s_view:

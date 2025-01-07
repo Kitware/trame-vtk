@@ -93,10 +93,17 @@ jobs:
     needs: [pre-commit, pytest]
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
+    environment:
+      name: pypi
+      url: https://pypi.org/p/trame
+    permissions:
+      id-token: write # IMPORTANT: mandatory for trusted publishing
+      contents: write # IMPORTANT: mandatory for making GitHub Releases
+
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -105,8 +112,11 @@ jobs:
           bash .fetch_externals.sh
 
       - name: Python Semantic Release
-        uses: relekang/python-semantic-release@v7.34.6
+        id: release
+        uses: relekang/python-semantic-release@v9.15.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          repository_username: __token__
-          repository_password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Publish package distributions to PyPI
+        if: steps.release.outputs.released == 'true'
+        uses: pypa/gh-action-pypi-publish@release/v1

@@ -1,7 +1,7 @@
 # for remote view
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import html, vtk as vtk_widgets, vuetify
+from trame.widgets import vtk as vtk_widgets, vuetify
 from vtkmodules.vtkFiltersSources import vtkConeSource
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
 from vtkmodules.vtkRenderingCore import (
