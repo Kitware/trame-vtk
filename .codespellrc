@@ -1,2 +1,2 @@
 [codespell]
-skip = CHANGELOG.md
+skip = CHANGELOG.md,trame_vtk/modules/vtk/serializers/data.py,trame_vtk/modules/vtk/serializers/actors.py,
