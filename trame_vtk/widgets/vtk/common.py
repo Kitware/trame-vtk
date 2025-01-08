@@ -500,14 +500,16 @@ class VtkRemoteLocalView(HtmlElement):
         if widgets is None:
             widgets = self._widgets
 
-        if self.server.protocol:
-            delta_state = self._helper.scene(
-                self.__view,
-                new_state=False,
-                widgets=widgets,
-                orientation_axis=orientation_axis,
-            )
-            self.server.protocol.publish("trame.vtk.delta", delta_state)
+        if not self.server.protocol:
+            return
+
+        delta_state = self._helper.scene(
+            self.__view,
+            new_state=False,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
+        )
+        self.server.protocol.publish("trame.vtk.delta", delta_state)
 
         full_state = self._helper.scene(
             self.__view,
@@ -527,12 +529,14 @@ class VtkRemoteLocalView(HtmlElement):
         if widgets is None:
             widgets = self._widgets
 
-        if self.server.protocol:
-            encoded_data = self._helper.export(
-                self.__view,
-                widgets=widgets,
-                orientation_axis=orientation_axis,
-            )
+        if not self.server.protocol:
+            return
+
+        encoded_data = self._helper.export(
+            self.__view,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
+        )
 
         if encoded_data:
             json_out = json.dumps(encoded_data)
@@ -549,7 +553,8 @@ class VtkRemoteLocalView(HtmlElement):
         """
         Force update to image
         """
-        self._helper.push_image(self.__view, reset_camera)
+        if self.server.protocol:
+            self._helper.push_image(self.__view, reset_camera)
 
     def set_local_rendering(self, local=True, **kwargs):
         self.server.state[self.__mode_key] = "local" if local else "remote"
@@ -753,9 +758,13 @@ class VtkRemoteView(HtmlElement):
         """
         Force image to be pushed to client
         """
-        self._helper.push_image(self.__view)
+        if self.server.protocol:
+            self._helper.push_image(self.__view)
 
     def start_animation(self, fps=30, quality=100, ratio=1):
+        if not self.server.protocol:
+            return
+
         if self._is_animating:
             return
 
@@ -764,6 +773,9 @@ class VtkRemoteView(HtmlElement):
         self._helper.start_animation(self.__view, fps, quality, ratio)
 
     def stop_animation(self):
+        if not self.server.protocol:
+            return
+
         if not self._is_animating:
             return
 
@@ -961,12 +973,14 @@ class VtkLocalView(HtmlElement):
         if widgets is None:
             widgets = self._widgets
 
-        if self.server.protocol:
-            encoded_data = self._helper.export(
-                self.__view,
-                widgets=widgets,
-                orientation_axis=orientation_axis,
-            )
+        if not self.server.protocol:
+            return
+
+        encoded_data = self._helper.export(
+            self.__view,
+            widgets=widgets,
+            orientation_axis=orientation_axis,
+        )
 
         if encoded_data:
             json_out = json.dumps(encoded_data)
