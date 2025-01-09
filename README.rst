@@ -320,3 +320,9 @@ Examples
 
 - `API <https://trame.readthedocs.io/en/latest/trame.html.vtk.html>`_
 - `VTK/ContourGeometry/DynamicLocalRemoteRendering <https://github.com/Kitware/trame/blob/f6594a02ed7e1ecc24058ffac527e010e8181e22/examples/VTK/ContourGeometry/DynamicLocalRemoteRendering.py>`_
+
+
+JavaScript dependency
+-----------------------------------------------------------
+
+This Python package bundle the ``vue-vtk-js@3.2.2``` JavaScript library. If you would like us to upgrade it, `please reach out <https://www.kitware.com/trame/>`_.
