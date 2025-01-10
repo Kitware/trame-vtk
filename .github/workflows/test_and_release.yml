@@ -62,8 +62,12 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install .
+        pip install .[dev]
         pip install -r tests/requirements.txt
+
+    - name: Install OSMesa for Linux
+      if: matrix.config.os == 'ubuntu-latest'
+      run: sudo apt-get install -y libosmesa6-dev
 
     - name: Run Tests
       run: |
