@@ -64,9 +64,6 @@ jobs:
       run: |
         pip install .
         pip install -r tests/requirements.txt
-        pip uninstall vtk -y
-        pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
-        pip install coverage
 
     - name: Run Tests
       run: |

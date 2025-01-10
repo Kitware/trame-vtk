@@ -1,5 +1,7 @@
 trame
 trame-client[test]
-pyvista
-pytest-asyncio
 trame-vuetify
+vtk>=9.4
+pyvista==0.44.1
+pytest-asyncio
+coverage
