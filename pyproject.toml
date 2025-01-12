@@ -30,6 +30,7 @@ dev = [
     "pytest",
     "pytest-asyncio",
     "coverage",
+    "nox",
 ]
 
 [build-system]
