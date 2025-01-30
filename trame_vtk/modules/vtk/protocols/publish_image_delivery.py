@@ -13,16 +13,17 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
     def __init__(self, decode=True):
         super().__init__()
         self.tracking_views = {}
-        self.last_stale_time = 0
-        self.stale_handler_count = 0
+        self.last_stale_time = {}
+        self.stale_handler_count = {}
         self.delta_stale_time_before_render = 0.5  # 0.5s
+        self.stale_count_limit = 10
         self.decode = decode
         self.views_in_animations = []
         self.target_frame_rate = 30.0
         self.min_frame_rate = 12.0
         self.max_frame_rate = 30.0
 
-    def push_render(self, v_id, ignore_animation=False):
+    def push_render(self, v_id, ignore_animation=False, stale_count=0):
         if v_id not in self.tracking_views:
             return
 
@@ -63,29 +64,36 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
             reply["id"] = v_id
             self.publish("viewport.image.push.subscription", reply)
         if stale:
-            self.last_stale_time = time.time()
-            if self.stale_handler_count == 0:
-                self.stale_handler_count += 1
+            # The image has not been encoded yet.
+            self.last_stale_time[v_id] = time.time()
+            if self.stale_handler_count[v_id] == 0:
+                self.stale_handler_count[v_id] += 1
                 schedule_callback(
                     self.delta_stale_time_before_render,
-                    lambda: self.render_stale_image(v_id),
+                    lambda: self.render_stale_image(v_id, stale_count),
                 )
         else:
-            self.last_stale_time = 0
+            self.last_stale_time[v_id] = 0
 
-    def render_stale_image(self, v_id):
-        self.stale_handler_count -= 1
+    def render_stale_image(self, v_id, stale_count=0):
+        if v_id in self.stale_handler_count and self.stale_handler_count[v_id] > 0:
+            self.stale_handler_count[v_id] -= 1
 
-        if self.last_stale_time != 0:
-            delta = time.time() - self.last_stale_time
-            if delta >= self.delta_stale_time_before_render:
-                self.push_render(v_id)
-            else:
-                self.stale_handler_count += 1
-                schedule_callback(
-                    self.delta_stale_time_before_render - delta + 0.001,
-                    lambda: self.render_stale_image(v_id),
-                )
+            if self.last_stale_time[v_id] != 0:
+                delta = time.time() - self.last_stale_time[v_id]
+                # Break on stale_count otherwise linked view will always report to be stale
+                # And loop forever
+                if (
+                    delta >= (self.delta_stale_time_before_render * (stale_count + 1))
+                    and stale_count < self.stale_count_limit
+                ):
+                    self.push_render(v_id, False, stale_count + 1)
+                elif delta < self.delta_stale_time_before_render:
+                    self.stale_handler_count[v_id] += 1
+                    schedule_callback(
+                        self.delta_stale_time_before_render - delta + 0.001,
+                        lambda: self.render_stale_image(v_id, stale_count),
+                    )
 
     def animate(self):
         if len(self.views_in_animations) == 0:
@@ -155,6 +163,17 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
         """
         begin_time = int(round(time.time() * 1000))
         view = self.get_view(options["view"])
+        if not view:
+            # The view has been deleted, we can not render it...
+            # Clean up old view state
+            real_view_id = str(self.get_global_id(view))
+            if real_view_id in self.views_in_animations:
+                self.views_in_animations.remove(real_view_id)
+            if real_view_id in self.tracking_views:
+                del self.tracking_views[real_view_id]
+            if real_view_id in self.stale_handler_count:
+                del self.stale_handler_count[real_view_id]
+
         size = view.GetSize()[0:2]
         resize = size != options.get("size", size)
         if resize:
@@ -245,6 +264,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
                 "enabled": True,
                 "quality": 100,
             }
+            self.stale_handler_count[real_view_id] = 0
         else:
             # There is an observer on this view already
             self.tracking_views[real_view_id]["observerCount"] += 1
