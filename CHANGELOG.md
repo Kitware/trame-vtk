@@ -1,6 +1,41 @@
 # CHANGELOG
 
 
+## v2.8.15 (2025-02-09)
+
+### Bug Fixes
+
+- **vtk**: Add support for multiple views using ParaView protocol as ref
+  ([`02a5568`](https://github.com/Kitware/trame-vtk/commit/02a5568a113421a3da2a7c64634bfcb4be1c837c))
+
+### Continuous Integration
+
+- Install osmesa
+  ([`97a02e5`](https://github.com/Kitware/trame-vtk/commit/97a02e5a6a165b56ff4e45110d6bd0e6223175aa))
+
+- Try to fix testing
+  ([`242da1e`](https://github.com/Kitware/trame-vtk/commit/242da1ef544d8a0368b07cc0fa33ffbf86ff239d))
+
+- Update .codespellrc to skip changelog
+  ([`166e50c`](https://github.com/Kitware/trame-vtk/commit/166e50c0f778a209324dd5da334549ff1013f894))
+
+- Update upload artifact
+  ([`bada39f`](https://github.com/Kitware/trame-vtk/commit/bada39f4a19540d642f69b442e2c62bf61a5e8b7))
+
+### Documentation
+
+- **js**: List JS dependency
+  ([`e2e3a43`](https://github.com/Kitware/trame-vtk/commit/e2e3a43fc32a0748b97338872c23fa495c9a89d1))
+
+- **readme**: Fix typo
+  ([`990ad17`](https://github.com/Kitware/trame-vtk/commit/990ad17a419aee0630cf8de93b567fa092f588f8))
+
+### Testing
+
+- Cover several vtk version
+  ([`274da78`](https://github.com/Kitware/trame-vtk/commit/274da788bcfa15abf4f453158e14ad5210895e2f))
+
+
 ## v2.8.14 (2025-01-08)
 
 ### Bug Fixes
