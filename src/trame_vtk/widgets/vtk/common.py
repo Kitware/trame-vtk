@@ -1,6 +1,7 @@
 import io
 import json
 import zipfile
+from enum import IntEnum
 
 from trame_client.widgets.core import AbstractElement
 
@@ -1130,3 +1131,60 @@ class VtkView(HtmlElement):
     @property
     def ref_name(self):
         return self._ref
+
+
+class VtkWebXRHelper(HtmlElement):
+    """
+        The VtkWebXRHelper component provides an easy way to add WebXR support to
+        a VtkView or a VtkLocalView. Just add this widget in a VtkView or
+        VtkLocalView widget and start an XR session with `start_xr()`.
+        This widget will fire the `enterXR` and `exitXR` events when an XR session
+        is effectively entered and exited.
+
+    >>> webxr_helper = vtk.VtkWebXRHelper(
+    ...     ref=...,  # Identifier for this component
+    ...     draw_controllers_ray=True,  # Enable XR controllers rays
+    ... )
+    """
+
+    _next_id = 0
+
+    class XrSessionTypes(IntEnum):
+        """
+        WebXR Session Types supported by vtk.js
+        """
+
+        HmdVR = 0
+        MobileAR = 1
+        LookingGlassVR = 2
+        HmdAR = 3
+
+    def __init__(self, ref=None, **kwargs):
+        super().__init__(
+            "vtk-webXR-helper",
+            **kwargs,
+        )
+
+        if ref is None:
+            VtkWebXRHelper._next_id += 1
+            ref = f"trame__webxr_helper_{VtkWebXRHelper._next_id}"
+
+        self.__ref = ref
+        self._attributes["ref"] = f'ref="{ref}"'
+        self._attr_names += [("draw_controllers_ray", "drawControllersRay")]
+        self._event_names += [
+            ("enter_xr", "enterXR"),
+            ("exit_xr", "exitXR"),
+        ]
+
+    def start_xr(self, session_type: XrSessionTypes):
+        """
+        Start a WebXR session
+        """
+        self.server.js_call(self.__ref, "startXR", session_type)
+
+    def stop_xr(self):
+        """
+        Stop the current WebXR session
+        """
+        self.server.js_call(self.__ref, "stopXR")
