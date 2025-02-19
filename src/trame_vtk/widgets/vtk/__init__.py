@@ -14,6 +14,7 @@ from .common import (
     VtkPolyData,
     VtkReader,
     VtkShareDataset,
+    VtkWebXRHelper,
 )
 
 __all__ = [
@@ -32,4 +33,5 @@ __all__ = [
     "VtkPolyData",
     "VtkReader",
     "VtkShareDataset",
+    "VtkWebXRHelper",
 ]
