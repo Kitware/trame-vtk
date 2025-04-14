@@ -27,7 +27,7 @@ trame-vtk can be installed with `pip <https://pypi.org/project/trame-vtk/>`_:
 Usage
 -----------------------------------------------------------
 
-The `Trame Tutorial <https://kitware.github.io/trame/guide/tutorial/>`_ is the place to go to learn how to use the library and start building your own application.
+The `Trame Tutorial <https://kitware.github.io/trame/guide/tutorial>`_ is the place to go to learn how to use the library and start building your own application.
 
 The `API Reference <https://trame.readthedocs.io/en/latest/index.html>`_ documentation provides API-level documentation.
 
@@ -42,7 +42,7 @@ This license has been chosen to match the one use by `VTK <https://github.com/Ki
 Community
 -----------------------------------------------------------
 
-`Trame <https://kitware.github.io/trame/>`_ | `Discussions <https://github.com/Kitware/trame/discussions>`_ | `Issues <https://github.com/Kitware/trame/issues>`_ | `RoadMap <https://github.com/Kitware/trame/projects/1>`_ | `Contact Us <https://www.kitware.com/contact-us/>`_
+`Trame <https://kitware.github.io/trame/>`_ | `Discussions <https://github.com/Kitware/trame/discussions>`_ | `Issues <https://github.com/Kitware/trame/issues>`_ | | `Contact Us <https://www.kitware.com/contact-us/>`_
 
 .. image:: https://zenodo.org/badge/410108340.svg
     :target: https://zenodo.org/badge/latestdoi/410108340
@@ -107,9 +107,9 @@ The component also provides a convenient method for pushing a new image to the c
 Examples
 ```````````````````````````````````````````````````````````
 
-- `VTK/SimpleCone/RemoteRendering <https://github.com/Kitware/trame/blob/master/examples/VTK/SimpleCone/RemoteRendering.py>`_
-- `VTK/ContourGeometry/RemoteRendering <https://github.com/Kitware/trame/blob/master/examples/VTK/ContourGeometry/RemoteRendering.py>`_
-- `VTK/Applications/ZarrContourViewer <https://github.com/Kitware/trame/blob/master/examples/VTK/Applications/ZarrContourViewer/app.py>`_
+- `06_vtk/01_SimpleCone/RemoteRendering <https://github.com/Kitware/trame/blob/master/examples/06_vtk/01_SimpleCone/RemoteRendering.py>`_
+- `06_vtk/02_ContourGeometry/RemoteRendering <https://github.com/Kitware/trame/blob/master/examples/06_vtk/02_ContourGeometry/RemoteRendering.py>`_
+- `06_vtk/Applications/ZarrContourViewer <https://github.com/Kitware/trame/blob/master/examples/06_vtk/Applications/ZarrContourViewer/app.py>`_
 
 
 VtkLocalView
@@ -240,9 +240,7 @@ And the action could be one of the following:
 Examples
 ```````````````````````````````````````````````````````````
 
-- `VTK/SimpleCone/LocalRendering <https://github.com/Kitware/trame/blob/master/examples/VTK/SimpleCone/LocalRendering.py>`_
-- `VTK/ContourGeometry/LocalRendering <https://github.com/Kitware/trame/blob/master/examples/VTK/ContourGeometry/LocalRendering.py>`_
-- `Tutorial/VTK/CarotidFlow <https://github.com/Kitware/trame/blob/master/examples/Tutorial/VTK/CarotidFlow.py>`_
+- `06_vtk/01_SimpleCone/LocalRendering <https://github.com/Kitware/trame/blob/master/examples/06_vtk/01_SimpleCone/LocalRendering.py>`_
 
 
 VtkRemoteLocalView
@@ -318,8 +316,8 @@ The mode is driven by the variable `{namespace}Mode` but can be provided when in
 Examples
 ```````````````````````````````````````````````````````````
 
-- `API <https://trame.readthedocs.io/en/latest/trame.html.vtk.html>`_
-- `VTK/ContourGeometry/DynamicLocalRemoteRendering <https://github.com/Kitware/trame/blob/f6594a02ed7e1ecc24058ffac527e010e8181e22/examples/VTK/ContourGeometry/DynamicLocalRemoteRendering.py>`_
+- `API <https://trame.readthedocs.io/en/latest/trame.widgets.vtk.html>`_
+- `06_vtk/02_ContourGeometry/DynamicLocalRemoteRendering <https://github.com/Kitware/trame/blob/master/examples/06_vtk/02_ContourGeometry/DynamicLocalRemoteRendering.py>`_
 
 
 JavaScript dependency
