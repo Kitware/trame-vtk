@@ -4,8 +4,8 @@ import zipfile
 
 from trame_client.widgets.core import AbstractElement
 
-from trame_vtk.modules import common
 from trame_vtk import reference_id
+from trame_vtk.modules import common
 
 try:
     import zlib  # noqa
@@ -810,6 +810,10 @@ class VtkRemoteView(HtmlElement):
     @property
     def ref_name(self):
         return self.__ref
+
+    def set_widgets(self, value):
+        self._widgets = value
+        self.update()
 
 
 class VtkShareDataset(HtmlElement):
