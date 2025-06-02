@@ -2,7 +2,7 @@
 
 set -e
 
-mkdir -p ./trame_vtk/modules/common/serve
+mkdir -p ./src/trame_vtk/modules/common/serve
 curl https://unpkg.com/vue-vtk-js@3.2.2 -Lo ./src/trame_vtk/modules/common/serve/trame-vtk.js
 curl https://kitware.github.io/vtk-js/examples/OfflineLocalView/OfflineLocalView.html -Lo ./src/trame_vtk/tools/static_viewer.html
 
