@@ -1,6 +1,6 @@
 [project]
 name = "trame-vtk"
-version = "2.8.15"
+version = "2.8.16"
 description = "VTK widgets for trame"
 authors = [
     {name = "Kitware Inc."},

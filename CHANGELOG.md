@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v2.8.16 (2025-06-02)
+
+### Bug Fixes
+
+- Skip bundling tests and examples
+  ([`ad46ed4`](https://github.com/Kitware/trame-vtk/commit/ad46ed4e488e167fd2bcce0dc17bf187ba8b6cfd))
+
+- **LICENSE**: Update sym link
+  ([`9ccf71c`](https://github.com/Kitware/trame-vtk/commit/9ccf71c0fe4855d4f16c70454331e309968baa85))
+
+### Continuous Integration
+
+- Fix fetch/check scripts
+  ([`fe6a0e0`](https://github.com/Kitware/trame-vtk/commit/fe6a0e041f6b2a36b31b907ba1d70a8c7ee3fef2))
+
+- Update path
+  ([`15bc970`](https://github.com/Kitware/trame-vtk/commit/15bc970ee60e21434d8db97b6fadacad24ce2b4c))
+
+### Documentation
+
+- Update links in readme
+  ([`f73f046`](https://github.com/Kitware/trame-vtk/commit/f73f0465a9fd9989c07244ae666429e68b97cd53))
+
+
 ## v2.8.15 (2025-02-09)
 
 ### Bug Fixes
