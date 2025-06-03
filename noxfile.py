@@ -11,7 +11,7 @@ def tests(session, vtk):
     session.install("trame-vuetify")
     session.install("pytest-asyncio")
     session.install("coverage")
-    session.install("pyvista==0.45.2")
+    session.install("pyvista[all]==0.45.2")
     session.install(f"vtk{vtk}", "--extra-index-url", "https://wheels.vtk.org")
 
     session.run("pytest", "--firefox", "--headless")
