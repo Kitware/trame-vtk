@@ -97,7 +97,7 @@ with SinglePageLayout(server) as layout:
             with vuetify.VContainer(
                 fluid=True, classes="pa-0 fill-height", style="width: 50%;"
             ):
-                remote = VtkRemoteView(renWin)
+                VtkRemoteView(renWin, ctx_name="remote")
 
     # hide footer
     layout.footer.hide()
