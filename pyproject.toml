@@ -40,9 +40,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build]
 include = [
-  "/src/trame_vtk/**/*.py",
+  "/src/**/*.py",
+  "/src/**/*.html",
   "/src/trame_vtk/modules/common/serve/**",
-  "/src/trame/**/*.py",
 ]
 
 [tool.hatch.build.targets.wheel]
