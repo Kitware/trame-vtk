@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.8.17 (2025-06-03)
+
+### Bug Fixes
+
+- Properly bundle static_viewer.html
+  ([`89df689`](https://github.com/Kitware/trame-vtk/commit/89df689f124f7b08835efdfed4216c347d84c391))
+
+
 ## v2.8.16 (2025-06-02)
 
 ### Bug Fixes
