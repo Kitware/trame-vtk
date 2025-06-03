@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 import pytest
 from seleniumbase import SB
@@ -11,11 +12,17 @@ BASELINE_TEST = (
 
 
 @pytest.mark.parametrize("server_path", ["examples/validation/VolumeRendering.py"])
-def test_rendering(server, baseline_image):
+@pytest.mark.asyncio
+async def test_rendering(server, baseline_image):
     with SB() as sb:
         url = f"http://127.0.0.1:{server.port}/"
         sb.open(url)
         set_browser_size(sb, 600, 300)
         sb.assert_exact_text("1", ".readyCount")
         sb.check_window(name="init", level=3)
+
+        # Try to make sure the remote rendering has the proper size
+        await asyncio.sleep(0.1)
+
+        # Grab and compare baseline
         baseline_comparison(sb, BASELINE_TEST, 0.1)
