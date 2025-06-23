@@ -2,15 +2,11 @@
 name = "trame-vtk"
 version = "2.8.17"
 description = "VTK widgets for trame"
-authors = [
-    {name = "Kitware Inc."},
-]
-dependencies = [
-    "trame-client>=3.4,<4",
-]
+authors = [{ name = "Kitware Inc." }]
+dependencies = ["trame-client>=3.4,<4"]
 requires-python = ">=3.9"
 readme = "README.rst"
-license = {text = "BSD License"}
+license = { text = "BSD License" }
 keywords = ["Python", "Interactive", "Web", "Application", "Framework"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -24,14 +20,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pre-commit",
-    "ruff",
-    "pytest",
-    "pytest-asyncio",
-    "coverage",
-    "nox",
-]
+dev = ["pre-commit", "ruff", "pytest", "pytest-asyncio", "coverage", "nox"]
 
 [build-system]
 requires = ["hatchling"]
@@ -40,21 +29,16 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build]
 include = [
-  "/src/**/*.py",
-  "/src/**/*.html",
-  "/src/trame_vtk/modules/common/serve/**",
+    "/src/**/*.py",
+    "/src/**/*.html",
+    "/src/trame_vtk/modules/common/serve/**",
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = [
-    "src/trame_vtk",
-    "src/trame",
-]
+packages = ["src/trame_vtk", "src/trame"]
 
 [tool.semantic_release]
-version_toml = [
-    "pyproject.toml:project.version",
-]
+version_toml = ["pyproject.toml:project.version"]
 build_command = """
   python -m venv .venv
   source .venv/bin/activate
@@ -73,7 +57,7 @@ target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "W", "F"]
-ignore = []
+ignore = ["E402"]
 fixable = ["ALL"]
 unfixable = []
 

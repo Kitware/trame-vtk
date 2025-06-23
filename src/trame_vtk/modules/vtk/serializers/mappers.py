@@ -1,6 +1,11 @@
 import logging
+import os
+import importlib
+import sys
 
-from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 from .registry import class_name
 from .serialize import serialize

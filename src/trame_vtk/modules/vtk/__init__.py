@@ -1,18 +1,21 @@
 import warnings
+import importlib
+import os
+import sys
 
 from .core import HybridView
 from .serializers import mesh as vtk_mesh
 
 try:
-    import vtkmodules  # noqa
-
+    vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+    sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
     HAS_VTK = True
 except ImportError:
     warnings.warn("VTK is not installed.")
     HAS_VTK = False
 
 try:
-    from vtkmodules.vtkWebCore import vtkWebApplication
+    from vtk_module.vtkWebCore import vtkWebApplication
 
     HAS_VTK_WEB = True
 except ImportError:

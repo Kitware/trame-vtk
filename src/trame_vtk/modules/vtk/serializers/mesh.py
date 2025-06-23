@@ -1,9 +1,15 @@
 import base64
 
 import numpy as np
+import os
+import importlib
+import sys
 
-from vtkmodules.util.numpy_support import vtk_to_numpy
-from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.util.numpy_support import vtk_to_numpy
+from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 
 def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
