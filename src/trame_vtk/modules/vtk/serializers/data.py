@@ -1,7 +1,14 @@
 import logging
 
-from vtkmodules.vtkFiltersGeometry import vtkCompositeDataGeometryFilter
-from vtkmodules.vtkFiltersGeometry import vtkDataSetSurfaceFilter
+import os
+import importlib
+import sys
+
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkFiltersGeometry import vtkCompositeDataGeometryFilter
+from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 from .helpers import extract_required_fields, get_array_description
 from .registry import class_name

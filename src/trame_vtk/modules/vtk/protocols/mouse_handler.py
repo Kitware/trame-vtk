@@ -1,6 +1,12 @@
 import math
+import os
+import importlib
+import sys
 
-from vtkmodules.vtkWebCore import vtkWebInteractionEvent
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkWebCore import vtkWebInteractionEvent
 
 from wslink import register as export_rpc
 
