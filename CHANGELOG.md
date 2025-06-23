@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v2.9.0 (2025-06-23)
+
+### Continuous Integration
+
+- Skip volume rendering testing
+  ([`dc229ec`](https://github.com/Kitware/trame-vtk/commit/dc229ec2f07ad80392ce507be0e0d40471bacaf5))
+
+### Features
+
+- **vtk**: Enable custom VTK build
+  ([`448530a`](https://github.com/Kitware/trame-vtk/commit/448530a6456bdfebedd0b356ea5632a345dbc301))
+
+
 ## v2.8.17 (2025-06-03)
 
 ### Bug Fixes
