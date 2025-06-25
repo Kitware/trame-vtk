@@ -121,6 +121,7 @@ The vtkRenderWindow is only used to retrieve the scene data and parameters (colo
 By relying on the same vtkRenderWindow, you can easily switch from a `VtkRemoteView` to a `VtkLocalView` or vice-versa.
 This component gives you controls on how you want to map mouse interaction with the camera.
 The default setting mimic default VTK interactor style so you will rarely have to override to the `interactor_settings`.
+The VtkLocalView supports WebXR thanks to the `VtkWebXRHelper` component. Please refer to the examples for details on how to use it.
 
 How to use it?
 ```````````````````````````````````````````````````````````
@@ -323,4 +324,4 @@ Examples
 JavaScript dependency
 -----------------------------------------------------------
 
-This Python package bundle the ``vue-vtk-js@3.2.2`` JavaScript library. If you would like us to upgrade it, `please reach out <https://www.kitware.com/trame/>`_.
+This Python package bundle the ``vue-vtk-js@3.3.0`` JavaScript library. If you would like us to upgrade it, `please reach out <https://www.kitware.com/trame/>`_.
