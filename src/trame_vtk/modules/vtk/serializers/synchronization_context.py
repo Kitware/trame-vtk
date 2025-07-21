@@ -2,8 +2,14 @@ import io
 import logging
 import time
 import zipfile
+import os
+import importlib
+import sys
 
-from vtkmodules.vtkCommonCore import vtkTypeUInt32Array, vtkFloatArray, vtkDoubleArray
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkCommonCore import vtkTypeUInt32Array, vtkFloatArray, vtkDoubleArray
 
 from .utils import base64_encode, wrap_id
 
