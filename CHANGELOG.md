@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.9.1 (2025-07-21)
+
+### Bug Fixes
+
+- **vtk-module**: Fix import for custom vtk module
+  ([`090b504`](https://github.com/Kitware/trame-vtk/commit/090b504e8fd28cbce3705628f72cf2fd6ff12e56))
+
+
 ## v2.9.0 (2025-06-23)
 
 ### Continuous Integration
