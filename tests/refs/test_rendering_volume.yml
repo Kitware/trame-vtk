@@ -1,0 +1,6 @@
+- document:
+  - banner:
+    - button
+    - text: VTK Volume Rendering 1
+  - main:
+    - img

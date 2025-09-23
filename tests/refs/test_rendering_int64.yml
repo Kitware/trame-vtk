@@ -1,0 +1,6 @@
+- document:
+  - banner:
+    - button
+    - text: Int64 Validation 1
+  - main:
+    - img

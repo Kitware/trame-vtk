@@ -6,11 +6,9 @@ ROOT_PATH = Path(__file__).parent.parent.absolute()
 HELPER = FixtureHelper(ROOT_PATH)
 
 
-@pytest.fixture()
-def baseline_image():
-    HELPER.remove_page_urls()
-    yield
-    HELPER.remove_page_urls()
+@pytest.fixture
+def ref_dir() -> Path:
+    return Path(__file__).parent / "refs"
 
 
 @pytest.fixture

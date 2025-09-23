@@ -10,7 +10,7 @@ from trame_client.utils.testing import (
 )
 
 
-@pytest.mark.parametrize("server_path", ["examples/validation/PyVistaLookupTable.py"])
+@pytest.mark.parametrize("server_path", ["examples/validation/VolumeRendering.py"])
 def test_rendering(server, ref_dir: Path):
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -21,10 +21,10 @@ def test_rendering(server, ref_dir: Path):
 
         page.set_viewport_size({"width": 600, "height": 300})
 
-        # Wait for the page to get ready
+        # Try to make sure the remote rendering has the proper size
         time.sleep(1)
 
         expect(page.locator(".readyCount")).to_have_text("1")
 
-        assert_snapshot_matches(page, ref_dir, "test_rendering_lut")
-        assert_screenshot_matches(page, ref_dir, "test_rendering_lut", threshold=0.1)
+        assert_snapshot_matches(page, ref_dir, "test_rendering_volume")
+        assert_screenshot_matches(page, ref_dir, "test_rendering_volume", threshold=0.1)
