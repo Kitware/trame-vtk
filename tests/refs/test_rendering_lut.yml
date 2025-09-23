@@ -1,0 +1,6 @@
+- document:
+  - banner:
+    - button
+    - text: PyVista Lookup Table N Colors 1
+  - main:
+    - img

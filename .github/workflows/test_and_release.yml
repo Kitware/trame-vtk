@@ -64,6 +64,7 @@ jobs:
       run: |
         pip install .[dev]
         pip install -r tests/requirements.txt
+        playwright install
 
     - name: Install OSMesa for Linux
       if: matrix.config.os == 'ubuntu-latest'
@@ -72,7 +73,7 @@ jobs:
     - name: Run Tests
       run: |
         # Run the tests with coverage so we get a coverage report too
-        coverage run --source . -m pytest ./tests --firefox --headless --html=report-${{ matrix.config.name }}-${{ matrix.python-version }}.html
+        coverage run --source . -m pytest ./tests
         # Print the coverage report
         coverage report -m
 
@@ -85,9 +86,9 @@ jobs:
       with:
         name: pytest-results-${{  matrix.config.name }}
         path: |
-          visual_baseline/**/*.png
+          tests/refs/*.yml
+          tests/refs/**/*.png
           assets/**
-          report-*.html
         retention-days: 1
 
   release:
