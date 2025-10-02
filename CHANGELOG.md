@@ -1,6 +1,33 @@
 # CHANGELOG
 
 
+## v2.10.0 (2025-10-02)
+
+### Bug Fixes
+
+- **vue-vtk-js**: Bump vue-vtk-js to 3.3.1
+  ([`1f99fd5`](https://github.com/Kitware/trame-vtk/commit/1f99fd5312057a4c95ea70c78edca285a839b08d))
+
+### Continuous Integration
+
+- Use playwright in tests instead of selenium
+  ([`7092f68`](https://github.com/Kitware/trame-vtk/commit/7092f688cc961882a89526e57ada62fcb5bede0d))
+
+Selenium was having issues doing 3D rendering.
+
+Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
+
+### Documentation
+
+- **webxr**: Add webxr example
+  ([`84b2bb3`](https://github.com/Kitware/trame-vtk/commit/84b2bb3517df11cfcb6dd8dbb0a8206b9b30af97))
+
+### Features
+
+- Add WebXR Helper widget
+  ([`beded63`](https://github.com/Kitware/trame-vtk/commit/beded63f1b6268cc30120646b83770a679a57d0a))
+
+
 ## v2.9.1 (2025-07-21)
 
 ### Bug Fixes
