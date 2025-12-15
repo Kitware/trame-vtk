@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.10.1 (2025-12-15)
+
+### Bug Fixes
+
+- **camera**: Update vue-vtk-js
+  ([`582cb80`](https://github.com/Kitware/trame-vtk/commit/582cb8048252668e2ac329cb26a20cdc1acf23d9))
+
+
 ## v2.10.0 (2025-10-02)
 
 ### Bug Fixes
