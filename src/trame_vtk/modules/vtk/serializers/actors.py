@@ -69,7 +69,7 @@ def generic_actor_serializer(parent, actor, actor_id, context, depth):
                 user_matrix[idx] = matrix.GetElement(i, j)
         add_on["userMatrix"] = user_matrix
 
-    if actor_visibility == 0 or (mapper_instance and property_instance):
+    if mapper_instance and property_instance:
         return {
             "parent": reference_id(parent),
             "id": actor_id,
