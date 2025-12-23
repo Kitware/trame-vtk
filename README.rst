@@ -324,4 +324,4 @@ Examples
 JavaScript dependency
 -----------------------------------------------------------
 
-This Python package bundle the ``vue-vtk-js@3.3.0`` JavaScript library. If you would like us to upgrade it, `please reach out <https://www.kitware.com/trame/>`_.
+This Python package bundle the ``vue-vtk-js@3.3.4`` JavaScript library. If you would like us to upgrade it, `please reach out <https://www.kitware.com/trame/>`_.
