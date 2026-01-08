@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v2.10.2 (2026-01-08)
+
+### Bug Fixes
+
+- **vue-vtk-js**: Bump vue-vtk-js to 3.3.4
+  ([`62e9712`](https://github.com/Kitware/trame-vtk/commit/62e97127bbc0fdcb0f9e95cfedff03ec874c9a9f))
+
+### Continuous Integration
+
+- Update baseline for test_rendering_lut and test_big_int
+  ([`b73e575`](https://github.com/Kitware/trame-vtk/commit/b73e57591f8f97ddf260aebfec9f64059d1898bc))
+
+
 ## v2.10.1 (2025-12-15)
 
 ### Bug Fixes
