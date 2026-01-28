@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v2.10.3 (2026-01-28)
+
+### Bug Fixes
+
+- **actor**: Prevent serialization of actors without a mapper
+  ([`b116bc9`](https://github.com/Kitware/trame-vtk/commit/b116bc9d56824ffcd21722ffbd312b90be632a1b))
+
+Fix bug where oglmapper wass undefined in traverseOpaquePass for an actor whose visibility got
+  toggled twice
+
+
 ## v2.10.2 (2026-01-08)
 
 ### Bug Fixes
