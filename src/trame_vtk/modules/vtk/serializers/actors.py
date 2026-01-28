@@ -3,7 +3,7 @@ import logging
 from .registry import class_name
 from .serialize import serialize
 from .utils import reference_id, rgb_float_to_hex, wrap_id
-from .cache import cache_properties
+from .cache import cache_properties, get_cached_property
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,11 @@ def generic_actor_serializer(parent, actor, actor_id, context, depth):
                 user_matrix[idx] = matrix.GetElement(i, j)
         add_on["userMatrix"] = user_matrix
 
-    if actor_visibility == 0 or (mapper_instance and property_instance):
+    should_serialize = mapper_instance and property_instance
+    if get_cached_property(actor_id, "visibility") and not actor_visibility:
+        should_serialize = True
+
+    if should_serialize:
         return {
             "parent": reference_id(parent),
             "id": actor_id,

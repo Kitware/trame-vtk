@@ -1,6 +1,10 @@
 PROP_CACHE = {}
 
 
+def get_cached_property(obj_id, prop):
+    return PROP_CACHE.get(obj_id, {}).get(prop, None)
+
+
 def cache_properties(obj_id, ctx, props):
     if not ctx.ignore_last_dependencies:
         prev = PROP_CACHE.get(obj_id)
