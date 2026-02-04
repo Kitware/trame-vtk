@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v2.11.0 (2026-02-04)
+
+### Continuous Integration
+
+- Update workflow for osmesa and py3.12
+  ([`b18b4f6`](https://github.com/Kitware/trame-vtk/commit/b18b4f6b19f061d3c8a5c717410ae7f7dc07b967))
+
+### Features
+
+- Add served directory versioning
+  ([`c9463ef`](https://github.com/Kitware/trame-vtk/commit/c9463ef898671b1d9e714fd8c288c872e9373403))
+
+
 ## v2.10.3 (2026-01-28)
 
 ### Bug Fixes
