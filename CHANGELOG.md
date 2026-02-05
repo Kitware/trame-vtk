@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v2.11.1 (2026-02-05)
+
+### Bug Fixes
+
+- **vtkLocalView**: Fix push_camera method
+  ([`1884ced`](https://github.com/Kitware/trame-vtk/commit/1884ced08ddb73312366289e7cb01acc3e4b7ed8))
+
+Update how camera is get in vtkLocalView with a ParaView RenderView
+
+
 ## v2.11.0 (2026-02-04)
 
 ### Continuous Integration
