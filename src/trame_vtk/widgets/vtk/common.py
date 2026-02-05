@@ -1012,7 +1012,13 @@ class VtkLocalView(HtmlElement):
 
     def push_camera(self, camera=None, center_of_rotation=None, **kwargs):
         if camera is None:
-            camera = self.__view.GetRenderers().GetFirstRenderer().GetActiveCamera()
+            if hasattr(self.__view, "GetRenderers"):  # VTK
+                camera = self.__view.GetRenderers().GetFirstRenderer().GetActiveCamera()
+            elif hasattr(self.__view, "GetActiveCamera"):  # ParaView
+                camera = self.__view.GetActiveCamera()
+
+        if camera is None:
+            return
 
         camera_params = dict(
             position=camera.GetPosition(),
