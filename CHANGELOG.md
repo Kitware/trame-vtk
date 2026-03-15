@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.11.2 (2026-03-15)
+
+### Bug Fixes
+
+- **static_viewer**: Fetch latest static viewer
+  ([`d4d8d18`](https://github.com/Kitware/trame-vtk/commit/d4d8d18e6905bac55b924c0c3af761e5a47f3be5))
+
+
 ## v2.11.1 (2026-02-05)
 
 ### Bug Fixes
