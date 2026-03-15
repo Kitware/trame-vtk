@@ -18,7 +18,7 @@ def write_html(data: bytes, output: TextIO):
         for line in srcHtml:
             if "</body>" in line:
                 output.write("<script>\n")
-                output.write("var container = document.querySelector('.content');\n")
+                output.write("var container = document.querySelector('#vtk-root');\n")
                 output.write('var base64Str = "%s";\n\n' % base64Content)
                 output.write("OfflineLocalView.load(container, { base64Str });\n")
                 output.write("</script>\n")
