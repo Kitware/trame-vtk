@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.11.3 (2026-03-15)
+
+### Bug Fixes
+
+- **tool**: Vtksz2html use new dom container
+  ([`4b7fe32`](https://github.com/Kitware/trame-vtk/commit/4b7fe32052189489f73c95b9c854bf0b72107c79))
+
+
 ## v2.11.2 (2026-03-15)
 
 ### Bug Fixes
