@@ -9,6 +9,13 @@ from .utils import array_types_mapping, get_js_array_type, hash_data_array, refe
 # -----------------------------------------------------------------------------
 
 
+def is_array_in(array, arrays):
+    for a in arrays:
+        if a is array:
+            return True
+    return False
+
+
 def data_table_to_list(data_table):
     data_type = array_types_mapping[data_table.GetDataType()]
     element_size = struct.calcsize(data_type)
@@ -148,7 +155,7 @@ def extract_required_fields(
     ]:
         for array_index in range(field_data.GetNumberOfArrays()):
             array = field_data.GetArray(array_index)
-            if export_all or array in arrays_to_export:
+            if export_all or is_array_in(array, arrays_to_export):
                 array_meta = get_array_description(array, context)
                 if array_meta:
                     array_meta["location"] = location
