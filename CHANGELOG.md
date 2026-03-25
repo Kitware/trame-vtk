@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.11.4 (2026-03-25)
+
+### Bug Fixes
+
+- **array**: Don't rely on hashable arrays
+  ([`e740a95`](https://github.com/Kitware/trame-vtk/commit/e740a9552a4ba285d285b88c63f9571474c82988))
+
+
 ## v2.11.3 (2026-03-15)
 
 ### Bug Fixes
