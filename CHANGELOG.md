@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.11.5 (2026-03-25)
+
+### Bug Fixes
+
+- **static_viewer**: Update static viewer from vtk.js
+  ([`3bb5f16`](https://github.com/Kitware/trame-vtk/commit/3bb5f16b1f7aa658dc14f6f945fafc3acf5faaf3))
+
+
 ## v2.11.4 (2026-03-25)
 
 ### Bug Fixes
