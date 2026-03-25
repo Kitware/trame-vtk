@@ -2,8 +2,7 @@ import io
 import struct
 import time
 
-from .utils import array_types_mapping, get_js_array_type, reference_id, hash_data_array
-
+from .utils import array_types_mapping, get_js_array_type, hash_data_array, reference_id
 
 # -----------------------------------------------------------------------------
 # Array helpers
@@ -102,7 +101,7 @@ def get_array_description(array, context, **kwargs):
 def extract_required_fields(
     extracted_fields, parent, dataset, context, requested_fields=["Normals", "TCoords"]
 ):
-    arrays_to_export = set()
+    arrays_to_export = []
     export_all = "*" in requested_fields
     # Identify arrays to export
     if not export_all:
@@ -120,22 +119,22 @@ def extract_required_fields(
                 array_to_export = dataset.GetPointData().GetArray(color_array_name)
                 if array_to_export is None:
                     array_to_export = dataset.GetPointData().GetScalars()
-                arrays_to_export.add(array_to_export)
+                arrays_to_export.append(array_to_export)
             if scalar_visibility and scalar_mode in (2, 4):
                 array_to_export = dataset.GetCellData().GetArray(color_array_name)
                 if array_to_export is None:
                     array_to_export = dataset.GetCellData().GetScalars()
-                arrays_to_export.add(array_to_export)
+                arrays_to_export.append(array_to_export)
             if scalar_visibility and scalar_mode == 0:
                 array_to_export = dataset.GetPointData().GetScalars()
                 if array_to_export is None:
                     array_to_export = dataset.GetCellData().GetScalars()
-                arrays_to_export.add(array_to_export)
+                arrays_to_export.append(array_to_export)
 
         if parent and parent.IsA("vtkTexture") and dataset.GetPointData().GetScalars():
-            arrays_to_export.add(dataset.GetPointData().GetScalars())
+            arrays_to_export.append(dataset.GetPointData().GetScalars())
 
-        arrays_to_export.update(
+        arrays_to_export.extend(
             [
                 getattr(dataset.GetPointData(), "Get" + requested_field, lambda: None)()
                 for requested_field in requested_fields
