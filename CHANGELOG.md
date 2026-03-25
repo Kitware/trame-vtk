@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.11.6 (2026-03-25)
+
+### Bug Fixes
+
+- **array**: Skip hash and eq usage on array
+  ([`12e2d35`](https://github.com/Kitware/trame-vtk/commit/12e2d35b5d06c949994a2224fae897b6cb9c3930))
+
+
 ## v2.11.5 (2026-03-25)
 
 ### Bug Fixes
