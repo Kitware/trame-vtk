@@ -13,6 +13,8 @@ VTK integration in trame allows you to create rich visualization and data proces
 Several components are available so you can leverage VTK either for its data processing and/or rendering.
 trame lets you choose if you want to leverage Remote Rendering or if the client should do the rendering by leveraging vtk.js under the hood.
 
+.. image:: https://raw.githubusercontent.com/Kitware/trame-vtk/master/trame-vtk.jpg
+    :alt: Example of trame-vtk usage
 
 Installing
 -----------------------------------------------------------
