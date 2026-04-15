@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.11.7 (2026-04-13)
+
+### Bug Fixes
+
+- **static_viewer**: Include in repo to skip auto fetch on vtk.js
+  ([`9302c6b`](https://github.com/Kitware/trame-vtk/commit/9302c6b0309e3961323aea882621ac8922d59524))
+
+
 ## v2.11.6 (2026-03-25)
 
 ### Bug Fixes

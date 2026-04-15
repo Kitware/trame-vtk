@@ -1,2 +1,2 @@
 [codespell]
-skip = CHANGELOG.md,src/trame_vtk/modules/vtk/serializers/data.py,src/trame_vtk/modules/vtk/serializers/actors.py
+skip = CHANGELOG.md,src/trame_vtk/modules/vtk/serializers/data.py,src/trame_vtk/modules/vtk/serializers/actors.py,src/trame_vtk/tools/static_viewer.html,src/trame_vtk/modules/common/serve/trame-vtk.js

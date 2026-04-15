@@ -2,9 +2,9 @@ name: Test and Release
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   pre-commit:
@@ -30,10 +30,7 @@ jobs:
       matrix:
         python-version: ["3.12"]
         config:
-        - {
-            name: "Linux",
-            os: ubuntu-latest
-          }
+          - { name: "Linux", os: ubuntu-latest }
         # - {
         #     name: "MacOSX",
         #     os: macos-latest
@@ -48,50 +45,54 @@ jobs:
         shell: bash
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install trame-vtk.js
-      run: |
-        bash .fetch_externals.sh
+      # -----------------------------------------------------------------------
+      # Make that step a manual one and pushing files to the repo
+      # -----------------------------------------------------------------------
+      # - name: Install trame-vtk.js
+      #   run: |
+      #     bash .fetch_externals.sh
+      # -----------------------------------------------------------------------
 
-    - name: Install dependencies
-      run: |
-        pip install .[dev]
-        pip install -r tests/requirements.txt
-        playwright install
+      - name: Install dependencies
+        run: |
+          pip install .[dev]
+          pip install -r tests/requirements.txt
+          playwright install
 
-    - name: Install OSMesa for Linux
-      if: matrix.config.os == 'ubuntu-latest'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libosmesa6-dev
+      - name: Install OSMesa for Linux
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libosmesa6-dev
 
-    - name: Run Tests
-      run: |
-        # Run the tests with coverage so we get a coverage report too
-        coverage run --source . -m pytest ./tests
-        # Print the coverage report
-        coverage report -m
+      - name: Run Tests
+        run: |
+          # Run the tests with coverage so we get a coverage report too
+          coverage run --source . -m pytest ./tests
+          # Print the coverage report
+          coverage report -m
 
-    - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v3
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
 
-    - name: Upload pytest test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: pytest-results-${{  matrix.config.name }}
-        path: |
-          tests/refs/*.yml
-          tests/refs/**/*.png
-          assets/**
-        retention-days: 1
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-results-${{  matrix.config.name }}
+          path: |
+            tests/refs/*.yml
+            tests/refs/**/*.png
+            assets/**
+          retention-days: 1
 
   release:
     needs: [pre-commit, pytest]
@@ -103,7 +104,6 @@ jobs:
     permissions:
       id-token: write # IMPORTANT: mandatory for trusted publishing
       contents: write # IMPORTANT: mandatory for making GitHub Releases
-
 
     steps:
       - name: Checkout
