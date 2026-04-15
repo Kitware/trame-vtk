@@ -5,12 +5,6 @@ ci:
 exclude: ^.cruft.json|.copier-answers.yml$
 
 repos:
-  - repo: https://github.com/adamchainz/blacken-docs
-    rev: "1.19.1"
-    hooks:
-      - id: blacken-docs
-        additional_dependencies: [black==24.*]
-
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v5.0.0"
     hooks:
@@ -42,20 +36,11 @@ repos:
         args: [--prose-wrap=always]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.9.1"
+    rev: "v0.15.10"
     hooks:
       - id: ruff
         args: ["--fix", "--show-fixes"]
       - id: ruff-format
-
-  # - repo: https://github.com/pre-commit/mirrors-mypy
-  #   rev: "v1.14.1"
-  #   hooks:
-  #     - id: mypy
-  #       files: src|tests
-  #       args: []
-  #       additional_dependencies:
-  #         - pytest
 
   - repo: https://github.com/codespell-project/codespell
     rev: "v2.3.0"
@@ -67,19 +52,13 @@ repos:
     hooks:
       - id: shellcheck
 
-  - repo: local
-    hooks:
-      - id: disallow-caps
-        name: Disallow improper capitalization
-        language: pygrep
-        entry: PyBind|Numpy|Cmake|CCache|Github|PyTest
-        exclude: .pre-commit-config.yaml
-
   - repo: https://github.com/abravalheri/validate-pyproject
-    rev: "v0.23"
+    rev: "v0.25"
     hooks:
       - id: validate-pyproject
-        additional_dependencies: ["validate-pyproject-schema-store[all]"]
+        additional_dependencies:
+          - validate-pyproject[all]
+          - validate-pyproject-schema-store
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: "0.31.0"
@@ -87,10 +66,3 @@ repos:
       - id: check-dependabot
       - id: check-github-workflows
       - id: check-readthedocs
-
-  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.20.0
-    hooks:
-      - id: commitlint
-        stages: [commit-msg]
-        additional_dependencies: ["@commitlint/config-conventional"]
