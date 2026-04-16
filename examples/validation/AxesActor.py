@@ -1,8 +1,10 @@
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, vtk as vtk_widgets
-
+from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkFiltersSources import vtkConeSource
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
+from vtkmodules.vtkRenderingAnnotation import vtkAxesActor
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkPolyDataMapper,
@@ -10,10 +12,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkRenderWindowInteractor,
 )
-from vtkmodules.vtkRenderingAnnotation import vtkAxesActor
-from vtkmodules.vtkCommonTransforms import vtkTransform
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify
 
 renderer = vtkRenderer()
 renderWindow = vtkRenderWindow()
@@ -46,15 +47,17 @@ ctrl = server.controller
 with SinglePageLayout(server) as layout:
     layout.title.set_text("Hello trame")
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vuetify.VCol(classes="pa-0 ma-1 fill-height"):
-                vtk_widgets.VtkLocalView(renderWindow)
-            with vuetify.VCol(classes="pa-0 ma-1 fill-height"):
-                vtk_widgets.VtkRemoteView(renderWindow, interactive_ratio=1)
+        ),
+    ):
+        with vuetify.VCol(classes="pa-0 ma-1 fill-height"):
+            vtk_widgets.VtkLocalView(renderWindow)
+        with vuetify.VCol(classes="pa-0 ma-1 fill-height"):
+            vtk_widgets.VtkRemoteView(renderWindow, interactive_ratio=1)
 
 
 if __name__ == "__main__":

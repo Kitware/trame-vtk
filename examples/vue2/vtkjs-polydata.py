@@ -1,8 +1,9 @@
 from trame.app import get_server
-from trame.widgets import vuetify, vtk as vtk_widgets
 from trame.ui.vuetify import SinglePageLayout
-
 from vtkmodules.vtkFiltersSources import vtkConeSource
+
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -19,7 +20,7 @@ cone_generator = vtkConeSource()
 
 
 @state.change("resolution")
-def update_cone(resolution, **kwargs):
+def update_cone(resolution, **_):
     cone_generator.SetResolution(resolution)
     ctrl.mesh_update()
 
@@ -46,19 +47,19 @@ with SinglePageLayout(server) as layout:
         with vuetify.VBtn(icon=True, click=update_reset_resolution):
             vuetify.VIcon("mdi-undo-variant")
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vtk_widgets.VtkView() as view:
-                ctrl.view_update = view.update
-                ctrl.view_reset_camera = view.reset_camera
-                with vtk_widgets.VtkGeometryRepresentation():
-                    html_polydata = vtk_widgets.VtkPolyData(
-                        "cone", dataset=cone_generator
-                    )
-                    ctrl.mesh_update = html_polydata.update
+        ),
+        vtk_widgets.VtkView() as view,
+    ):
+        ctrl.view_update = view.update
+        ctrl.view_reset_camera = view.reset_camera
+        with vtk_widgets.VtkGeometryRepresentation():
+            html_polydata = vtk_widgets.VtkPolyData("cone", dataset=cone_generator)
+            ctrl.mesh_update = html_polydata.update
 
 
 server.start()

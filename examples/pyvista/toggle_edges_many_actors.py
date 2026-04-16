@@ -1,9 +1,9 @@
 # for remote view
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vtk as vtk_widgets, vuetify
 from vtkmodules.vtkFiltersSources import vtkConeSource
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkPolyDataMapper,
@@ -11,7 +11,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkRenderWindowInteractor,
 )
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -79,18 +81,20 @@ with SinglePageLayout(server) as layout:
         vuetify.VSpacer()
         vuetify.VBtn("Toggle edges", click=toggle_edges)
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            local_view = vtk_widgets.VtkLocalView(
-                renderWindow,
-                ref="view_local",
-            )
-            ctrl.view_update = local_view.update
-            ctrl.view_reset_camera = local_view.reset_camera
-            ctrl.view_push_camera = local_view.push_camera
+        ),
+    ):
+        local_view = vtk_widgets.VtkLocalView(
+            renderWindow,
+            ref="view_local",
+        )
+        ctrl.view_update = local_view.update
+        ctrl.view_reset_camera = local_view.reset_camera
+        ctrl.view_push_camera = local_view.push_camera
 
 
 # -----------------------------------------------------------------------------

@@ -1,10 +1,10 @@
 import numpy as np
-from trame.app import get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify
-
 import pyvista as pv
 from pyvista.trame.ui import plotter_ui
+from trame.app import get_server
+from trame.ui.vuetify import SinglePageLayout
+
+from trame.widgets import vuetify
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -847,7 +847,9 @@ actor = pl.add_mesh(mesh, scalars="foo", opacity=opac, use_transparency=True)
 
 
 @state.change("scalar_range")
-def set_scalar_range(scalar_range=mesh.get_data_range("foo"), **kwargs):
+def set_scalar_range(scalar_range=None, **_):
+    if scalar_range is None:
+        scalar_range = mesh.get_data_range("foo")
     actor.mapper.scalar_range = scalar_range
     ctrl.view_update()
 
@@ -875,13 +877,15 @@ with SinglePageLayout(server) as layout:
             style="max-width: 400px",
         )
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            # Use PyVista UI template for Plotters
-            view = plotter_ui(pl, default_server_rendering=True)
-            ctrl.view_update = view.update
+        ),
+    ):
+        # Use PyVista UI template for Plotters
+        view = plotter_ui(pl, default_server_rendering=True)
+        ctrl.view_update = view.update
 
 server.start()

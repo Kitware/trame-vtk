@@ -3,10 +3,12 @@
 import pyvista as pv
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, html, vtk as vtk_widgets
 
 # Just for using this script in testing
 from trame_client.utils.testing import enable_testing
+
+from trame.widgets import html, vuetify
+from trame.widgets import vtk as vtk_widgets
 
 server = enable_testing(get_server(), "local_rendering_ready")
 server.client_type = "vue2"
@@ -38,37 +40,39 @@ with SinglePageLayout(server) as layout:
         vuetify.VSpacer()
         html.Div("{{ local_rendering_ready }}", classes="readyCount")
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
+        ),
+    ):
+        with vuetify.VContainer(
+            fluid=True, classes="pa-0 fill-height", style="width: 50%;"
         ):
-            with vuetify.VContainer(
-                fluid=True, classes="pa-0 fill-height", style="width: 50%;"
-            ):
-                local = vtk_widgets.VtkLocalView(
-                    plotter.ren_win,
-                    on_ready="local_rendering_ready++",
-                )
-            with vuetify.VContainer(
-                fluid=True, classes="pa-0 fill-height", style="width: 50%;"
-            ):
-                remote = vtk_widgets.VtkRemoteView(
-                    plotter.ren_win,
-                )
+            local = vtk_widgets.VtkLocalView(
+                plotter.ren_win,
+                on_ready="local_rendering_ready++",
+            )
+        with vuetify.VContainer(
+            fluid=True, classes="pa-0 fill-height", style="width: 50%;"
+        ):
+            remote = vtk_widgets.VtkRemoteView(
+                plotter.ren_win,
+            )
 
-            def view_update(**kwargs):
-                local.update(**kwargs)
-                remote.update(**kwargs)
+        def view_update(**kwargs):
+            local.update(**kwargs)
+            remote.update(**kwargs)
 
-            def view_reset_camera(**kwargs):
-                local.reset_camera(**kwargs)
-                remote.reset_camera(**kwargs)
+        def view_reset_camera(**kwargs):
+            local.reset_camera(**kwargs)
+            remote.reset_camera(**kwargs)
 
-            ctrl.view_update = view_update
-            ctrl.view_reset_camera = view_reset_camera
+        ctrl.view_update = view_update
+        ctrl.view_reset_camera = view_reset_camera
 
-            ctrl.on_server_ready.add(view_update)
+        ctrl.on_server_ready.add(view_update)
 
     # hide footer
     layout.footer.hide()

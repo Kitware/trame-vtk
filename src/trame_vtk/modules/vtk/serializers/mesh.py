@@ -1,15 +1,14 @@
 import base64
+import importlib
+import os
+import sys
 
 import numpy as np
-import os
-import importlib
-import sys
+from vtk_module.util.numpy_support import vtk_to_numpy
+from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
-
-from vtk_module.util.numpy_support import vtk_to_numpy
-from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 
 def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
@@ -84,24 +83,29 @@ def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
 
 
 def mesh_array(array):
-    if array:
-        return b64_encode_numpy(vtk_to_numpy(array.GetData()))
+    if not array:
+        msg = "array cannot be None or empty"
+        raise ValueError(msg)
+    return b64_encode_numpy(vtk_to_numpy(array.GetData()))
 
 
 def data_array(data_array, location="PointData", name=None):
-    if data_array:
-        data_range = data_array.GetRange(-1)
-        nb_comp = data_array.GetNumberOfComponents()
-        values = vtk_to_numpy(data_array)
-        js_types = to_js_type[str(values.dtype)]
-        return {
-            "name": name if name else data_array.GetName(),
-            "values": b64_encode_numpy(values),
-            "numberOfComponents": nb_comp,
-            "type": js_types,
-            "location": location,
-            "dataRange": data_range,
-        }
+    if not data_array:
+        msg = "data array cannot be None or empty"
+        raise ValueError(msg)
+
+    data_range = data_array.GetRange(-1)
+    nb_comp = data_array.GetNumberOfComponents()
+    values = vtk_to_numpy(data_array)
+    js_types = to_js_type[str(values.dtype)]
+    return {
+        "name": name if name else data_array.GetName(),
+        "values": b64_encode_numpy(values),
+        "numberOfComponents": nb_comp,
+        "type": js_types,
+        "location": location,
+        "dataRange": data_range,
+    }
 
 
 def field_data(field_data, names, location="PointData"):
@@ -170,9 +174,9 @@ def b64_encode_numpy(obj):
     dtype = obj.dtype
     if dtype.kind == "f":
         return np_encode(obj)
-    elif dtype.kind == "b":
+    if dtype.kind == "b":
         return np_encode(obj, np.uint8)
-    elif dtype.kind in ["u", "i"]:
+    if dtype.kind in ["u", "i"]:
         # Try to see if we can downsize the array
         max_value = np.amax(obj)
         min_value = np.amin(obj)

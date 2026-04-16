@@ -1,9 +1,9 @@
 from pathlib import Path
 
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
 from trame.ui.html import DivLayout
-from trame.widgets import vtk
-
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkIOXML import vtkXMLRectilinearGridReader
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
@@ -12,8 +12,8 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkRenderWindowInteractor,
 )
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+
+from trame.widgets import vtk
 
 DATA_FILE = (Path(__file__).parent.with_name("data") / "big-int-coord.vtr").resolve()
 

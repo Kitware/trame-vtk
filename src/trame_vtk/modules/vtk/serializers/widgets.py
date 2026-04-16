@@ -1,4 +1,5 @@
 import logging
+
 from .utils import reference_id
 
 logger = logging.getLogger(__name__)
@@ -50,4 +51,4 @@ def handle_widget(map_to_update, widget):
         SERIALIZERS[class_name](map_to_update, widget)
     elif class_name not in UNKNOWN_CLASSES:
         UNKNOWN_CLASSES.add(class_name)
-        logger.warning(f"!!!No widget serializer for {class_name}")
+        logger.warning("!!!No widget serializer for %s", class_name)

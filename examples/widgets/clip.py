@@ -1,25 +1,24 @@
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
-from trame.widgets import vuetify, vtk as vtk_widgets
 from trame.ui.vuetify import SinglePageLayout
-
-# VTK factory initialization
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
-
+from vtkmodules.vtkCommonDataModel import vtkPlane
 from vtkmodules.vtkFiltersGeneral import vtkClipDataSet
 from vtkmodules.vtkFiltersModeling import vtkOutlineFilter
 from vtkmodules.vtkImagingCore import vtkRTAnalyticSource
-from vtkmodules.vtkCommonDataModel import vtkPlane
+
+# VTK factory initialization
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkInteractionWidgets import vtkImplicitPlaneWidget2
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkDataSetMapper,
+    vtkRenderer,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkRenderer,
 )
 
-
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify
 from trame_vtk.modules.vtk.widget import WidgetManager
 
 # -----------------------------------------------------------------------------
@@ -77,12 +76,12 @@ widget_manager = WidgetManager(renderer)
 plane_widget = widget_manager.add_widget(vtkImplicitPlaneWidget2)
 
 
-def on_widget_interaction(*args):
+def on_widget_interaction(*_):
     if state.live_update:
         plane_widget.GetPlane(clip_plane)
 
 
-def on_widget_done(*args):
+def on_widget_done(*_):
     plane_widget.GetPlane(clip_plane)
 
 
@@ -102,7 +101,7 @@ state, ctrl = server.state, server.controller
 
 
 @state.change("show_widget")
-def on_widget_show(show_widget, **kwargs):
+def on_widget_show(show_widget, **_):
     if show_widget:
         plane_widget.enable()
     else:
@@ -134,14 +133,13 @@ with SinglePageLayout(server) as layout:
         with vuetify.VBtn(icon=True, click=ctrl.view_reset_camera):
             vuetify.VIcon("mdi-crop-free")
 
-    with layout.content:
-        with vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
-            view = vtk_widgets.VtkRemoteView(
-                render_window,
-                interactive_ratio=1,
-            )
-            ctrl.view_reset_camera = view.reset_camera
-            ctrl.view_update = view.update
+    with layout.content, vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
+        view = vtk_widgets.VtkRemoteView(
+            render_window,
+            interactive_ratio=1,
+        )
+        ctrl.view_reset_camera = view.reset_camera
+        ctrl.view_update = view.update
 
 
 if __name__ == "__main__":

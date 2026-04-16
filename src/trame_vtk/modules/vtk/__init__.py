@@ -1,7 +1,7 @@
-import warnings
 import importlib
 import os
 import sys
+import warnings
 
 from .core import HybridView
 from .serializers import mesh as vtk_mesh
@@ -11,7 +11,7 @@ try:
     sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
     HAS_VTK = True
 except ImportError:
-    warnings.warn("VTK is not installed.")
+    warnings.warn("VTK is not installed.", stacklevel=2)
     HAS_VTK = False
 
 try:
@@ -30,7 +30,7 @@ See https://github.com/conda-forge/vtk-feedstock/pull/258
 """
 
 
-def has_capabilities(*features):
+def has_capabilities(*_):
     if not HAS_VTK_WEB:
         raise ImportError(IMPROPER_VTK_MSG)
 
@@ -76,7 +76,7 @@ class Helper:
         new_state=False,
         widgets=None,
         orientation_axis=0,
-        **kwargs,
+        **_,
     ):
         scene_state = self._trame_server.protocol_call(
             "viewport.geometry.view.get.state",
@@ -89,7 +89,7 @@ class Helper:
             scene_state.setdefault("extra", {})["resetCamera"] = 1
         return scene_state
 
-    def export(self, render_window, widgets=None, orientation_axis=0, **kwargs):
+    def export(self, render_window, widgets=None, orientation_axis=0, **_):
         return self._trame_server.protocol_call(
             "viewport.geometry.view.get.export",
             self.id(render_window),
@@ -166,7 +166,7 @@ class Helper:
 
     def configure_protocol(self, protocol):
         self._root_protocol = protocol
-        from .protocols import (
+        from .protocols import (  # noqa: PLC0415
             vtkWebLocalRendering,
             vtkWebMouseHandler,
             vtkWebPublishImageDelivery,
@@ -196,14 +196,14 @@ class Helper:
         still_ratio=1,
         still_quality=98,
         force_replace=False,
-        **kwargs,
+        **_,
     ):
         if name in self._hybrid_views:
             if force_replace:
                 self._hybrid_views[name].replace_view(view)
             else:
-                print(f"A view with name ({name}) is already registered")
-                print(" => returning previous one")
+                print(f"A view with name ({name}) is already registered")  # noqa: T201
+                print(" => returning previous one")  # noqa: T201
             return self._hybrid_views[name]
 
         view_helper = HybridView(
@@ -234,8 +234,7 @@ class Helper:
 HELPERS_PER_SERVER = {}
 
 
-def setup(trame_server, **kwargs):
-    global HELPERS_PER_SERVER
+def setup(trame_server, **_):
     if HAS_VTK_WEB:
         HELPERS_PER_SERVER[trame_server.name] = Helper(trame_server)
 

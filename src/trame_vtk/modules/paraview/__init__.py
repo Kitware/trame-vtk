@@ -18,8 +18,10 @@ class Helper:
         self._hybrid_views = {}
 
         try:  # defer need to paraview to support --www usecase
-            from paraview import servermanager
-            from paraview.modules.vtkPVClientWeb import vtkPVWebApplication
+            from paraview import servermanager  # noqa: PLC0415
+            from paraview.modules.vtkPVClientWeb import (  # noqa: PLC0415
+                vtkPVWebApplication,
+            )
         except ImportError:
             logger.exception("*** ERROR: ParaView is not available!")
         else:
@@ -68,7 +70,7 @@ class Helper:
         new_state=False,
         widgets=None,
         orientation_axis=0,
-        **kwargs,
+        **_,
     ):
         # flush data without requiring a render/picture
         tmp = view_proxy.SuppressRendering
@@ -89,7 +91,7 @@ class Helper:
             scene_state.setdefault("extra", {})["resetCamera"] = 1
         return scene_state
 
-    def export(self, render_window, widgets=None, orientation_axis=0, **kwargs):
+    def export(self, render_window, widgets=None, orientation_axis=0, **_):
         return self._trame_server.protocol_call(
             "viewport.geometry.view.get.export",
             self.id(render_window),
@@ -168,7 +170,7 @@ class Helper:
     def configure_protocol(self, protocol):
         self._root_protocol = protocol
 
-        from .protocols import (
+        from .protocols import (  # noqa: PLC0415
             ParaViewWebLocalRendering,
             ParaViewWebMouseHandler,
             ParaViewWebPublishImageDelivery,
@@ -189,7 +191,7 @@ class Helper:
         self._root_protocol.registerLinkProtocol(ParaViewWebLocalRendering())
 
         # Mimic client interactor on server side
-        from .core import apply_default_interaction_settings
+        from .core import apply_default_interaction_settings  # noqa: PLC0415
 
         apply_default_interaction_settings()
 
@@ -203,14 +205,14 @@ class Helper:
         still_ratio=1,
         still_quality=98,
         force_replace=False,
-        **kwargs,
+        **_,
     ):
         if name in self._hybrid_views:
             if force_replace:
                 self._hybrid_views[name].replace_view(view)
             else:
-                print(f"A view with name ({name}) is already registered")
-                print(" => returning previous one")
+                print(f"A view with name ({name}) is already registered")  # noqa: T201
+                print(" => returning previous one")  # noqa: T201
             return self._hybrid_views[name]
 
         view_helper = HybridView(
@@ -237,8 +239,7 @@ class Helper:
 HELPERS_PER_SERVER = {}
 
 
-def setup(trame_server, **kwargs):
-    global HELPERS_PER_SERVER
+def setup(trame_server, **_):
     HELPERS_PER_SERVER[trame_server.name] = Helper(trame_server)
 
 

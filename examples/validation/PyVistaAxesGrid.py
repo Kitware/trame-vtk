@@ -4,12 +4,12 @@ Make sure that the grid lines color from `vtkCubeAxesActor.GetXAxesLinesProperty
 is synchroniezed in addition to text colors.
 """
 
+import pyvista as pv
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
+
 from trame.widgets import vuetify
 from trame.widgets.vtk import VtkLocalView
-
-import pyvista as pv
 
 server = get_server()
 server.client_type = "vue2"
@@ -40,14 +40,16 @@ with SinglePageLayout(server) as layout:
     with layout.toolbar:
         vuetify.VSpacer()
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            view = VtkLocalView(plotter.ren_win)
-            ctrl.view_update = view.update
-            ctrl.view_reset_camera = view.reset_camera
+        ),
+    ):
+        view = VtkLocalView(plotter.ren_win)
+        ctrl.view_update = view.update
+        ctrl.view_reset_camera = view.reset_camera
 
     # hide footer
     layout.footer.hide()

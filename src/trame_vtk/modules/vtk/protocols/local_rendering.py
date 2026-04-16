@@ -1,12 +1,12 @@
 from wslink import register as export_rpc
 
 from ..serializers import (
-    reference_id,
+    SynchronizationContext,
+    extract_array_hash,
     initialize_serializers,
+    reference_id,
     serialize,
     serialize_widget,
-    extract_array_hash,
-    SynchronizationContext,
 )
 from .web_protocol import vtkWebProtocol
 
@@ -18,7 +18,7 @@ class vtkWebLocalRendering(vtkWebProtocol):
     client-side rendering capability we have in vtk.js
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **_):
         super().__init__()
         initialize_serializers()
         self.context = SynchronizationContext()
@@ -39,7 +39,7 @@ class vtkWebLocalRendering(vtkWebProtocol):
     def add_view_observer(self, view_id):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = self.app.GetObjectIdMap().GetGlobalId(s_view)
 
@@ -71,7 +71,7 @@ class vtkWebLocalRendering(vtkWebProtocol):
     def remove_view_observer(self, view_id):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = self.app.GetObjectIdMap().GetGlobalId(s_view)
 
@@ -80,7 +80,7 @@ class vtkWebLocalRendering(vtkWebProtocol):
             observer_info = self.tracking_views[real_view_id]
 
         if not observer_info:
-            return {"error": "Unable to find subscription for view %s" % real_view_id}
+            return {"error": f"Unable to find subscription for view {real_view_id}"}
 
         observer_info["observerCount"] -= 1
 
@@ -99,11 +99,11 @@ class vtkWebLocalRendering(vtkWebProtocol):
         new_subscription=False,
         widgets=None,
         orientation_axis=0,
-        **kwargs,
+        **_,
     ):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         self.context.set_ignore_last_dependencies(new_subscription)
 
@@ -156,4 +156,4 @@ class vtkWebLocalRendering(vtkWebProtocol):
                 **entry, content=self.context.get_cached_data_array(data_hash, False)
             )
 
-        return dict(hashes=hashes, scene=scene_description)
+        return {"hashes": hashes, "scene": scene_description}

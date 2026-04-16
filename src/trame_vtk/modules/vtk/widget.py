@@ -1,18 +1,17 @@
-from typing import Type, Callable, Dict, Optional
-from functools import partialmethod
-import os
 import importlib
+import os
 import sys
+from functools import partialmethod
+from typing import Callable, Optional
 
-vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
-sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
-
+from vtk_module.vtkCommonCore import vtkCommand
 from vtk_module.vtkInteractionWidgets import (
     vtkAbstractWidget,
     vtkWidgetRepresentation,
 )
 
-from vtk_module.vtkCommonCore import vtkCommand
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
 
 EventCallback = Callable[[vtkCommand.EventIds, Optional["VtkWidget"]], None]
 
@@ -27,7 +26,7 @@ def callback_wrapper(target: "VtkWidget", callback: EventCallback):
 class VtkWidget:
     def __init__(self, w: vtkAbstractWidget):
         self._w = w
-        self._listeners: Dict[vtkCommand.EventIds, Dict[EventCallback, int]] = {}
+        self._listeners: dict[vtkCommand.EventIds, dict[EventCallback, int]] = {}
 
     @property
     def vtk_widget(self) -> vtkAbstractWidget:
@@ -40,10 +39,9 @@ class VtkWidget:
     def __getattr__(self, name: str):
         if hasattr(self.vtk_widget, name):
             return getattr(self.vtk_widget, name)
-        elif hasattr(self.vtk_representation, name):
+        if hasattr(self.vtk_representation, name):
             return getattr(self.vtk_representation, name)
-        else:
-            return super().__getattribute__(name)
+        return super().__getattribute__(name)
 
     def enable(self):
         self._w.On()
@@ -110,8 +108,8 @@ for name in vars(vtkCommand):
         )
 
 
-WidgetParam = vtkAbstractWidget | Type[vtkAbstractWidget]
-RepresentationParam = vtkWidgetRepresentation | Type[vtkWidgetRepresentation]
+WidgetParam = vtkAbstractWidget | type[vtkAbstractWidget]
+RepresentationParam = vtkWidgetRepresentation | type[vtkWidgetRepresentation]
 
 
 class WidgetManager:
@@ -137,9 +135,8 @@ class WidgetManager:
         elif isinstance(r, vtkWidgetRepresentation):
             raw_representation = r
         elif r is not None:
-            raise TypeError(
-                "The r parameter should be one of: vtkWidgetRepresentation | Type[vtkWidgetRepresentation]"
-            )
+            msg = "The r parameter should be one of: vtkWidgetRepresentation | Type[vtkWidgetRepresentation]"
+            raise TypeError(msg)
 
         if isinstance(w, type) and issubclass(w, vtkAbstractWidget):
             raw_widget = w()
@@ -147,15 +144,12 @@ class WidgetManager:
         elif isinstance(w, vtkAbstractWidget):
             raw_widget = w
         else:
-            raise TypeError(
-                "The w parameter should be one of: vtkAbstractWidget | Type[vtkAbstractWidget]"
-            )
+            msg = "The w parameter should be one of: vtkAbstractWidget | Type[vtkAbstractWidget]"
+            raise TypeError(msg)
 
         if raw_representation is not None:
             raw_widget.SetRepresentation(raw_representation)
 
         raw_widget.SetInteractor(self._interactor)
 
-        widget = VtkWidget(raw_widget)
-
-        return widget
+        return VtkWidget(raw_widget)

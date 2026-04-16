@@ -1,9 +1,9 @@
-import paraview.web.venv  # noqa
+from paraview import simple
 from trame.app import get_server
-from trame.widgets import html, vuetify, vtk as vtk_widgets
 from trame.ui.vuetify import SinglePageLayout
 
-from paraview import simple
+from trame.widgets import html, vuetify
+from trame.widgets import vtk as vtk_widgets
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -27,7 +27,7 @@ view = simple.Render()
 
 
 @state.change("resolution")
-def update_cone(resolution=DEFAULT_RESOLUTION, **kwargs):
+def update_cone(resolution=DEFAULT_RESOLUTION, **_):
     cone.Resolution = resolution
     ctrl.view_update()
 
@@ -65,15 +65,17 @@ with SinglePageLayout(server) as layout:
         with vuetify.VBtn(icon=True, click=update_reset_resolution):
             vuetify.VIcon("mdi-undo-variant")
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            html_view = vtk_widgets.VtkRemoteLocalView(view, mode=("mode",))
-            ctrl.view_update = html_view.update
-            ctrl.view_reset_camera = html_view.reset_camera
-            html_view.push_remote_camera_on_end_interaction()
+        ),
+    ):
+        html_view = vtk_widgets.VtkRemoteLocalView(view, mode=("mode",))
+        ctrl.view_update = html_view.update
+        ctrl.view_reset_camera = html_view.reset_camera
+        html_view.push_remote_camera_on_end_interaction()
 
 
 server.start()

@@ -1,22 +1,21 @@
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
 from trame.ui.html import DivLayout
-from trame.widgets import html, client, vtk as vtk_widgets
-
 from vtkmodules.vtkCommonDataModel import vtkDataObject
 from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkHardwareSelector,
+    vtkPolyDataMapper,
+    vtkPropPicker,
     vtkRenderer,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkPolyDataMapper,
-    vtkActor,
-    vtkPropPicker,
-    vtkHardwareSelector,
 )
 
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
-
+from trame.widgets import client, html
+from trame.widgets import vtk as vtk_widgets
 from trame_vtk.modules.vtk.serializers.utils import reference_id
 
 INTERACTOR_SETTINGS_WITH_SELECT = [

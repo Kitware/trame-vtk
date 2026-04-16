@@ -1,9 +1,9 @@
-from trame.app import get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify
-
 import pyvista as pv
 from pyvista.trame import PyVistaLocalView
+from trame.app import get_server
+from trame.ui.vuetify import SinglePageLayout
+
+from trame.widgets import vuetify
 
 server = get_server()
 server.client_type = "vue2"
@@ -33,14 +33,16 @@ with SinglePageLayout(server) as layout:
     with layout.toolbar:
         vuetify.VSpacer()
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            view = PyVistaLocalView(plotter)
-            ctrl.view_update = view.update
-            ctrl.view_reset_camera = view.reset_camera
+        ),
+    ):
+        view = PyVistaLocalView(plotter)
+        ctrl.view_update = view.update
+        ctrl.view_reset_camera = view.reset_camera
 
     # hide footer
     layout.footer.hide()

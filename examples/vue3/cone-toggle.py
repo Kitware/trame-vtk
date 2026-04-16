@@ -1,19 +1,20 @@
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
-from trame.widgets import html, vuetify3, vtk as vtk_widgets
 from trame.ui.vuetify3 import SinglePageLayout
-
 from vtkmodules.vtkFiltersSources import vtkConeSource
+
+# VTK factory initialization
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkPolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkPolyDataMapper,
-    vtkActor,
 )
 
-# VTK factory initialization
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+from trame.widgets import html, vuetify3
+from trame.widgets import vtk as vtk_widgets
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -51,7 +52,7 @@ renderWindow.Render()
 
 
 @state.change("resolution")
-def update_cone(resolution=DEFAULT_RESOLUTION, **kwargs):
+def update_cone(resolution=DEFAULT_RESOLUTION, **_):
     cone_source.SetResolution(resolution)
     ctrl.view_update()
 
@@ -91,14 +92,16 @@ with SinglePageLayout(server) as layout:
         with vuetify3.VBtn(icon=True, click=update_reset_resolution):
             vuetify3.VIcon("mdi-undo-variant")
 
-    with layout.content:
-        with vuetify3.VContainer(
+    with (
+        layout.content,
+        vuetify3.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            view = vtk_widgets.VtkRemoteLocalView(renderWindow, mode=("mode",))
-            ctrl.view_update = view.update
-            ctrl.view_reset_camera = view.reset_camera
-            view.push_remote_camera_on_end_interaction()
+        ),
+    ):
+        view = vtk_widgets.VtkRemoteLocalView(renderWindow, mode=("mode",))
+        ctrl.view_update = view.update
+        ctrl.view_reset_camera = view.reset_camera
+        view.push_remote_camera_on_end_interaction()
 
 server.start()

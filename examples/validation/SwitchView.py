@@ -2,11 +2,16 @@
 
 import asyncio
 
-from trame.app import get_server, asynchronous
-
+# Required for interactor initialization
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
+from trame.app import asynchronous, get_server
 from trame.ui.vuetify import VAppLayout
-from trame.widgets import vtk, vuetify
-
+from vtkmodules.vtkCommonColor import vtkNamedColors
+from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
+from vtkmodules.vtkInteractionStyle import (
+    vtkInteractorStyleSwitch,  # noqa: F401
+    vtkInteractorStyleTrackballCamera,
+)
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkPolyDataMapper,
@@ -15,15 +20,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindowInteractor,
 )
 
-from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
-from vtkmodules.vtkCommonColor import vtkNamedColors
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
-
-
-# Required for interactor initialization
-import vtkmodules.vtkRenderingOpenGL2  # noqa
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-
+from trame.widgets import vtk, vuetify
 
 # -----------------------------------------------------------------------------
 # VTK pipeline
@@ -116,15 +113,11 @@ state.vtk_window_height = 300
 
 
 @asynchronous.task
-async def refresh_function(**kwargs):
+async def refresh_function(**_):
     counter = 1
     while True:
         with state:
-            if counter % 2 == 0:
-                ren_win = sphere_window
-            else:
-                ren_win = cone_window
-
+            ren_win = sphere_window if (counter % 2 == 0) else cone_window
             view.replace_view(ren_win)
             ctrl.view_update()
 
@@ -138,12 +131,11 @@ async def refresh_function(**kwargs):
 # -----------------------------------------------------------------------------
 
 
-with VAppLayout(server) as layout:
-    with layout.root:
-        with vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
-            view = vtk.VtkLocalView(cone_window)
-            ctrl.view_update = view.update
-            ctrl.on_server_ready.add(refresh_function)
+with VAppLayout(server) as layout, layout.root:
+    with vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
+        view = vtk.VtkLocalView(cone_window)
+        ctrl.view_update = view.update
+        ctrl.on_server_ready.add(refresh_function)
 
 
 # -----------------------------------------------------------------------------

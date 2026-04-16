@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 from paraview import simple
 from wslink import register as export_rpc
 
@@ -5,7 +7,7 @@ from .web_protocol import ParaViewWebProtocol
 
 
 class ParaViewWebViewPort(ParaViewWebProtocol):
-    def __init__(self, scale=1.0, max_width=2560, max_height=1440, **kwargs):
+    def __init__(self, scale=1.0, max_width=2560, max_height=1440, **_):
         super().__init__()
         self.scale = scale
         self.max_width = max_width
@@ -20,10 +22,8 @@ class ParaViewWebViewPort(ParaViewWebProtocol):
         view = self.get_view(view_id)
         simple.Render(view)
         simple.ResetCamera(view)
-        try:
+        with suppress(AttributeError):
             view.CenterOfRotation = view.CameraFocalPoint
-        except AttributeError:
-            pass
 
         self.app.InvalidateCache(view.SMProxy)
         self.app.InvokeEvent("UpdateEvent")

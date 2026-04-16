@@ -1,9 +1,8 @@
-from pathlib import Path
 import time
+from pathlib import Path
 
-from playwright.sync_api import expect, sync_playwright
 import pytest
-
+from playwright.sync_api import expect, sync_playwright
 from trame_client.utils.testing import (
     assert_screenshot_matches,
     assert_snapshot_matches,

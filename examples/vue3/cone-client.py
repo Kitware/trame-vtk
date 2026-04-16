@@ -1,6 +1,8 @@
 from trame.app import get_server
-from trame.widgets import vuetify3, vtk as vtk_widgets
 from trame.ui.vuetify3 import SinglePageLayout
+
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify3
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -39,19 +41,21 @@ with SinglePageLayout(server) as layout:
         with vuetify3.VBtn(icon=True, click=update_reset_resolution):
             vuetify3.VIcon("mdi-undo-variant")
 
-    with layout.content:
-        with vuetify3.VContainer(
+    with (
+        layout.content,
+        vuetify3.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vtk_widgets.VtkView() as view:
-                ctrl.view_update = view.update
-                ctrl.view_reset_camera = view.reset_camera
-                with vtk_widgets.VtkGeometryRepresentation():
-                    vtk_widgets.VtkAlgorithm(
-                        vtk_class="vtkConeSource",
-                        state=("{ resolution }",),
-                    )
+        ),
+        vtk_widgets.VtkView() as view,
+    ):
+        ctrl.view_update = view.update
+        ctrl.view_reset_camera = view.reset_camera
+        with vtk_widgets.VtkGeometryRepresentation():
+            vtk_widgets.VtkAlgorithm(
+                vtk_class="vtkConeSource",
+                state=("{ resolution }",),
+            )
 
 
 server.start()

@@ -2,13 +2,13 @@ import asyncio
 
 import matplotlib.pyplot as plt
 import numpy as np
-from trame.app import asynchronous, get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify
-
 import pyvista as pv
 from pyvista import examples
 from pyvista.trame.ui import plotter_ui
+from trame.app import asynchronous, get_server
+from trame.ui.vuetify import SinglePageLayout
+
+from trame.widgets import vuetify
 
 pv.OFF_SCREEN = True
 
@@ -45,13 +45,13 @@ pl.camera_position = cpos
 
 
 @state.change("cmap")
-def update_cmap(cmap="viridis", **kwargs):
+def update_cmap(cmap="viridis", **_):
     actor.mapper.lookup_table.cmap = cmap
     ctrl.view_update()
 
 
 @state.change("phase_index")
-def update_phase(phase_index=0, **kwargs):
+def update_phase(phase_index=0, **_):
     phase = phases[phase_index]
     # feel free to change this to visualize different mode shapes
     mode_shape = "disp_6"
@@ -62,7 +62,7 @@ def update_phase(phase_index=0, **kwargs):
 
 @state.change("play")
 @asynchronous.task
-async def update_play(**kwargs):
+async def update_play(**_):
     while state.play:
         with state:
             if state.phase_index >= len(phases):

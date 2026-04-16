@@ -1,19 +1,20 @@
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
-from trame.widgets import vuetify, vtk as vtk_widgets
 from trame.ui.vuetify import SinglePageLayout
-
 from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
+
+# VTK factory initialization
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkPolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkPolyDataMapper,
-    vtkActor,
 )
 
-# VTK factory initialization
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -85,13 +86,12 @@ with SinglePageLayout(server) as layout:
             hide_details=True,
         )
 
-    with layout.content:
-        with vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
-            with vuetify.VCol(classes="pa-0 fill-height"):
-                with vtk_widgets.VtkRemoteView(renderWindow, ref="v1") as view:
-                    ctrl.view_reset_camera.add(view.reset_camera)
-            with vuetify.VCol(classes="pa-0 fill-height", v_show="show"):
-                with vtk_widgets.VtkRemoteView(renderWindow_v2, ref="v2") as view:
-                    ctrl.view_reset_camera.add(view.reset_camera)
+    with layout.content, vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
+        with vuetify.VCol(classes="pa-0 fill-height"):
+            with vtk_widgets.VtkRemoteView(renderWindow, ref="v1") as view:
+                ctrl.view_reset_camera.add(view.reset_camera)
+        with vuetify.VCol(classes="pa-0 fill-height", v_show="show"):
+            with vtk_widgets.VtkRemoteView(renderWindow_v2, ref="v2") as view:
+                ctrl.view_reset_camera.add(view.reset_camera)
 
 server.start()

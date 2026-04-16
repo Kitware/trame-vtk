@@ -1,10 +1,10 @@
+import pyvista as pv
 from trame.app import get_server
+from trame.assets.local import LocalFileManager
 from trame.ui.vuetify import SinglePageLayout
+
 from trame.widgets import vuetify
 from trame.widgets.vtk import VtkRemoteView
-from trame.assets.local import LocalFileManager
-
-import pyvista as pv
 
 server = get_server()
 state, ctrl = server.state, server.controller
@@ -46,7 +46,7 @@ def on_box_selection(event): ...
 
 
 @state.change("selection_mode")
-def on_mode_change(selection_mode, **kwargs):
+def on_mode_change(selection_mode, **_):
     # Use box for selection
     state.box_selection = selection_mode in [
         "select_surface_point",
@@ -100,22 +100,24 @@ with SinglePageLayout(server) as layout:
                         width=ICON_SIZE,
                     )
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            # with vuetify.VCol(classes="fill-height"):
-            #     view = VtkLocalView(plotter.ren_win)
-            #     ctrl.view_update = view.update
-            #     ctrl.view_reset_camera = view.reset_camera
-            # with vuetify.VCol(classes="fill-height"):
-            VtkRemoteView(
-                plotter.ren_win,
-                enable_picking=("send_mouse", False),
-                box_selection=("box_selection", False),
-                box_selection_change=(ctrl.on_selection_change, "[$event]"),
-            )
+        ),
+    ):
+        # with vuetify.VCol(classes="fill-height"):
+        #     view = VtkLocalView(plotter.ren_win)
+        #     ctrl.view_update = view.update
+        #     ctrl.view_reset_camera = view.reset_camera
+        # with vuetify.VCol(classes="fill-height"):
+        VtkRemoteView(
+            plotter.ren_win,
+            enable_picking=("send_mouse", False),
+            box_selection=("box_selection", False),
+            box_selection_change=(ctrl.on_selection_change, "[$event]"),
+        )
 
     # hide footer
     layout.footer.hide()
