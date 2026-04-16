@@ -1,19 +1,20 @@
-import os
 import importlib
+import os
 import sys
+from contextlib import suppress
+
+from vtk_module.vtkRenderingCore import vtkColorTransferFunction
+
+from .cache import cache_properties
+from .helpers import data_table_to_list, linspace
+from .registry import class_name
+from .utils import reference_id
 
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
 
-from vtk_module.vtkRenderingCore import vtkColorTransferFunction
 
-from .helpers import data_table_to_list, linspace
-from .registry import class_name
-from .utils import reference_id
-from .cache import cache_properties
-
-
-def lookup_table_serializer(parent, lookup_table, lookup_table_id, context, depth):
+def lookup_table_serializer(parent, lookup_table, lookup_table_id, context, _depth):
     # No children in this case, so no additions to bindings and return empty list
     # But we do need to add instance
 
@@ -21,10 +22,8 @@ def lookup_table_serializer(parent, lookup_table, lookup_table_id, context, dept
 
     lookup_table_hue_range = [0.5, 0]
     if hasattr(lookup_table, "GetHueRange"):
-        try:
+        with suppress(Exception):
             lookup_table.GetHueRange(lookup_table_hue_range)
-        except Exception:
-            pass
 
     lut_sat_range = lookup_table.GetSaturationRange()
     table = data_table_to_list(lookup_table.GetTable())
@@ -37,8 +36,8 @@ def lookup_table_serializer(parent, lookup_table, lookup_table_id, context, dept
         "nanColor": lookup_table.GetNanColor(),
         "belowRangeColor": lookup_table.GetBelowRangeColor(),
         "aboveRangeColor": lookup_table.GetAboveRangeColor(),
-        "useAboveRangeColor": True if lookup_table.GetUseAboveRangeColor() else False,
-        "useBelowRangeColor": True if lookup_table.GetUseBelowRangeColor() else False,
+        "useAboveRangeColor": bool(lookup_table.GetUseAboveRangeColor()),
+        "useBelowRangeColor": bool(lookup_table.GetUseBelowRangeColor()),
         "alpha": lookup_table.GetAlpha(),
         "vectorSize": lookup_table.GetVectorSize(),
         "vectorComponent": lookup_table.GetVectorComponent(),
@@ -92,7 +91,7 @@ def lookup_table_serializer2(parent, lookup_table, lookup_table_id, context, dep
     return None
 
 
-def color_transfer_function_serializer(parent, instance, obj_id, context, depth):
+def color_transfer_function_serializer(parent, instance, obj_id, context, _depth):
     nodes = []
     for i in range(instance.GetSize()):
         # x, r, g, b, midpoint, sharpness
@@ -153,7 +152,7 @@ def discretizable_color_transfer_function_serializer(
     return ctf
 
 
-def pwf_serializer(parent, instance, obj_id, context, depth):
+def pwf_serializer(parent, instance, obj_id, context, _depth):
     nodes = []
 
     for i in range(instance.GetSize()):

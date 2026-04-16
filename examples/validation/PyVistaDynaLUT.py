@@ -1,14 +1,14 @@
 import matplotlib.pyplot as plt
-from trame.app import get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify
-
 import pyvista as pv
 from pyvista import examples
 from pyvista.trame.ui import plotter_ui
+from trame.app import get_server
+from trame.ui.vuetify import SinglePageLayout
 
 # Just for using this script in testing
 from trame_client.utils.testing import enable_testing
+
+from trame.widgets import vuetify
 
 pv.OFF_SCREEN = True
 
@@ -27,7 +27,7 @@ actor = plotter.add_mesh(mesh, cmap="viridis")
 
 
 @state.change("cmap")
-def update_cmap(cmap="viridis", **kwargs):
+def update_cmap(cmap="viridis", **_):
     actor.mapper.lookup_table.cmap = cmap
     ctrl.view_update()
 

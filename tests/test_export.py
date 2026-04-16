@@ -1,6 +1,7 @@
-from pathlib import Path
-import pytest
 import asyncio
+from pathlib import Path
+
+import pytest
 import pyvista as pv
 from pyvista import examples
 

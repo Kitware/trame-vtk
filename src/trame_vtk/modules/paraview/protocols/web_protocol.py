@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from paraview import simple
 from paraview.servermanager import vtkSMTransferFunctionManager
@@ -41,13 +42,14 @@ class ParaViewWebProtocol(vtkWebProtocol):
             view = simple.GetActiveView()
 
         if not view:
-            raise Exception(f"no view provided: {vid}")
+            error_message = f"no view provided: {vid}"
+            raise Exception(error_message)
 
         return view
 
     def debug(self, msg):
         if self.debug_mode:
-            print(msg)
+            print(msg)  # noqa: T201
 
     def set_base_directory(self, base_path):
         self.override_data_dir_key = None
@@ -58,7 +60,7 @@ class ParaViewWebProtocol(vtkWebProtocol):
         if base_path.find("|") < 0:
             if base_path.find("=") >= 0:
                 base_pair = base_path.split("=")
-                if os.path.exists(base_pair[1]):
+                if Path(base_pair[1]).exists():
                     self.base_directory = base_pair[1]
                     self.override_data_dir_key = base_pair[0]
             else:
@@ -68,7 +70,7 @@ class ParaViewWebProtocol(vtkWebProtocol):
             base_dirs = base_path.split("|")
             for base_dir in base_dirs:
                 base_pair = base_dir.split("=")
-                if os.path.exists(base_pair[1]):
+                if Path(base_pair[1]).exists():
                     self.base_directory_map[base_pair[0]] = os.path.normpath(
                         base_pair[1]
                     )
@@ -90,15 +92,15 @@ class ParaViewWebProtocol(vtkWebProtocol):
         if self.multi_root:
             rel_path_parts = relative_path.replace("\\", "/").split("/")
             real_base_path = self.base_directory_map[rel_path_parts[0]]
-            absolute_path = os.path.join(real_base_path, *rel_path_parts[1:])
+            absolute_path = Path.joinpath(real_base_path, *rel_path_parts[1:])
         else:
-            absolute_path = os.path.join(self.base_directory, relative_path)
+            absolute_path = Path(self.base_directory) / relative_path
 
         cleaned_path = os.path.normpath(absolute_path)
 
         # Make sure the cleaned_path is part of the allowed ones
         if self.multi_root:
-            for key, value in self.base_directory_map.items():
+            for _, value in self.base_directory_map.items():
                 if cleaned_path.startswith(value):
                     return cleaned_path
         elif cleaned_path.startswith(self.base_directory):

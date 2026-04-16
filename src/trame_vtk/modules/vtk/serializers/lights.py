@@ -1,6 +1,6 @@
+from .cache import cache_properties
 from .registry import class_name
 from .utils import reference_id
-from .cache import cache_properties
 
 
 def light_type_to_string(value):
@@ -15,13 +15,13 @@ def light_type_to_string(value):
     """
     if value == 1:
         return "HeadLight"
-    elif value == 2:
+    if value == 2:
         return "CameraLight"
 
     return "SceneLight"
 
 
-def light_serializer(parent, instance, obj_id, context, depth):
+def light_serializer(parent, instance, obj_id, context, _depth):
     return {
         "parent": reference_id(parent),
         "id": obj_id,

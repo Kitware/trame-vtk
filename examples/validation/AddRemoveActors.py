@@ -1,20 +1,20 @@
+# for remote view
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
-from trame.widgets import vuetify, vtk as vtk_widgets
 from trame.ui.vuetify import SinglePageLayout
-
 from vtkmodules.vtkFiltersModeling import vtkOutlineFilter
 from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkPolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkPolyDataMapper,
-    vtkActor,
 )
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
 
-# for remote view
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -75,7 +75,7 @@ renderWindow.Render()
 
 
 @state.change("resolution")
-def update_resolution(resolution=DEFAULT_RESOLUTION, **kwargs):
+def update_resolution(resolution=DEFAULT_RESOLUTION, **_):
     cone_source.SetResolution(resolution)
     ctrl.view_update()
 
@@ -85,7 +85,7 @@ def update_reset_resolution():
 
 
 @state.change("show_cone")
-def update_cone(show_cone, **kwargs):
+def update_cone(show_cone, **_):
     if show_cone:
         renderer.AddActor(cone_actor)
     else:
@@ -94,7 +94,7 @@ def update_cone(show_cone, **kwargs):
 
 
 @state.change("show_sphere")
-def update_sphere(show_sphere, **kwargs):
+def update_sphere(show_sphere, **_):
     if show_sphere:
         renderer.AddActor(sphere_actor)
     else:
@@ -144,22 +144,24 @@ with SinglePageLayout(server) as layout:
             v_model=("show_sphere", True), label="Sphere", dense=True, hide_details=True
         )
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            view = vtk_widgets.VtkLocalView(
-                renderWindow, ref="view_local", v_if="use_local"
-            )
-            ctrl.view_update = view.update
-            ctrl.view_reset_camera = view.reset_camera
+        ),
+    ):
+        view = vtk_widgets.VtkLocalView(
+            renderWindow, ref="view_local", v_if="use_local"
+        )
+        ctrl.view_update = view.update
+        ctrl.view_reset_camera = view.reset_camera
 
-            view_remote = vtk_widgets.VtkRemoteView(
-                renderWindow, ref="view_remote", v_if="!use_local"
-            )
-            ctrl.view_reset_camera.add(view_remote.reset_camera)
-            ctrl.view_update.add(view_remote.update)
+        view_remote = vtk_widgets.VtkRemoteView(
+            renderWindow, ref="view_remote", v_if="!use_local"
+        )
+        ctrl.view_reset_camera.add(view_remote.reset_camera)
+        ctrl.view_update.add(view_remote.update)
 
 
 # -----------------------------------------------------------------------------

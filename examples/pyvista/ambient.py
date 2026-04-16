@@ -1,11 +1,11 @@
 """Validate lighting and properties."""
 
+import pyvista as pv
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
+
 from trame.widgets import vuetify
 from trame.widgets.vtk import VtkLocalView, VtkRemoteView
-
-import pyvista as pv
 
 server = get_server()
 state, ctrl = server.state, server.controller
@@ -30,7 +30,7 @@ plotter.add_light(light)
 
 
 @state.change("color")
-def color(color="lightblue", **kwargs):
+def color(color="lightblue", **_):
     actor.prop.color = color
     ctrl.view_update()
 
@@ -56,36 +56,38 @@ with SinglePageLayout(server) as layout:
             style="max-width: 250px",
         )
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
+        ),
+    ):
+        with vuetify.VContainer(
+            fluid=True, classes="pa-0 fill-height", style="width: 50%;"
         ):
-            with vuetify.VContainer(
-                fluid=True, classes="pa-0 fill-height", style="width: 50%;"
-            ):
-                local = VtkLocalView(
-                    plotter.ren_win,
-                )
-            with vuetify.VContainer(
-                fluid=True, classes="pa-0 fill-height", style="width: 50%;"
-            ):
-                remote = VtkRemoteView(
-                    plotter.ren_win,
-                )
+            local = VtkLocalView(
+                plotter.ren_win,
+            )
+        with vuetify.VContainer(
+            fluid=True, classes="pa-0 fill-height", style="width: 50%;"
+        ):
+            remote = VtkRemoteView(
+                plotter.ren_win,
+            )
 
-            def view_update(**kwargs):
-                local.update(**kwargs)
-                remote.update(**kwargs)
+        def view_update(**kwargs):
+            local.update(**kwargs)
+            remote.update(**kwargs)
 
-            def view_reset_camera(**kwargs):
-                local.reset_camera(**kwargs)
-                remote.reset_camera(**kwargs)
+        def view_reset_camera(**kwargs):
+            local.reset_camera(**kwargs)
+            remote.reset_camera(**kwargs)
 
-            ctrl.view_update = view_update
-            ctrl.view_reset_camera = view_reset_camera
+        ctrl.view_update = view_update
+        ctrl.view_reset_camera = view_reset_camera
 
-            ctrl.on_server_ready.add(view_update)
+        ctrl.on_server_ready.add(view_update)
 
     # hide footer
     layout.footer.hide()

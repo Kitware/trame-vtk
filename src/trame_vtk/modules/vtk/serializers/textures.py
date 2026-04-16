@@ -20,7 +20,7 @@ def texture_serializer(parent, texture, texture_id, context, depth):
         logger.debug("This texture does not have GetInput method")
 
     if data_object:
-        data_object_id = "%s-texture" % texture_id
+        data_object_id = f"{texture_id}-texture"
         data_object_instance = serialize(
             texture, data_object, data_object_id, context, depth + 1
         )

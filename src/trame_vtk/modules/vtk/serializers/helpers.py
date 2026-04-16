@@ -10,10 +10,7 @@ from .utils import array_types_mapping, get_js_array_type, hash_data_array, refe
 
 
 def is_array_in(array, arrays):
-    for a in arrays:
-        if a is array:
-            return True
-    return False
+    return any(a is array for a in arrays)
 
 
 def data_table_to_list(data_table):
@@ -106,8 +103,10 @@ def get_array_description(array, context, **kwargs):
 
 
 def extract_required_fields(
-    extracted_fields, parent, dataset, context, requested_fields=["Normals", "TCoords"]
+    extracted_fields, parent, dataset, context, requested_fields=None
 ):
+    if requested_fields is None:
+        requested_fields = ["Normals", "TCoords"]
     arrays_to_export = []
     export_all = "*" in requested_fields
     # Identify arrays to export

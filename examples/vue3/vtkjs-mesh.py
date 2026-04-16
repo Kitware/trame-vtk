@@ -1,8 +1,9 @@
 from trame.app import get_server
-from trame.widgets import vuetify3, vtk as vtk_widgets
 from trame.ui.vuetify3 import SinglePageLayout
-
 from vtkmodules.vtkImagingCore import vtkRTAnalyticSource
+
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify3
 
 # -----------------------------------------------------------------------------
 # Trame initialization

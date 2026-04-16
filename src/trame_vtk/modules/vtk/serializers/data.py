@@ -1,26 +1,34 @@
-import logging
-
-import os
 import importlib
+import logging
+import os
 import sys
 
-vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
-sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
-
-from vtk_module.vtkFiltersGeometry import vtkCompositeDataGeometryFilter
-from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter
+from vtk_module.vtkFiltersGeometry import (
+    vtkCompositeDataGeometryFilter,
+    vtkDataSetSurfaceFilter,
+)
 
 from .helpers import extract_required_fields, get_array_description
 from .registry import class_name
 from .serialize import serialize
-from .utils import reference_id, wrap_id, get_js_array_type
+from .utils import get_js_array_type, reference_id, wrap_id
+
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
 
 logger = logging.getLogger(__name__)
 
 
 def polydata_serializer(
-    parent, dataset, dataset_id, context, depth, requested_fields=["Normals", "TCoords"]
+    parent,
+    dataset,
+    dataset_id,
+    context,
+    _depth,
+    requested_fields=None,
 ):
+    if requested_fields is None:
+        requested_fields = ["Normals", "TCoords"]
     if dataset and dataset.GetPoints():
         properties = {}
 
@@ -92,8 +100,10 @@ def merge_to_polydata_serializer(
     data_object_id,
     context,
     depth,
-    requested_fields=["Normals", "TCoords"],
+    requested_fields=None,
 ):
+    if requested_fields is None:
+        requested_fields = ["Normals", "TCoords"]
     dataset = None
 
     if data_object.IsA("vtkCompositeDataSet"):
@@ -120,7 +130,12 @@ def merge_to_polydata_serializer(
 
 
 def imagedata_serializer(
-    parent, dataset, dataset_id, context, depth, requested_fields=["Normals", "TCoords"]
+    parent,
+    dataset,
+    dataset_id,
+    context,
+    _depth,
+    _requested_fields,
 ):
     if hasattr(dataset, "GetDirectionMatrix"):
         direction = [dataset.GetDirectionMatrix().GetElement(0, i) for i in range(9)]

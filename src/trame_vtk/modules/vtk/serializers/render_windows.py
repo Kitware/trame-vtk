@@ -31,7 +31,7 @@ def renderer_serializer(parent, instance, obj_id, context, depth):
             view_prop_ids.append(view_prop_id)
 
     calls += context.build_dependency_call_list(
-        "%s-props" % obj_id, view_prop_ids, "addViewProp", "removeViewProp"
+        f"{obj_id}-props", view_prop_ids, "addViewProp", "removeViewProp"
     )
 
     # Lights
@@ -46,7 +46,7 @@ def renderer_serializer(parent, instance, obj_id, context, depth):
             lights_ids.append(light_id)
 
     calls += context.build_dependency_call_list(
-        "%s-lights" % obj_id, lights_ids, "addLight", "removeLight"
+        f"{obj_id}-lights", lights_ids, "addLight", "removeLight"
     )
 
     if len(dependencies) > 1:
@@ -86,7 +86,7 @@ def renderer_serializer(parent, instance, obj_id, context, depth):
 # -----------------------------------------------------------------------------
 
 
-def camera_serializer(parent, instance, obj_id, context, depth):
+def camera_serializer(parent, instance, obj_id, _context, _depth):
     return {
         "parent": reference_id(parent),
         "id": obj_id,

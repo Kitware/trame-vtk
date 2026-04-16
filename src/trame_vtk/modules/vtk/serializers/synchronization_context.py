@@ -1,18 +1,17 @@
+import importlib
 import io
 import logging
+import os
+import sys
 import time
 import zipfile
-import os
-import importlib
-import sys
 
-vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
-sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
-
-from vtk_module.vtkCommonCore import vtkTypeUInt32Array, vtkFloatArray, vtkDoubleArray
+from vtk_module.vtkCommonCore import vtkDoubleArray, vtkFloatArray, vtkTypeUInt32Array
 
 from .utils import base64_encode, wrap_id
 
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
 logger = logging.getLogger(__name__)
 
 JS_VTK_ARRAY = {
@@ -119,6 +118,6 @@ class SynchronizationContext:
 def zip_compression(name, data):
     with io.BytesIO() as in_memory:
         with zipfile.ZipFile(in_memory, mode="w") as zf:
-            zf.writestr("data/%s" % name, data, zipfile.ZIP_DEFLATED)
+            zf.writestr(f"data/{name}", data, zipfile.ZIP_DEFLATED)
         in_memory.seek(0)
         return in_memory.read()

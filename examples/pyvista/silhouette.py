@@ -1,11 +1,11 @@
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vtk as vtk_widgets, vuetify
 from vtkmodules.vtkFiltersHybrid import vtkPolyDataSilhouette
 from vtkmodules.vtkFiltersSources import vtkConeSource
 
 # VTK factory initialization
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkPolyDataMapper,
@@ -13,7 +13,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkRenderWindowInteractor,
 )
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -65,7 +67,7 @@ renderWindow.Render()
 
 
 @state.change("resolution")
-def update_cone(resolution=DEFAULT_RESOLUTION, **kwargs):
+def update_cone(resolution=DEFAULT_RESOLUTION, **_):
     cone_source.SetResolution(resolution)
     ctrl.view2_update()
     ctrl.view_update()
@@ -118,29 +120,31 @@ with SinglePageLayout(server) as layout:
         with vuetify.VBtn(icon=True, click=update_reset_resolution):
             vuetify.VIcon("mdi-undo-variant")
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vuetify.VCol(classes="pa-0 fill-height"):
-                view = vtk_widgets.VtkLocalView(
-                    renderWindow,
-                    ref="local",
-                    interactor_events=("vtk_events", ["EndAnimation"]),
-                    EndAnimation=(
-                        ctrl.view_on_end_animation,
-                        "[$event.pokedRenderer.getActiveCamera().get()]",
-                    ),
-                )
-                ctrl.view_update = view.update
-                ctrl.view_reset_camera = view.reset_camera
-            with vuetify.VCol(classes="pa-0 fill-height"):
-                vr = vtk_widgets.VtkRemoteView(
-                    renderWindow,
-                    ref="remote",
-                )
-                ctrl.view2_update = vr.update
+        ),
+    ):
+        with vuetify.VCol(classes="pa-0 fill-height"):
+            view = vtk_widgets.VtkLocalView(
+                renderWindow,
+                ref="local",
+                interactor_events=("vtk_events", ["EndAnimation"]),
+                EndAnimation=(
+                    ctrl.view_on_end_animation,
+                    "[$event.pokedRenderer.getActiveCamera().get()]",
+                ),
+            )
+            ctrl.view_update = view.update
+            ctrl.view_reset_camera = view.reset_camera
+        with vuetify.VCol(classes="pa-0 fill-height"):
+            vr = vtk_widgets.VtkRemoteView(
+                renderWindow,
+                ref="remote",
+            )
+            ctrl.view2_update = vr.update
 
 
 # -----------------------------------------------------------------------------
@@ -149,7 +153,7 @@ with SinglePageLayout(server) as layout:
 
 
 def show(**kwargs):
-    from trame.app import jupyter
+    from trame.app import jupyter  # noqa: PLC0415
 
     jupyter.show(server, **kwargs)
 

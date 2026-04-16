@@ -1,10 +1,9 @@
 import base64
 import hashlib
-import sys
 
 
 def rgb_float_to_hex(r, g, b):
-    return f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
+    return f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}"
 
 
 array_types_mapping = [
@@ -49,14 +48,9 @@ def base64_encode(x):
 
 
 def hash_data_array(data_array):
-    if sys.version_info < (3, 9):
-        hashed_bit = hashlib.md5(memoryview(data_array)).hexdigest()
-    else:
-        hashed_bit = hashlib.md5(
-            memoryview(data_array), usedforsecurity=False
-        ).hexdigest()
+    hashed_bit = hashlib.md5(memoryview(data_array), usedforsecurity=False).hexdigest()
     type_code = array_types_mapping[data_array.GetDataType()]
-    return "%s_%d%s" % (hashed_bit, data_array.GetSize(), type_code)
+    return f"{hashed_bit}_{data_array.GetSize()}{type_code}"
 
 
 def get_js_array_type(data_array):
@@ -64,7 +58,7 @@ def get_js_array_type(data_array):
 
 
 def wrap_id(id_str):
-    return "instance:${%s}" % id_str
+    return f"instance:${{{id_str}}}"
 
 
 def reference_id(ref):
@@ -72,7 +66,5 @@ def reference_id(ref):
         try:
             return ref.__this__[1:17]
         except Exception:
-            id_str = str(ref)[-12:-1]
-            # print('====> fallback ID %s for %s' % (id_str, ref))
-            return id_str
+            return str(ref)[-12:-1]
     return "0x0"

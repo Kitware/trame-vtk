@@ -21,7 +21,7 @@ class vtkWebViewPort(vtkWebProtocol):
         return str(self.get_global_id(view))
 
     @export_rpc("viewport.axes.orientation.visibility.update")
-    def update_orientation_axes_visibility(self, view_id, show_axis):
+    def update_orientation_axes_visibility(self, view_id, _depth):
         """
         RPC callback to show/hide OrientationAxis.
         """
@@ -34,7 +34,7 @@ class vtkWebViewPort(vtkWebProtocol):
         return str(self.get_global_id(view))
 
     @export_rpc("viewport.axes.center.visibility.update")
-    def update_center_axes_visibility(self, view_id, show_axis):
+    def update_center_axes_visibility(self, view_id, _depth):
         """
         RPC callback to show/hide CenterAxesVisibility.
         """

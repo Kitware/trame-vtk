@@ -1,15 +1,19 @@
 [project]
-name = "trame-vtk"
-version = "2.11.7"
-description = "VTK widgets for trame"
-authors = [{ name = "Kitware Inc." }]
-dependencies = ["trame-client>=3.4,<4"]
+name = "trame-app"
+version = "1.0.0"
+description = "An example Trame application"
+authors = [
+    {name = "Trame Developer"},
+]
+dependencies = [
+    "trame_client>=3.10",
+]
 requires-python = ">=3.9"
 readme = "README.rst"
-license = { text = "BSD License" }
+license = {text = "BSD License"}
 keywords = ["Python", "Interactive", "Web", "Application", "Framework"]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "License :: OSI Approved :: BSD License",
     "Natural Language :: English",
@@ -20,6 +24,12 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
+app = [
+    "pywebview",
+]
+jupyter = [
+    "jupyterlab",
+]
 dev = [
     "pre-commit",
     "ruff",
@@ -35,16 +45,17 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build]
 include = [
-    "/src/**/*.py",
-    "/src/**/*.js",
-    "/src/**/*.css",
-    "/src/**/*.html",
-    "/src/trame_vtk/modules/common/serve/**",
+  "/src/trame/**/*.py",
+  "/src/trame_app/**/*.py",
+  "/src/trame_app/**/*.js",
+  "/src/trame_app/**/*.css",
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/trame_vtk", "src/trame"]
-
+packages = [
+    "src/trame",
+    "src/trame_app",
+]
 
 [tool.ruff]
 
@@ -81,16 +92,14 @@ isort.required-imports = []
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["T20"]
-"examples/**" = ["T20", "SIM117"]
 "noxfile.py" = ["T20"]
 "src/**" = ["SIM117"]
-
 [tool.semantic_release]
 version_toml = [
     "pyproject.toml:project.version",
 ]
 version_variables = [
-    "src/trame_vtk/__init__.py:__version__",
+    "src/trame_app/__init__.py:__version__",
 ]
 
 build_command = """

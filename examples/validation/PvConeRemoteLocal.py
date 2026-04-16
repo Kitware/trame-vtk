@@ -1,12 +1,11 @@
 # pvpython ./PvConeRemoteLocal.py --venv /path/to/venv
 # pvpython ./PvConeRemote.py --venv /path/to/venv
 import paraview.web.venv
-
+from paraview import simple
 from trame.app import get_server
-from trame.widgets import vuetify, paraview, html
 from trame.ui.vuetify import SinglePageLayout
 
-from paraview import simple
+from trame.widgets import html, paraview, vuetify
 
 # -----------------------------------------------------------------------------
 # Trame setup
@@ -28,7 +27,7 @@ view = simple.Render()
 
 
 @state.change("resolution")
-def update_cone(resolution, **kwargs):
+def update_cone(resolution, **_):
     cone.Resolution = resolution
     ctrl.view_update()
 
@@ -73,13 +72,12 @@ with SinglePageLayout(server) as layout:
         with vuetify.VBtn(icon=True, click=update_reset_resolution):
             vuetify.VIcon("mdi-undo-variant")
 
-    with layout.content:
-        with vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
-            html_view = paraview.VtkRemoteLocalView(
-                view, mode=("rendering_mode", "local"), ref="view"
-            )
-            ctrl.view_reset_camera = html_view.reset_camera
-            ctrl.view_update = html_view.update
+    with layout.content, vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
+        html_view = paraview.VtkRemoteLocalView(
+            view, mode=("rendering_mode", "local"), ref="view"
+        )
+        ctrl.view_reset_camera = html_view.reset_camera
+        ctrl.view_update = html_view.update
 
 # -----------------------------------------------------------------------------
 # Main

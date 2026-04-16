@@ -3,6 +3,7 @@
 import pyvista as pv
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
+
 from trame.widgets import vuetify
 from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
@@ -43,20 +44,22 @@ with SinglePageLayout(server) as layout:
     with layout.toolbar:
         vuetify.VSpacer()
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vuetify.VCol(classes="fill-height"):
-                view = VtkLocalView(
-                    plotter.ren_win, widgets=[axes_widget_0, axes_widget_1], ref="local"
-                )
-                ctrl.view_update = view.update
-                ctrl.view_reset_camera.add(view.reset_camera)
-            with vuetify.VCol(classes="fill-height"):
-                view = VtkRemoteView(plotter.ren_win, ref="remote")
-                ctrl.view_reset_camera.add(view.reset_camera)
+        ),
+    ):
+        with vuetify.VCol(classes="fill-height"):
+            view = VtkLocalView(
+                plotter.ren_win, widgets=[axes_widget_0, axes_widget_1], ref="local"
+            )
+            ctrl.view_update = view.update
+            ctrl.view_reset_camera.add(view.reset_camera)
+        with vuetify.VCol(classes="fill-height"):
+            view = VtkRemoteView(plotter.ren_win, ref="remote")
+            ctrl.view_reset_camera.add(view.reset_camera)
 
     # hide footer
     layout.footer.hide()

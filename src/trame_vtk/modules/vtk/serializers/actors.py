@@ -1,9 +1,9 @@
 import logging
 
+from .cache import cache_properties, get_cached_property
 from .registry import class_name
 from .serialize import serialize
 from .utils import reference_id, rgb_float_to_hex, wrap_id
-from .cache import cache_properties, get_cached_property
 
 logger = logging.getLogger(__name__)
 
@@ -229,7 +229,7 @@ def scalar_bar_actor_serializer(parent, actor, actor_id, context, depth):
         prop = actor.GetProperty()
     else:
         if context.debug_all:
-            print("This scalar_bar_actor does not have a GetProperty method")
+            print("This scalar_bar_actor does not have a GetProperty method")  # noqa: T201
 
         if prop:
             prop_id = reference_id(prop)
@@ -298,7 +298,7 @@ def scalar_bar_actor_serializer(parent, actor, actor_id, context, depth):
 # -----------------------------------------------------------------------------
 
 
-def axes_actor_serializer(parent, actor, actor_id, context, depth):
+def axes_actor_serializer(parent, actor, actor_id, context, _depth):
     actor_visibility = actor.GetVisibility()
 
     if not actor_visibility:
@@ -373,15 +373,15 @@ def axes_actor_serializer(parent, actor, actor_id, context, depth):
                     "shaftRadius": 0.01 if shaft_type else cylinder_radius,  # 0.03,
                     "invert": 0,
                 },
-                "xAxisColor": list(
-                    map(lambda x: int(x * 255), actor.GetXAxisTipProperty().GetColor())
-                ),
-                "yAxisColor": list(
-                    map(lambda x: int(x * 255), actor.GetYAxisTipProperty().GetColor())
-                ),
-                "zAxisColor": list(
-                    map(lambda x: int(x * 255), actor.GetZAxisTipProperty().GetColor())
-                ),
+                "xAxisColor": [
+                    int(x * 255) for x in actor.GetXAxisTipProperty().GetColor()
+                ],
+                "yAxisColor": [
+                    int(x * 255) for x in actor.GetYAxisTipProperty().GetColor()
+                ],
+                "zAxisColor": [
+                    int(x * 255) for x in actor.GetZAxisTipProperty().GetColor()
+                ],
             },
         ),
     }

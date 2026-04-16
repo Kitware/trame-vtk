@@ -1,12 +1,12 @@
 import vtk
-
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, html
-from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 # Just for using this script in testing
 from trame_client.utils.testing import enable_testing
+
+from trame.widgets import html, vuetify
+from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 server = enable_testing(get_server(), "local_rendering_ready")
 server.client_type = "vue2"
@@ -85,19 +85,21 @@ with SinglePageLayout(server) as layout:
         vuetify.VSpacer()
         html.Div("{{ local_rendering_ready }}", classes="readyCount")
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
+        ),
+    ):
+        with vuetify.VContainer(
+            fluid=True, classes="pa-0 fill-height", style="width: 50%;"
         ):
-            with vuetify.VContainer(
-                fluid=True, classes="pa-0 fill-height", style="width: 50%;"
-            ):
-                local = VtkLocalView(renWin, on_ready="local_rendering_ready++")
-            with vuetify.VContainer(
-                fluid=True, classes="pa-0 fill-height", style="width: 50%;"
-            ):
-                VtkRemoteView(renWin, ctx_name="remote")
+            local = VtkLocalView(renWin, on_ready="local_rendering_ready++")
+        with vuetify.VContainer(
+            fluid=True, classes="pa-0 fill-height", style="width: 50%;"
+        ):
+            VtkRemoteView(renWin, ctx_name="remote")
 
     # hide footer
     layout.footer.hide()

@@ -1,9 +1,9 @@
 # for remote view
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import html, vtk as vtk_widgets, vuetify
 from vtkmodules.vtkFiltersSources import vtkConeSource
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkPolyDataMapper,
@@ -11,7 +11,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkRenderWindowInteractor,
 )
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+
+from trame.widgets import html, vuetify
+from trame.widgets import vtk as vtk_widgets
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -82,32 +84,34 @@ with SinglePageLayout(server) as layout:
         vuetify.VBtn("Push camera", click=push_camera)
         vuetify.VBtn("Push position", click=push_position)
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
             style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr;",
+        ),
+    ):
+        with html.Div(
+            style="height: 100%;justify-self: stretch;",
         ):
-            with html.Div(
-                style="height: 100%;justify-self: stretch;",
-            ):
-                remote_view = vtk_widgets.VtkRemoteView(
-                    renderWindow,
-                    ref="view_remote",
-                )
-                ctrl.view_update.add(remote_view.update)
-                ctrl.view_reset_camera.add(remote_view.reset_camera)
+            remote_view = vtk_widgets.VtkRemoteView(
+                renderWindow,
+                ref="view_remote",
+            )
+            ctrl.view_update.add(remote_view.update)
+            ctrl.view_reset_camera.add(remote_view.reset_camera)
 
-            with html.Div(
-                style="height: 100%;justify-self: stretch;",
-            ):
-                local_view = vtk_widgets.VtkLocalView(
-                    renderWindow,
-                    ref="view_local",
-                )
-                ctrl.view_update.add(local_view.update)
-                ctrl.view_reset_camera.add(local_view.reset_camera)
-                ctrl.view_push_camera = local_view.push_camera
+        with html.Div(
+            style="height: 100%;justify-self: stretch;",
+        ):
+            local_view = vtk_widgets.VtkLocalView(
+                renderWindow,
+                ref="view_local",
+            )
+            ctrl.view_update.add(local_view.update)
+            ctrl.view_reset_camera.add(local_view.reset_camera)
+            ctrl.view_push_camera = local_view.push_camera
 
 
 # -----------------------------------------------------------------------------

@@ -1,7 +1,5 @@
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, vtk as vtk_widgets
-
 from vtkmodules.vtkFiltersSources import vtkConeSource
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
@@ -10,6 +8,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkRenderWindowInteractor,
 )
+
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify
 
 renderer = vtkRenderer()
 renderWindow = vtkRenderWindow()
@@ -40,7 +41,7 @@ def export_scene():
 
 
 @state.change("resolution")
-def update_cone(resolution=DEFAULT_RESOLUTION, **kwargs):
+def update_cone(resolution=DEFAULT_RESOLUTION, **_):
     cone_source.SetResolution(resolution)
     ctrl.view_update()
 
@@ -71,16 +72,18 @@ with SinglePageLayout(server) as layout:
             click="utils.download('scene-extract.vtksz', trigger('export'), 'application/octet-stream')",
         )
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vuetify.VCol(classes="pa-0 ma-1 fill-height"):
-                view = vtk_widgets.VtkLocalView(renderWindow)
-                ctrl.view_export = view.export
-                ctrl.view_update = view.update
-                ctrl.view_reset_camera = view.reset_camera
+        ),
+        vuetify.VCol(classes="pa-0 ma-1 fill-height"),
+    ):
+        view = vtk_widgets.VtkLocalView(renderWindow)
+        ctrl.view_export = view.export
+        ctrl.view_update = view.update
+        ctrl.view_reset_camera = view.reset_camera
 
 if __name__ == "__main__":
     server.start()
