@@ -1,7 +1,6 @@
 # CHANGELOG
 
 
-<<<<<<< HEAD
 ## v2.11.8 (2026-04-24)
 
 ### Bug Fixes
@@ -12,8 +11,6 @@
 fix #111
 
 
-=======
->>>>>>> 86f4a5d (ci(pre-commit): revert `CHANGELOG.md` and make prettier ignore it)
 ## v2.11.7 (2026-04-13)
 
 ### Bug Fixes

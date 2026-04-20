@@ -1,2 +1,2 @@
 def test_import():
-    pass
+    from trame.widgets.vtk import VtkAlgorithm  # noqa: PLC0415, F401
