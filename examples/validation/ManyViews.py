@@ -1,20 +1,20 @@
+# for remote view
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
-from trame.widgets import vuetify, html, vtk as vtk_widgets
 from trame.ui.vuetify import SinglePageLayout
-
 from vtkmodules.vtkFiltersModeling import vtkOutlineFilter
 from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkPolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkPolyDataMapper,
-    vtkActor,
 )
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
 
-# for remote view
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+from trame.widgets import html, vuetify
+from trame.widgets import vtk as vtk_widgets
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -80,18 +80,18 @@ def create_vtk_view(color):
     renderer.ResetCamera()
     renderWindow.Render()
 
-    return dict(
-        render_window=renderWindow,
-        renderer=renderer,
-        sphere=sphere_source,
-        cone=cone_source,
-        cone_actor=cone_actor,
-        sphere_actor=sphere_actor,
-        show_cone=True,
-        show_sphere=True,
-        resolution=DEFAULT_RESOLUTION,
-        widget_on=True,
-    )
+    return {
+        "render_window": renderWindow,
+        "renderer": renderer,
+        "sphere": sphere_source,
+        "cone": cone_source,
+        "cone_actor": cone_actor,
+        "sphere_actor": sphere_actor,
+        "show_cone": True,
+        "show_sphere": True,
+        "resolution": DEFAULT_RESOLUTION,
+        "widget_on": True,
+    }
 
 
 # Create 4 views
@@ -114,7 +114,7 @@ def reset_active_view():
 
 
 @state.change("active_view")
-def active_view_change(active_view, **kwargs):
+def active_view_change(active_view, **_):
     pipeline = VIEWS[active_view]
     state.show_cone = pipeline.get("show_cone")
     state.show_sphere = pipeline.get("show_sphere")
@@ -123,12 +123,12 @@ def active_view_change(active_view, **kwargs):
 
 
 @state.change("widget_on")
-def toggle_view(widget_on, active_view, **kwargs):
+def toggle_view(widget_on, active_view, **_):
     state[f"widget_on_{active_view}"] = widget_on
 
 
 @state.change("resolution")
-def update_resolution(resolution, active_view, **kwargs):
+def update_resolution(resolution, active_view, **_):
     pipeline = VIEWS[active_view]
     pipeline.get("cone").SetResolution(resolution)
     pipeline["resolution"] = resolution
@@ -140,7 +140,7 @@ def update_reset_resolution():
 
 
 @state.change("show_cone")
-def update_cone(active_view, show_cone, **kwargs):
+def update_cone(active_view, show_cone, **_):
     pipeline = VIEWS[active_view]
     renderer = pipeline.get("renderer")
     cone_actor = pipeline.get("cone_actor")
@@ -153,7 +153,7 @@ def update_cone(active_view, show_cone, **kwargs):
 
 
 @state.change("show_sphere")
-def update_sphere(active_view, show_sphere, **kwargs):
+def update_sphere(active_view, show_sphere, **_):
     pipeline = VIEWS[active_view]
     renderer = pipeline.get("renderer")
     sphere_actor = pipeline.get("sphere_actor")

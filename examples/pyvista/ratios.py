@@ -1,9 +1,9 @@
+import pyvista as pv
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
+
 from trame.widgets import vuetify
 from trame.widgets.vtk import VtkRemoteView
-
-import pyvista as pv
 
 server = get_server()
 state, ctrl = server.state, server.controller
@@ -32,14 +32,16 @@ with SinglePageLayout(server) as layout:
     with layout.toolbar:
         vuetify.VSpacer()
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            view = VtkRemoteView(plotter.ren_win, interactive_ratio=2, still_ratio=2)
-            ctrl.view_update = view.update
-            ctrl.view_reset_camera = view.reset_camera
+        ),
+    ):
+        view = VtkRemoteView(plotter.ren_win, interactive_ratio=2, still_ratio=2)
+        ctrl.view_update = view.update
+        ctrl.view_reset_camera = view.reset_camera
 
 # -----------------------------------------------------------------------------
 # Main

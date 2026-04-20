@@ -1,10 +1,10 @@
 import asyncio
 
-from trame.app import get_server, asynchronous
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
+from trame.app import asynchronous, get_server
 from trame.ui.vuetify3 import SinglePageLayout
-from trame.widgets import vuetify3 as v3, vtk as vtk_widgets
-
 from vtkmodules.vtkFiltersSources import vtkConeSource
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkPolyDataMapper,
@@ -12,8 +12,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkRenderWindowInteractor,
 )
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify3 as v3
 
 renderer = vtkRenderer()
 renderWindow = vtkRenderWindow()
@@ -84,17 +85,19 @@ with SinglePageLayout(server) as layout:
             style="max-width: 200px;",
         )
 
-    with layout.content:
-        with v3.VContainer(
+    with (
+        layout.content,
+        v3.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            view = vtk_widgets.VtkRemoteView(
-                renderWindow, interactive_quality=80, interactive_ratio=1
-            )
-            ctrl.view_update = view.update
-            ctrl.view_start_animation = view.start_animation
-            ctrl.view_stop_animation = view.stop_animation
+        ),
+    ):
+        view = vtk_widgets.VtkRemoteView(
+            renderWindow, interactive_quality=80, interactive_ratio=1
+        )
+        ctrl.view_update = view.update
+        ctrl.view_start_animation = view.start_animation
+        ctrl.view_stop_animation = view.stop_animation
 
 if __name__ == "__main__":
     server.start()

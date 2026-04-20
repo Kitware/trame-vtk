@@ -1,16 +1,17 @@
+import importlib
 import logging
 import os
-import importlib
 import sys
 
-vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
-sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
-from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter
-
+from .cache import cache_properties
 from .registry import class_name
 from .serialize import serialize
 from .utils import reference_id, wrap_id
-from .cache import cache_properties
+
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +28,8 @@ def generic_mapper_serializer(parent, mapper, mapper_id, context, depth):
     if hasattr(mapper, "GetInputDataObject"):
         mapper.GetInputAlgorithm().Update()
         data_object = mapper.GetInputDataObject(0, 0)
-    else:
-        if context.debug_all:
-            print("This mapper does not have GetInputDataObject method")
+    elif context.debug_all:
+        print("This mapper does not have GetInputDataObject method")  # noqa: T201
 
     if data_object:
         if data_object.IsA("vtkDataSet"):
@@ -38,7 +38,7 @@ def generic_mapper_serializer(parent, mapper, mapper_id, context, depth):
             alg.Update()
             data_object = alg.GetOutput()
 
-        data_object_id = "%s-dataset" % mapper_id
+        data_object_id = f"{mapper_id}-dataset"
         data_object_instance = serialize(
             mapper, data_object, data_object_id, context, depth + 1
         )
@@ -51,9 +51,8 @@ def generic_mapper_serializer(parent, mapper, mapper_id, context, depth):
 
     if hasattr(mapper, "GetLookupTable"):
         lookup_table = mapper.GetLookupTable()
-    else:
-        if context.debug_all:
-            print("This mapper does not have GetLookupTable method")
+    elif context.debug_all:
+        print("This mapper does not have GetLookupTable method")  # noqa: T201
 
     if lookup_table:
         lookup_table_id = reference_id(lookup_table)
@@ -120,7 +119,7 @@ def generic_volume_mapper_serializer(parent, mapper, mapper_id, context, depth):
         logger.debug("This mapper does not have GetInputDataObject method")
 
     if data_object:
-        data_object_id = "%s-dataset" % mapper_id
+        data_object_id = f"{mapper_id}-dataset"
         data_object_instance = serialize(
             mapper, data_object, data_object_id, context, depth + 1
         )

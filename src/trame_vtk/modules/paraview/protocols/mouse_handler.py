@@ -1,12 +1,11 @@
-from wslink import register as export_rpc
-
 from vtkmodules.vtkWebCore import vtkWebInteractionEvent
+from wslink import register as export_rpc
 
 from .web_protocol import ParaViewWebProtocol
 
 
 class ParaViewWebMouseHandler(ParaViewWebProtocol):
-    def __init__(self, **kwargs):
+    def __init__(self, **_):
         super().__init__()
         self.last_action = "up"
 

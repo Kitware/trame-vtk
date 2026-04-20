@@ -1,12 +1,12 @@
 import base64
 import math
 import time
+from contextlib import suppress
 
 from paraview import simple
+from vtkmodules.vtkWebCore import vtkWebInteractionEvent
 from wslink import register as export_rpc
 from wslink import schedule_callback
-
-from vtkmodules.vtkWebCore import vtkWebInteractionEvent
 
 from .web_protocol import ParaViewWebProtocol
 
@@ -19,7 +19,7 @@ def apply_modifiers(event, interactor):
 
 
 class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
-    def __init__(self, decode=True, **kwargs):
+    def __init__(self, decode=True, **_):
         super().__init__()
         self.tracking_views = {}
         self.last_stale_time = {}
@@ -141,8 +141,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
 
         next_animate_time -= time.time()
 
-        if self.target_frame_rate > self.max_frame_rate:
-            self.target_frame_rate = self.max_frame_rate
+        self.target_frame_rate = min(self.target_frame_rate, self.max_frame_rate)
 
         if next_animate_time < 0:
             if next_animate_time < -1.0:
@@ -155,7 +154,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
                 schedule_callback(0.001, lambda: self.animate(not render_all_views))
             else:
                 # Keep animating at the best rate we can
-                schedule_callback(0.001, lambda: self.animate())
+                schedule_callback(0.001, self.animate)
         else:
             # We have time so let's render all
             if (
@@ -163,7 +162,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
                 and next_animate_time > 0.005
             ):
                 self.target_frame_rate += 1.0
-            schedule_callback(next_animate_time, lambda: self.animate())
+            schedule_callback(next_animate_time, self.animate)
 
     @export_rpc("viewport.image.animation.fps.max")
     def set_max_frame_rate(self, fps=30):
@@ -231,14 +230,14 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
         """
         RPC Callback to render a view and obtain the rendered image.
         """
-        begin_time = int(round(time.time() * 1000))
+        begin_time = round(time.time() * 1000)
         view_id = str(options["view"])
         view = self.get_view(view_id)
 
         # If no view id provided, skip rendering
         if not view_id:
-            print("No view")
-            print(options)
+            print("No view")  # noqa: T201
+            print(options)  # noqa: T201
             return None
 
         # Make sure request match our selected view
@@ -328,7 +327,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
             # Convert the vtkUnsignedCharArray into a bytes object, required by Autobahn websockets
             reply["image"] = memoryview(reply_image).tobytes() if reply_image else None
 
-        end_time = int(round(time.time() * 1000))
+        end_time = round(time.time() * 1000)
         reply["workTime"] = end_time - begin_time
 
         return reply
@@ -337,7 +336,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
     def add_render_observer(self, view_id):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = s_view.GetGlobalIDAsString()
 
@@ -378,7 +377,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
         try:
             s_view = self.get_view(view_id)
         except Exception:
-            print("no view with ID %s available in remove_render_observer" % view_id)
+            print(f"no view with ID {view_id} available in remove_render_observer")  # noqa: T201
 
         real_view_id = s_view.GetGlobalIDAsString() if s_view else view_id
 
@@ -387,7 +386,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
             observer_info = self.tracking_views[real_view_id]
 
         if not observer_info:
-            return {"error": "Unable to find subscription for view %s" % real_view_id}
+            return {"error": f"Unable to find subscription for view {real_view_id}"}
 
         observer_info["observerCount"] -= 1
 
@@ -401,7 +400,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
 
     @export_rpc("viewport.image.push.quality.get")
     def get_view_quality(self, view_id):
-        response = dict(quality=1, ratio=1)
+        response = {"quality": 1, "ratio": 1}
         s_view = self.get_view(view_id)
 
         if s_view:
@@ -417,7 +416,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
     def set_view_quality(self, view_id, quality, ratio=1, update_linked_view=True):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = s_view.GetGlobalIDAsString()
         observer_info = None
@@ -425,7 +424,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
             observer_info = self.tracking_views[real_view_id]
 
         if not observer_info:
-            return {"error": "Unable to find subscription for view %s" % real_view_id}
+            return {"error": f"Unable to find subscription for view {real_view_id}"}
 
         observer_info["quality"] = quality
         observer_info["ratio"] = ratio
@@ -455,7 +454,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
 
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = s_view.GetGlobalIDAsString()
         observer_info = None
@@ -463,7 +462,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
             observer_info = self.tracking_views[real_view_id]
 
         if not observer_info:
-            return {"error": "Unable to find subscription for view %s" % real_view_id}
+            return {"error": f"Unable to find subscription for view {real_view_id}"}
 
         observer_info["originalSize"] = (int(width + 0.5), int(height + 0.5))
 
@@ -473,7 +472,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
     def enable_view(self, view_id, enabled):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = s_view.GetGlobalIDAsString()
         observer_info = None
@@ -481,7 +480,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
             observer_info = self.tracking_views[real_view_id]
 
         if not observer_info:
-            return {"error": "Unable to find subscription for view %s" % real_view_id}
+            return {"error": f"Unable to find subscription for view {real_view_id}"}
 
         observer_info["enabled"] = enabled
 
@@ -491,7 +490,7 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
     def invalidate_cache(self, view_id):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         self.app.InvalidateCache(s_view.SMProxy)
         self.app.InvokeEvent("UpdateEvent")
@@ -510,9 +509,8 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
             view_list = [self.get_view(vid) for vid in self.linked_views]
             ref_view = view_list.pop(0)
             for view in view_list:
-                link_name = "%s_%s" % (
-                    ref_view.GetGlobalIDAsString(),
-                    view.GetGlobalIDAsString(),
+                link_name = (
+                    f"{ref_view.GetGlobalIDAsString()}_{view.GetGlobalIDAsString()}"
                 )
                 simple.AddCameraLink(ref_view, view, link_name)
                 self.link_names.append(link_name)
@@ -528,10 +526,8 @@ class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
             if link_state:
                 self.linked_views.append(view_id)
             else:
-                try:
+                with suppress(Exception):
                     self.linked_views.remove(view_id)
-                except Exception:
-                    pass
             # self.validate_view_links()
 
         if len(self.linked_views) > 1:

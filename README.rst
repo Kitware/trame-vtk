@@ -13,6 +13,8 @@ VTK integration in trame allows you to create rich visualization and data proces
 Several components are available so you can leverage VTK either for its data processing and/or rendering.
 trame lets you choose if you want to leverage Remote Rendering or if the client should do the rendering by leveraging vtk.js under the hood.
 
+.. image:: https://raw.githubusercontent.com/Kitware/trame-vtk/master/trame-vtk.jpg
+    :alt: Example of trame-vtk usage
 
 Installing
 -----------------------------------------------------------
@@ -118,10 +120,10 @@ VtkLocalView
 The VtkLocalView component relies on the server for defining the vtkRenderWindow but then only the geometry is exchanged with the client.
 The server does not need a GPU as no rendering is happening on the server.
 The vtkRenderWindow is only used to retrieve the scene data and parameters (coloring by, representations, ...).
-By relying on the same vtkRenderWindow, you can easily switch from a `VtkRemoteView` to a `VtkLocalView` or vice-versa.
+By relying on the same vtkRenderWindow, you can easily switch from a ``VtkRemoteView`` to a ``VtkLocalView`` or vice-versa.
 This component gives you controls on how you want to map mouse interaction with the camera.
-The default setting mimic default VTK interactor style so you will rarely have to override to the `interactor_settings`.
-The VtkLocalView supports WebXR thanks to the `VtkWebXRHelper` component. Please refer to the examples for details on how to use it.
+The default setting mimic default VTK interactor style so you will rarely have to override to the ``interactor_settings``.
+The VtkLocalView supports WebXR thanks to the ``VtkWebXRHelper`` component. Please refer to the examples for details on how to use it.
 
 How to use it?
 ```````````````````````````````````````````````````````````
@@ -157,7 +159,7 @@ The component also provides a convenient method to push the scene to the client 
 Interactor Settings
 ```````````````````````````````````````````````````````````
 
-For the `interactor_settings` we expect a list of mouse event type linked to an action. The example below is what is used as default:
+For the ``interactor_settings`` we expect a list of mouse event type linked to an action. The example below is what is used as default:
 
 .. code-block:: javascript
 
@@ -247,8 +249,8 @@ Examples
 VtkRemoteLocalView
 -----------------------------------------------------------
 
-The VtkRemoteLocalView component is a blend of `VtkLocalView` and `VtkRemoteView` where the user can choose dynamically which mode they want to be in.
-When instantiating a `VtkRemoteLocalView` several variables and triggers will be created for you to more easily control your view.
+The VtkRemoteLocalView component is a blend of ``VtkLocalView`` and ``VtkRemoteView`` where the user can choose dynamically which mode they want to be in.
+When instantiating a ``VtkRemoteLocalView`` several variables and triggers will be created for you to more easily control your view.
 
 How to use it?
 ```````````````````````````````````````````````````````````
@@ -279,7 +281,7 @@ How to use it?
 Namespace parameter
 ```````````````````````````````````````````````````````````
 
-Constructing a VtkRemoteLocalView will set several variables, prefixed by a namespace. In the example below we used `namespace="view"`.
+Constructing a VtkRemoteLocalView will set several variables, prefixed by a namespace. In the example below we used ``namespace="view"``.
 
 .. list-table::
    :widths: 25 75
@@ -307,12 +309,12 @@ Constructing a VtkRemoteLocalView will also set several trame triggers.
    * - viewAnimateStop
      - Stop the animation loop
 
-The `namespace` will also be used as `ref=` unless provided by the user.
+The ``namespace`` will also be used as ``ref=`` unless provided by the user.
 
 Mode parameter
 ```````````````````````````````````````````````````````````
 
-The mode is driven by the variable `{namespace}Mode` but can be provided when instantiated so the default can be overridden and a JavaScript expression can be used instead of the default variable. This attribute behaves the same way as any trame one except, we won't register the left side as a state entry since we already have one under `{namespace}Mode`. This means we will evaluate the left side of the expression assuming a tuple is provided and the right side of the tuple is used to set its initial value.
+The mode is driven by the variable ``{namespace}Mode`` but can be provided when instantiated so the default can be overridden and a JavaScript expression can be used instead of the default variable. This attribute behaves the same way as any trame one except, we won't register the left side as a state entry since we already have one under ``{namespace}Mode``. This means we will evaluate the left side of the expression assuming a tuple is provided and the right side of the tuple is used to set its initial value.
 
 Examples
 ```````````````````````````````````````````````````````````

@@ -1,19 +1,20 @@
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
-from trame.widgets import vuetify, vtk as vtk_widgets
 from trame.ui.vuetify import SinglePageLayout
-
 from vtkmodules.vtkFiltersSources import vtkSphereSource
+
+# VTK factory initialization
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkPolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkPolyDataMapper,
-    vtkActor,
 )
 
-# VTK factory initialization
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -60,7 +61,7 @@ lut.SetVectorSize(3)
 
 
 @state.change("component_idx")
-def color_by_array(component_idx, **kwargs):
+def color_by_array(component_idx, **_):
     lut.SetVectorComponent(component_idx)
     ctrl.remote_view_update()
     ctrl.local_view_update()
@@ -77,27 +78,29 @@ with SinglePageLayout(server) as layout:
             items=(
                 "components",
                 [
-                    dict(value=0, text="X"),
-                    dict(value=1, text="Y"),
-                    dict(value=2, text="Z"),
+                    {"value": 0, "text": "X"},
+                    {"value": 1, "text": "Y"},
+                    {"value": 2, "text": "Z"},
                 ],
             ),
             dense=True,
             hide_details=True,
         )
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vuetify.VCol(classes="pa-0 fill-height"):
-                view = vtk_widgets.VtkLocalView(renderWindow, ref="local")
-                ctrl.local_view_update = view.update
-                ctrl.view_reset_camera.add(view.reset_camera)
-            with vuetify.VCol(classes="pa-0 fill-height"):
-                view = vtk_widgets.VtkRemoteView(renderWindow, ref="remote")
-                ctrl.remote_view_update = view.update
-                ctrl.view_reset_camera.add(view.reset_camera)
+        ),
+    ):
+        with vuetify.VCol(classes="pa-0 fill-height"):
+            view = vtk_widgets.VtkLocalView(renderWindow, ref="local")
+            ctrl.local_view_update = view.update
+            ctrl.view_reset_camera.add(view.reset_camera)
+        with vuetify.VCol(classes="pa-0 fill-height"):
+            view = vtk_widgets.VtkRemoteView(renderWindow, ref="remote")
+            ctrl.remote_view_update = view.update
+            ctrl.view_reset_camera.add(view.reset_camera)
 
 server.start()

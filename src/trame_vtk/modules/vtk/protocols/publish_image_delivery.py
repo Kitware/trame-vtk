@@ -105,22 +105,21 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
 
         next_animate_time -= time.time()
 
-        if self.target_frame_rate > self.max_frame_rate:
-            self.target_frame_rate = self.max_frame_rate
+        self.target_frame_rate = min(self.target_frame_rate, self.max_frame_rate)
 
         if next_animate_time < 0:
             if next_animate_time < -1.0:
                 self.target_frame_rate = 1
             if self.target_frame_rate > self.min_frame_rate:
                 self.target_frame_rate -= 1.0
-            schedule_callback(0.001, lambda: self.animate())
+            schedule_callback(0.001, self.animate)
         else:
             if (
                 self.target_frame_rate < self.max_frame_rate
                 and next_animate_time > 0.005
             ):
                 self.target_frame_rate += 1.0
-            schedule_callback(next_animate_time, lambda: self.animate())
+            schedule_callback(next_animate_time, self.animate)
 
     @export_rpc("viewport.image.animation.fps.max")
     def set_max_frame_rate(self, fps=30):
@@ -161,7 +160,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
         """
         RPC Callback to render a view and obtain the rendered image.
         """
-        begin_time = int(round(time.time() * 1000))
+        begin_time = round(time.time() * 1000)
         view = self.get_view(options["view"])
         if not view:
             # The view has been deleted, we can not render it...
@@ -229,7 +228,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
             # Convert the vtkUnsignedCharArray into a bytes object, required by Autobahn websockets
             reply["image"] = memoryview(reply_image).tobytes() if reply_image else None
 
-        end_time = int(round(time.time() * 1000))
+        end_time = round(time.time() * 1000)
         reply["workTime"] = end_time - begin_time
 
         return reply
@@ -238,7 +237,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
     def add_render_observer(self, view_id):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = str(self.get_global_id(s_view))
 
@@ -276,7 +275,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
     def remove_render_observer(self, view_id):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = str(self.get_global_id(s_view))
 
@@ -285,7 +284,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
             observer_info = self.tracking_views[real_view_id]
 
         if not observer_info:
-            return {"error": "Unable to find subscription for view %s" % real_view_id}
+            return {"error": f"Unable to find subscription for view {real_view_id}"}
 
         observer_info["observerCount"] -= 1
 
@@ -298,7 +297,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
 
     @export_rpc("viewport.image.push.quality.get")
     def get_view_quality(self, view_id):
-        response = dict(quality=1, ratio=1)
+        response = {"quality": 1, "ratio": 1}
         s_view = self.get_view(view_id)
 
         if s_view:
@@ -314,7 +313,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
     def set_view_quality(self, view_id, quality, ratio=1):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = str(self.get_global_id(s_view))
         observer_info = None
@@ -322,7 +321,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
             observer_info = self.tracking_views[real_view_id]
 
         if not observer_info:
-            return {"error": "Unable to find subscription for view %s" % real_view_id}
+            return {"error": f"Unable to find subscription for view {real_view_id}"}
 
         observer_info["quality"] = quality
         observer_info["ratio"] = ratio
@@ -344,7 +343,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
     def set_view_size(self, view_id, width, height):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = str(self.get_global_id(s_view))
         observer_info = None
@@ -352,7 +351,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
             observer_info = self.tracking_views[real_view_id]
 
         if not observer_info:
-            return {"error": "Unable to find subscription for view %s" % real_view_id}
+            return {"error": f"Unable to find subscription for view {real_view_id}"}
 
         observer_info["originalSize"] = [width, height]
 
@@ -362,7 +361,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
     def enable_view(self, view_id, enabled):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         real_view_id = str(self.get_global_id(s_view))
         observer_info = None
@@ -370,7 +369,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
             observer_info = self.tracking_views[real_view_id]
 
         if not observer_info:
-            return {"error": "Unable to find subscription for view %s" % real_view_id}
+            return {"error": f"Unable to find subscription for view {real_view_id}"}
 
         observer_info["enabled"] = enabled
 
@@ -380,7 +379,7 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
     def invalidate_cache(self, view_id):
         s_view = self.get_view(view_id)
         if not s_view:
-            return {"error": "Unable to get view with id %s" % view_id}
+            return {"error": f"Unable to get view with id {view_id}"}
 
         self.app.InvalidateCache(s_view)
         self.app.InvokeEvent("UpdateEvent")

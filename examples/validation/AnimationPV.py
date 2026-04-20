@@ -1,10 +1,11 @@
 import asyncio
 
-from trame.app import get_server, asynchronous
-from trame.ui.vuetify3 import SinglePageLayout
-from trame.widgets import vuetify3 as v3, paraview as pv_widgets
-
 from paraview import simple
+from trame.app import asynchronous, get_server
+from trame.ui.vuetify3 import SinglePageLayout
+
+from trame.widgets import paraview as pv_widgets
+from trame.widgets import vuetify3 as v3
 
 server = get_server(client_type="vue3")
 state, ctrl = server.state, server.controller
@@ -68,17 +69,17 @@ with SinglePageLayout(server) as layout:
             style="max-width: 200px;",
         )
 
-    with layout.content:
-        with v3.VContainer(
+    with (
+        layout.content,
+        v3.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            view = pv_widgets.VtkRemoteView(
-                v, interactive_quality=80, interactive_ratio=1
-            )
-            ctrl.view_update = view.update
-            ctrl.view_start_animation = view.start_animation
-            ctrl.view_stop_animation = view.stop_animation
+        ),
+    ):
+        view = pv_widgets.VtkRemoteView(v, interactive_quality=80, interactive_ratio=1)
+        ctrl.view_update = view.update
+        ctrl.view_start_animation = view.start_animation
+        ctrl.view_stop_animation = view.stop_animation
 
 if __name__ == "__main__":
     server.start()

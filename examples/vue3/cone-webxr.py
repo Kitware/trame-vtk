@@ -1,19 +1,20 @@
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import get_server
-from trame.widgets import vuetify3, vtk as vtk_widgets
 from trame.ui.vuetify3 import SinglePageLayout
-
 from vtkmodules.vtkFiltersSources import vtkConeSource
+
+# VTK factory initialization
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa: F401
 from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkPolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkPolyDataMapper,
-    vtkActor,
 )
 
-# VTK factory initialization
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleSwitch  # noqa
-import vtkmodules.vtkRenderingOpenGL2  # noqa
+from trame.widgets import vtk as vtk_widgets
+from trame.widgets import vuetify3
 
 # -----------------------------------------------------------------------------
 # Trame initialization
@@ -53,7 +54,7 @@ renderWindow.Render()
 
 
 @state.change("resolution")
-def update_cone(resolution=DEFAULT_RESOLUTION, **kwargs):
+def update_cone(resolution=DEFAULT_RESOLUTION, **_):
     cone_source.SetResolution(resolution)
     ctrl.view_update()
 
@@ -88,24 +89,26 @@ with SinglePageLayout(server) as layout:
         with vuetify3.VBtn(icon=True, click=toggle_xr):
             vuetify3.VIcon("mdi-virtual-reality")
 
-    with layout.content:
-        with vuetify3.VContainer(
+    with (
+        layout.content,
+        vuetify3.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vtk_widgets.VtkLocalView(renderWindow) as view:
-                ctrl.view_update = view.update
+        ),
+        vtk_widgets.VtkLocalView(renderWindow) as view,
+    ):
+        ctrl.view_update = view.update
 
-                def on_enter_xr():
-                    state.xr_active = True
+        def on_enter_xr():
+            state.xr_active = True
 
-                def on_exit_xr():
-                    state.xr_active = False
+        def on_exit_xr():
+            state.xr_active = False
 
-                webxr_helper = vtk_widgets.VtkWebXRHelper(
-                    draw_controllers_ray=True, enter_xr=on_enter_xr, exit_xr=on_exit_xr
-                )
-                ctrl.start_xr = webxr_helper.start_xr
-                ctrl.stop_xr = webxr_helper.stop_xr
+        webxr_helper = vtk_widgets.VtkWebXRHelper(
+            draw_controllers_ray=True, enter_xr=on_enter_xr, exit_xr=on_exit_xr
+        )
+        ctrl.start_xr = webxr_helper.start_xr
+        ctrl.stop_xr = webxr_helper.stop_xr
 
 server.start()
