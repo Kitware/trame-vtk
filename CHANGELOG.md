@@ -1,11 +1,13 @@
 # CHANGELOG
 
+
 ## v2.11.7 (2026-04-13)
 
 ### Bug Fixes
 
 - **static_viewer**: Include in repo to skip auto fetch on vtk.js
   ([`9302c6b`](https://github.com/Kitware/trame-vtk/commit/9302c6b0309e3961323aea882621ac8922d59524))
+
 
 ## v2.11.6 (2026-03-25)
 
@@ -14,12 +16,14 @@
 - **array**: Skip hash and eq usage on array
   ([`12e2d35`](https://github.com/Kitware/trame-vtk/commit/12e2d35b5d06c949994a2224fae897b6cb9c3930))
 
+
 ## v2.11.5 (2026-03-25)
 
 ### Bug Fixes
 
 - **static_viewer**: Update static viewer from vtk.js
   ([`3bb5f16`](https://github.com/Kitware/trame-vtk/commit/3bb5f16b1f7aa658dc14f6f945fafc3acf5faaf3))
+
 
 ## v2.11.4 (2026-03-25)
 
@@ -28,6 +32,7 @@
 - **array**: Don't rely on hashable arrays
   ([`e740a95`](https://github.com/Kitware/trame-vtk/commit/e740a9552a4ba285d285b88c63f9571474c82988))
 
+
 ## v2.11.3 (2026-03-15)
 
 ### Bug Fixes
@@ -35,12 +40,14 @@
 - **tool**: Vtksz2html use new dom container
   ([`4b7fe32`](https://github.com/Kitware/trame-vtk/commit/4b7fe32052189489f73c95b9c854bf0b72107c79))
 
+
 ## v2.11.2 (2026-03-15)
 
 ### Bug Fixes
 
 - **static_viewer**: Fetch latest static viewer
   ([`d4d8d18`](https://github.com/Kitware/trame-vtk/commit/d4d8d18e6905bac55b924c0c3af761e5a47f3be5))
+
 
 ## v2.11.1 (2026-02-05)
 
@@ -50,6 +57,7 @@
   ([`1884ced`](https://github.com/Kitware/trame-vtk/commit/1884ced08ddb73312366289e7cb01acc3e4b7ed8))
 
 Update how camera is get in vtkLocalView with a ParaView RenderView
+
 
 ## v2.11.0 (2026-02-04)
 
@@ -63,6 +71,7 @@ Update how camera is get in vtkLocalView with a ParaView RenderView
 - Add served directory versioning
   ([`c9463ef`](https://github.com/Kitware/trame-vtk/commit/c9463ef898671b1d9e714fd8c288c872e9373403))
 
+
 ## v2.10.3 (2026-01-28)
 
 ### Bug Fixes
@@ -70,8 +79,9 @@ Update how camera is get in vtkLocalView with a ParaView RenderView
 - **actor**: Prevent serialization of actors without a mapper
   ([`b116bc9`](https://github.com/Kitware/trame-vtk/commit/b116bc9d56824ffcd21722ffbd312b90be632a1b))
 
-Fix bug where oglmapper wass undefined in traverseOpaquePass for an actor whose
-visibility got toggled twice
+Fix bug where oglmapper wass undefined in traverseOpaquePass for an actor whose visibility got
+  toggled twice
+
 
 ## v2.10.2 (2026-01-08)
 
@@ -85,12 +95,14 @@ visibility got toggled twice
 - Update baseline for test_rendering_lut and test_big_int
   ([`b73e575`](https://github.com/Kitware/trame-vtk/commit/b73e57591f8f97ddf260aebfec9f64059d1898bc))
 
+
 ## v2.10.1 (2025-12-15)
 
 ### Bug Fixes
 
 - **camera**: Update vue-vtk-js
   ([`582cb80`](https://github.com/Kitware/trame-vtk/commit/582cb8048252668e2ac329cb26a20cdc1acf23d9))
+
 
 ## v2.10.0 (2025-10-02)
 
@@ -118,12 +130,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - Add WebXR Helper widget
   ([`beded63`](https://github.com/Kitware/trame-vtk/commit/beded63f1b6268cc30120646b83770a679a57d0a))
 
+
 ## v2.9.1 (2025-07-21)
 
 ### Bug Fixes
 
 - **vtk-module**: Fix import for custom vtk module
   ([`090b504`](https://github.com/Kitware/trame-vtk/commit/090b504e8fd28cbce3705628f72cf2fd6ff12e56))
+
 
 ## v2.9.0 (2025-06-23)
 
@@ -137,12 +151,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **vtk**: Enable custom VTK build
   ([`448530a`](https://github.com/Kitware/trame-vtk/commit/448530a6456bdfebedd0b356ea5632a345dbc301))
 
+
 ## v2.8.17 (2025-06-03)
 
 ### Bug Fixes
 
 - Properly bundle static_viewer.html
   ([`89df689`](https://github.com/Kitware/trame-vtk/commit/89df689f124f7b08835efdfed4216c347d84c391))
+
 
 ## v2.8.16 (2025-06-02)
 
@@ -166,6 +182,7 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
 - Update links in readme
   ([`f73f046`](https://github.com/Kitware/trame-vtk/commit/f73f0465a9fd9989c07244ae666429e68b97cd53))
+
 
 ## v2.8.15 (2025-02-09)
 
@@ -201,6 +218,7 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - Cover several vtk version
   ([`274da78`](https://github.com/Kitware/trame-vtk/commit/274da788bcfa15abf4f453158e14ad5210895e2f))
 
+
 ## v2.8.14 (2025-01-08)
 
 ### Bug Fixes
@@ -216,6 +234,7 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **pre-commit**: Fix codespell
   ([`df46242`](https://github.com/Kitware/trame-vtk/commit/df46242bc34c9e89b9ed42445f77ddd16bb15720))
 
+
 ## v2.8.13 (2025-01-07)
 
 ### Bug Fixes
@@ -228,12 +247,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - Update README.rst
   ([`38ad9b2`](https://github.com/Kitware/trame-vtk/commit/38ad9b220a4674f5d820e0252302fc1688c80731))
 
+
 ## v2.8.12 (2024-11-08)
 
 ### Performance Improvements
 
 - **vtk**: Do not always force image push
   ([`d2b075f`](https://github.com/Kitware/trame-vtk/commit/d2b075fa00958d2e8ebcad052db89a7a41d3ce4f))
+
 
 ## v2.8.11 (2024-10-17)
 
@@ -242,12 +263,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **animation**: Enable animation on remote view
   ([`660a1d4`](https://github.com/Kitware/trame-vtk/commit/660a1d4a755d43684a82f24efbfdb7bd445651cd))
 
+
 ## v2.8.10 (2024-08-07)
 
 ### Bug Fixes
 
 - **wheel**: Apply modifiers [alt,shift,ctrl] on wheel event
   ([`42f2283`](https://github.com/Kitware/trame-vtk/commit/42f22838fe409d8b15ed158240ece25a46d0b7dc))
+
 
 ## v2.8.9 (2024-06-07)
 
@@ -256,6 +279,7 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **VtkView**: Add set_camera method
   ([`bc7e883`](https://github.com/Kitware/trame-vtk/commit/bc7e8833bbdc6b58d316c99586c04407be5a41d5))
 
+
 ## v2.8.8 (2024-05-06)
 
 ### Bug Fixes
@@ -263,23 +287,22 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **js**: Track hash of vue-vtk-js as well
   ([`c82ffec`](https://github.com/Kitware/trame-vtk/commit/c82ffeca9d6d3bddbd65d630f3c6fc9864352eae))
 
-Similar to offline_viewer.html we track and report mismatched hash of all
-external dependencies. see also https://github.com/Kitware/trame-vtk/pull/70
+Similar to offline_viewer.html we track and report mismatched hash of all external dependencies. see
+  also https://github.com/Kitware/trame-vtk/pull/70
 
 ### Chores
 
 - **js**: Allow triggering release on external artifact static_viewer.html
   ([`eb8461a`](https://github.com/Kitware/trame-vtk/commit/eb8461af4229588b71a8bd8f34bb72be162d877f))
 
-Previously, when a new version of static_viewer.html is released on the master
-of vtk-js we couldn't trigger a release because we do not commit this file but
-rather grab it during release. This commit adds the hash of the latest version
-in a file and a hash check that runs during release but does not trigger a
-failure on a mismatch but rather a warning. So now if static_viewer.html is
-updated on vtk-js: - If we do not care `.fetch_externals.sh` will just emit a
-warning - If we **do** care we update .static_viewer.sha256 and trigger a new
-release on trame-vtk even if no other `trame-vtk` change happened during last
-release.
+Previously, when a new version of static_viewer.html is released on the master of vtk-js we couldn't
+  trigger a release because we do not commit this file but rather grab it during release. This
+  commit adds the hash of the latest version in a file and a hash check that runs during release but
+  does not trigger a failure on a mismatch but rather a warning. So now if static_viewer.html is
+  updated on vtk-js: - If we do not care `.fetch_externals.sh` will just emit a warning - If we
+  **do** care we update .static_viewer.sha256 and trigger a new release on trame-vtk even if no
+  other `trame-vtk` change happened during last release.
+
 
 ## v2.8.7 (2024-05-02)
 
@@ -288,9 +311,9 @@ release.
 - **remote rendering**: Round view size half up
   ([`e6777b9`](https://github.com/Kitware/trame-vtk/commit/e6777b9161d381c01e9ec04f592093c9225f1adf))
 
-comply with vue-vtk-js vtkRemoteView implementation which uses Math.round for
-setting view size. python builtin round function does not work the same way: it
-rounds half to even.
+comply with vue-vtk-js vtkRemoteView implementation which uses Math.round for setting view size.
+  python builtin round function does not work the same way: it rounds half to even.
+
 
 ## v2.8.6 (2024-04-22)
 
@@ -304,6 +327,7 @@ rounds half to even.
 - **readme**: Fix the link of tutorial url
   ([`0a46f97`](https://github.com/Kitware/trame-vtk/commit/0a46f97f951f0709a1547a7f4e169cf16c33324a))
 
+
 ## v2.8.5 (2024-02-15)
 
 ### Bug Fixes
@@ -313,12 +337,14 @@ rounds half to even.
 
 * Fix breaks compatability with Python 3.8
 
+
 ## v2.8.4 (2024-02-14)
 
 ### Bug Fixes
 
 - **serializer**: Md5 hashing is not allowed for FIPS
   ([`6e163d6`](https://github.com/Kitware/trame-vtk/commit/6e163d62199092d2e3dc2311e2b75f2572854790))
+
 
 ## v2.8.3 (2024-02-13)
 
@@ -327,12 +353,14 @@ rounds half to even.
 - **serializer**: Add encoding option
   ([`9c20a89`](https://github.com/Kitware/trame-vtk/commit/9c20a89297c356e8dd421ed5d47fb3ed03c660c7))
 
+
 ## v2.8.2 (2024-02-09)
 
 ### Bug Fixes
 
 - **js**: Replace invalid downloaded js content
   ([`d45ca89`](https://github.com/Kitware/trame-vtk/commit/d45ca89ede99b50090c5dc70b6470abce26c126f))
+
 
 ## v2.8.1 (2024-02-09)
 
@@ -346,6 +374,7 @@ rounds half to even.
 - **picking**: Finish remote example
   ([`1ebeadb`](https://github.com/Kitware/trame-vtk/commit/1ebeadbaaf0044f637f1aa969074c4a3f49570e0))
 
+
 ## v2.8.0 (2024-01-30)
 
 ### Bug Fixes
@@ -358,12 +387,14 @@ rounds half to even.
 - **picking**: Add support for picking modes
   ([`edab22d`](https://github.com/Kitware/trame-vtk/commit/edab22dfd6327be3d721efdfcb58a44de714c6c0))
 
+
 ## v2.7.1 (2024-01-26)
 
 ### Bug Fixes
 
 - **local**: Add prop3d.orientation for local rendering
   ([`812c6d1`](https://github.com/Kitware/trame-vtk/commit/812c6d18a582b504f59c7e4dc1e60e2e4fb99b7f))
+
 
 ## v2.7.0 (2024-01-12)
 
@@ -382,12 +413,14 @@ rounds half to even.
 - **multi-server**: Add support for multi-server
   ([`5a775ea`](https://github.com/Kitware/trame-vtk/commit/5a775ea8d0f3816f733ce9e9d68e0c798976bc64))
 
+
 ## v2.6.3 (2023-12-13)
 
 ### Bug Fixes
 
 - **BigInt**: Convert points with (Big)Int to Float for LocalView
   ([`80496d5`](https://github.com/Kitware/trame-vtk/commit/80496d5ef38269a76e5f4a51c80e3340ad83d1d7))
+
 
 ## v2.6.2 (2023-11-16)
 
@@ -396,12 +429,14 @@ rounds half to even.
 - **ref**: Automatically assign non conflicting ref
   ([`3cfdf2a`](https://github.com/Kitware/trame-vtk/commit/3cfdf2ada97b1ccae04211e25e92744835621c2f))
 
+
 ## v2.6.1 (2023-11-13)
 
 ### Bug Fixes
 
 - **protocol**: Allow several servers within 1 process
   ([`0c53288`](https://github.com/Kitware/trame-vtk/commit/0c53288add82f5aeea55d3b0190150580311a03b))
+
 
 ## v2.6.0 (2023-11-08)
 
@@ -423,12 +458,14 @@ rounds half to even.
 - Pass `user_matrix` in `add_on` dictionary as payload to
   ([`ec6cfba`](https://github.com/Kitware/trame-vtk/commit/ec6cfbaaec1940dfc57fb990306f63cd1f56af0b))
 
+
 ## v2.5.10 (2023-11-07)
 
 ### Bug Fixes
 
 - **vtk.js**: Bump vtk.js to 29.1.1
   ([`bd93a63`](https://github.com/Kitware/trame-vtk/commit/bd93a63907d2ff86fc67c247e751367f6e4753a0))
+
 
 ## v2.5.9 (2023-10-06)
 
@@ -453,6 +490,7 @@ rounds half to even.
 - **pyvista**: Add wip examples
   ([`487c4c0`](https://github.com/Kitware/trame-vtk/commit/487c4c03054c5a6dad3a671760d53a2375d3119f))
 
+
 ## v2.5.8 (2023-07-20)
 
 ### Bug Fixes
@@ -464,6 +502,7 @@ rounds half to even.
 
 - Add trame-vuetify as dep
   ([`c7259c0`](https://github.com/Kitware/trame-vtk/commit/c7259c05e502193f88fb19640b0388a465598380))
+
 
 ## v2.5.7 (2023-07-20)
 
@@ -484,6 +523,7 @@ rounds half to even.
 
 - Ignore changelog for spelling
   ([`aafb2a4`](https://github.com/Kitware/trame-vtk/commit/aafb2a4681eff562324f724e2cbf5a49efab31b6))
+
 
 ## v2.5.6 (2023-07-19)
 
@@ -510,6 +550,7 @@ fix #46 fix #44
 
 fix #45
 
+
 ## v2.5.5 (2023-07-19)
 
 ### Bug Fixes
@@ -518,8 +559,8 @@ fix #45
   ([`74ed533`](https://github.com/Kitware/trame-vtk/commit/74ed533a2a29930b2f33d0dd2fb77c30987a51e2))
 
 Not using a RenderView as view for the vtkLocalRemoteView will crash, because
-"EnableRenderOnInteraction" might not be defined. "GetPropertyValue" will return
-None for a non-existing Property
+  "EnableRenderOnInteraction" might not be defined. "GetPropertyValue" will return None for a
+  non-existing Property
 
 ### Chores
 
@@ -533,6 +574,7 @@ None for a non-existing Property
 
 - Upate baselines
   ([`082de9c`](https://github.com/Kitware/trame-vtk/commit/082de9c79f8a7b653bb5c71482e2bea97b050a49))
+
 
 ## v2.5.4 (2023-06-29)
 
@@ -552,13 +594,14 @@ None for a non-existing Property
 - Use better stage name
   ([`0bf3f73`](https://github.com/Kitware/trame-vtk/commit/0bf3f73b2257f2e49552d69ed2c5ad8f909e6487))
 
+
 ## v2.5.3 (2023-06-28)
 
 ### Bug Fixes
 
-- **html**: Improve HTML exporting
-  ([#42](https://github.com/Kitware/trame-vtk/pull/42),
+- **html**: Improve HTML exporting ([#42](https://github.com/Kitware/trame-vtk/pull/42),
   [`3a0184e`](https://github.com/Kitware/trame-vtk/commit/3a0184e86842f275d920827c3e1a5bb62f627655))
+
 
 ## v2.5.2 (2023-06-26)
 
@@ -578,6 +621,7 @@ None for a non-existing Property
 - **testing**: Update baselines
   ([`0d6e494`](https://github.com/Kitware/trame-vtk/commit/0d6e4945f80ee56b7ecc8181d4341331989b7d0e))
 
+
 ## v2.5.1 (2023-06-23)
 
 ### Bug Fixes
@@ -592,6 +636,7 @@ None for a non-existing Property
 
 - Split steps
   ([`b1fdde6`](https://github.com/Kitware/trame-vtk/commit/b1fdde61d96681a9f052d4c75628367f1fe4069c))
+
 
 ## v2.5.0 (2023-06-16)
 
@@ -630,6 +675,7 @@ None for a non-existing Property
 - **local**: Enable prop caching
   ([`be29552`](https://github.com/Kitware/trame-vtk/commit/be29552102b0394ae3e45bcc96a0c6b4f2af73dc))
 
+
 ## v2.4.4 (2023-04-16)
 
 ### Bug Fixes
@@ -645,12 +691,14 @@ None for a non-existing Property
 - **pv**: Add paraview validation example
   ([`9146694`](https://github.com/Kitware/trame-vtk/commit/914669478cb2ba088131d8da81ddc287003afb23))
 
+
 ## v2.4.3 (2023-04-07)
 
 ### Bug Fixes
 
 - **export**: Add export for VtkLocalView
   ([`b58ccf4`](https://github.com/Kitware/trame-vtk/commit/b58ccf4109b25f567cac0f8f1185ab71e00c14dc))
+
 
 ## v2.4.2 (2023-03-31)
 
@@ -687,12 +735,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **examples**: Update the widget ones
   ([`cdda471`](https://github.com/Kitware/trame-vtk/commit/cdda471df5c2364e7359c2d6533ffcd4e4b38cf0))
 
+
 ## v2.4.1 (2023-03-27)
 
 ### Bug Fixes
 
 - **paraview**: Fix protocol
   ([`b72425c`](https://github.com/Kitware/trame-vtk/commit/b72425cdde30344b15cebf8dd1b11aa62701176f))
+
 
 ## v2.4.0 (2023-03-24)
 
@@ -709,8 +759,8 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
   ([`3c1614c`](https://github.com/Kitware/trame-vtk/commit/3c1614c82f47528e71de69916baa22961177c3d9))
 
 Now, only critical messages from serializers are printed by default, unless the
-`TRAME_SERIALIZE_DEBUG` environment variable is set, in which case all logger
-output will be printed from the serializers.
+  `TRAME_SERIALIZE_DEBUG` environment variable is set, in which case all logger output will be
+  printed from the serializers.
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
@@ -722,15 +772,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **mouse_handler**: Apply a couple of fixes to mouse wheel event
   ([`45505ef`](https://github.com/Kitware/trame-vtk/commit/45505ef25bb76a4d04bddd9cecdc375999de9e1b))
 
-First of all, this updates the interactor with the mouse position on a wheel
-event so that if there are multiple renderers, the interactor can figure out
-which one needs to be updated.
+First of all, this updates the interactor with the mouse position on a wheel event so that if there
+  are multiple renderers, the interactor can figure out which one needs to be updated.
 
-Second, this forwards the event to the interactor, rather than applying a manual
-zoom to the camera ourselves. This makes the behavior more consistent.
+Second, this forwards the event to the interactor, rather than applying a manual zoom to the camera
+  ourselves. This makes the behavior more consistent.
 
-Third, this skips the zoom for the start event, since there appears to always be
-a wheel event right after it.
+Third, this skips the zoom for the start event, since there appears to always be a wheel event right
+  after it.
 
 Fixes: pyvista/pyvista#4020
 
@@ -751,8 +800,7 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **vue-vtk-js**: Update vue-vtk-js to the newest version
   ([`eb7310d`](https://github.com/Kitware/trame-vtk/commit/eb7310dd9e763b069de438ad33db3173965c2e81))
 
-This includes mouse position information for moving the mouse wheel, which we
-need.
+This includes mouse position information for moving the mouse wheel, which we need.
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
@@ -787,8 +835,8 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **protocols**: Copy protocols from VTK exactly
   ([`9fe3c26`](https://github.com/Kitware/trame-vtk/commit/9fe3c261bc78a8814e1f4bab37ac6df3977144d8))
 
-This copies the protocols and render_window_serializer from VTK exactly as they
-are. Further commits will modify the code.
+This copies the protocols and render_window_serializer from VTK exactly as they are. Further commits
+  will modify the code.
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
@@ -797,16 +845,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **case**: Convert most variables from camelCase to snake_case
   ([`ba9beaf`](https://github.com/Kitware/trame-vtk/commit/ba9beaf5060ab2b992a85d7ae701f3f4853deba2))
 
-I went through the code and automatically converted most of the variables from
-camelCase to snake_case using regex in vim. I skipped a couple of cases in
-particular:
+I went through the code and automatically converted most of the variables from camelCase to
+  snake_case using regex in vim. I skipped a couple of cases in particular:
 
-1. Anything that started with `vtk` (this might be a VTK object) 2. Anything in
-   quotes (since they might be strings sent to VTK.js)
+1. Anything that started with `vtk` (this might be a VTK object) 2. Anything in quotes (since they
+  might be strings sent to VTK.js)
 
-There were, however, some things still that were modified that should not have
-been. I tried to manually fix these, but I may have not caught everything, so we
-should do testing to verify.
+There were, however, some things still that were modified that should not have been. I tried to
+  manually fix these, but I may have not caught everything, so we should do testing to verify.
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
@@ -869,17 +915,15 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **serializers**: Apply patches from addon_serializer
   ([`a93a540`](https://github.com/Kitware/trame-vtk/commit/a93a5400f542c529024e18941f9323c7623cea12))
 
-This takes the patches being applied in addon_serializer.py and puts them
-directly in the render window serializer. We should verify that there are no
-issues. But I did notice some discrepancies:
+This takes the patches being applied in addon_serializer.py and puts them directly in the render
+  window serializer. We should verify that there are no issues. But I did notice some discrepancies:
 
-1. I saw no difference in `extractRequiredFields()` 2. The addon serializer did
-   not call `registerInstanceSerializer()` on `vtkStructuredPoints` with the
-   modified `imagedataSerializer` (only difference is that extent is used
-   instead of dimensions). 3. The addon serializer did not call
-   `registerInstanceSerializer()` on `vtkColorTransferFunction` with the
-   modified `colorTransferFunctionSerializer`. 4. `genericMapperSerializer()`
-   only had debug message modifications
+1. I saw no difference in `extractRequiredFields()` 2. The addon serializer did not call
+  `registerInstanceSerializer()` on `vtkStructuredPoints` with the modified `imagedataSerializer`
+  (only difference is that extent is used instead of dimensions). 3. The addon serializer did not
+  call `registerInstanceSerializer()` on `vtkColorTransferFunction` with the modified
+  `colorTransferFunctionSerializer`. 4. `genericMapperSerializer()` only had debug message
+  modifications
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
@@ -916,6 +960,7 @@ The functions being used were copied over.
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
+
 ## v2.3.5 (2023-03-21)
 
 ### Bug Fixes
@@ -923,12 +968,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - Axes serializer
   ([`cc2136d`](https://github.com/Kitware/trame-vtk/commit/cc2136df0d4ff850f25f791ffc76f3ae2ba10a92))
 
+
 ## v2.3.4 (2023-03-10)
 
 ### Bug Fixes
 
 - **RemoteView**: Support no size at startup
   ([`29c5587`](https://github.com/Kitware/trame-vtk/commit/29c5587f0ca72c78972d6304a48d469231d523e6))
+
 
 ## v2.3.3 (2023-03-10)
 
@@ -939,12 +986,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
 fix #25
 
+
 ## v2.3.2 (2023-03-09)
 
 ### Bug Fixes
 
 - **serializer**: Add support for LUT components
   ([`3ace3f5`](https://github.com/Kitware/trame-vtk/commit/3ace3f5ffa6e0af6d9db029e0a5ca6fb3f4a7174))
+
 
 ## v2.3.1 (2023-03-09)
 
@@ -954,6 +1003,7 @@ fix #25
   ([`95cfd2d`](https://github.com/Kitware/trame-vtk/commit/95cfd2d196bb00e28648f698a63a219e553b54cf))
 
 fix #16
+
 
 ## v2.3.0 (2023-03-09)
 
@@ -975,6 +1025,7 @@ fix #16
 - **screenshot**: Allow screenshot extract
   ([`8db1f08`](https://github.com/Kitware/trame-vtk/commit/8db1f0845206fc65ec02f7169aa40ab63bb4d792))
 
+
 ## v2.2.3 (2023-03-03)
 
 ### Bug Fixes
@@ -990,12 +1041,14 @@ fix #16
 - **widget**: Simple plane/clip
   ([`1365d51`](https://github.com/Kitware/trame-vtk/commit/1365d510ebffe0589e3579cbe6b25e8b349626cc))
 
+
 ## v2.2.2 (2023-02-28)
 
 ### Bug Fixes
 
 - **widget**: Add a class to wrap vtkAbstractWidgets and make them easier to use
   ([`29e39d4`](https://github.com/Kitware/trame-vtk/commit/29e39d42b7115c6c1df82f7be38c7ecc456aedf5))
+
 
 ## v2.2.1 (2023-02-26)
 
@@ -1008,6 +1061,7 @@ fix #16
 
 - **example**: Update latest vue3 syntax
   ([`5b64088`](https://github.com/Kitware/trame-vtk/commit/5b64088d05ad5b596758324204092404b8a33f00))
+
 
 ## v2.2.0 (2023-02-25)
 
@@ -1031,6 +1085,7 @@ fix #16
 - **LocalRemote**: Allow full camera sync with helper method
   ([`a750af2`](https://github.com/Kitware/trame-vtk/commit/a750af248c5d7025491bca1a8ff6cd0a9bab441b))
 
+
 ## v2.1.0 (2023-02-23)
 
 ### Bug Fixes
@@ -1043,11 +1098,12 @@ fix #16
 - **vue23**: Update client code to work with vue2/3
   ([`7a8f546`](https://github.com/Kitware/trame-vtk/commit/7a8f546de013f61f7973118b992fec5889c35690))
 
+
 ## v2.0.18 (2023-02-23)
 
 ### Bug Fixes
 
-- **version**: Add **version**
+- **version**: Add __version__
   ([`c9ab451`](https://github.com/Kitware/trame-vtk/commit/c9ab451d9e397f2a9c64b488d957915086a81ddc))
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
@@ -1061,6 +1117,7 @@ There is an issue in the CI that might be resolved if we switch back to master.
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
+
 ## v2.0.17 (2023-02-01)
 
 ### Bug Fixes
@@ -1068,12 +1125,11 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **BigInt**: Add support for LocalView
   ([`aa34620`](https://github.com/Kitware/trame-vtk/commit/aa34620642c64ceb5fd625c83b22fc7f50e823ff))
 
-* fix: support BigInt64Array and BigUint64Array _ Update
-  trame_vtk/modules/vtk/addon_serializer.py _ Add PyVista Int64 validation
-  example _ docs(example): Improve int64 validation example _ fix(BigInt):
-  Update vue-vtk-js
+* fix: support BigInt64Array and BigUint64Array * Update trame_vtk/modules/vtk/addon_serializer.py *
+  Add PyVista Int64 validation example * docs(example): Improve int64 validation example *
+  fix(BigInt): Update vue-vtk-js
 
----
+---------
 
 Co-authored-by: Bane Sullivan <bane.sullivan@kitware.com>
 
@@ -1082,6 +1138,7 @@ Co-authored-by: Bane Sullivan <bane.sullivan@kitware.com>
 - **semantic-release**: Fix version to 7.32.2
   ([`bfa7c41`](https://github.com/Kitware/trame-vtk/commit/bfa7c41d908ebc2c2acbfee4835eccadfc5fb40b))
 
+
 ## v2.0.16 (2023-01-27)
 
 ### Bug Fixes
@@ -1089,8 +1146,9 @@ Co-authored-by: Bane Sullivan <bane.sullivan@kitware.com>
 - Imagedata extent and vtkSmartVolumeMapper
   ([`fc096c0`](https://github.com/Kitware/trame-vtk/commit/fc096c0e0190bfef2127aef2f46e3aa9ccdd8893))
 
-* fix: extent with ImageData serializer _ Remove dimensions _ fix: support
-  vtkSmartVolumeMapper \* Linting
+* fix: extent with ImageData serializer * Remove dimensions * fix: support vtkSmartVolumeMapper *
+  Linting
+
 
 ## v2.0.15 (2023-01-20)
 
@@ -1102,12 +1160,14 @@ Co-authored-by: Bane Sullivan <bane.sullivan@kitware.com>
 - **vtk**: Handle CubeAxes grid color + light + disable_auto_switch
   ([`d89c04e`](https://github.com/Kitware/trame-vtk/commit/d89c04e265a28234cd3467866c016247fc5d6e36))
 
+
 ## v2.0.14 (2023-01-10)
 
 ### Bug Fixes
 
 - Convert RGB colors to hex
   ([`0be279e`](https://github.com/Kitware/trame-vtk/commit/0be279e6190bcc7c54b9fc725da6df014376656a))
+
 
 ## v2.0.13 (2023-01-10)
 
@@ -1121,6 +1181,7 @@ Co-authored-by: Bane Sullivan <bane.sullivan@kitware.com>
 
 fix #9
 
+
 ## v2.0.12 (2022-12-16)
 
 ### Bug Fixes
@@ -1131,12 +1192,14 @@ fix #9
 - **RemoteView**: Expose still_ratio/quality properties
   ([`7278d5e`](https://github.com/Kitware/trame-vtk/commit/7278d5ed7b8872167a9e9c653792b1b8543ac5ab))
 
+
 ## v2.0.11 (2022-12-09)
 
 ### Bug Fixes
 
 - **vue-vtk-js**: Update to 2.1.2
   ([`3cf8913`](https://github.com/Kitware/trame-vtk/commit/3cf8913158e36496e564c4a544f07a2f2cf6c630))
+
 
 ## v2.0.10 (2022-12-04)
 
@@ -1153,12 +1216,14 @@ fix #9
 - **examples**: Add validation examples
   ([`209914a`](https://github.com/Kitware/trame-vtk/commit/209914ab142fe6bf2f7459a83c4f533d32157212))
 
+
 ## v2.0.9 (2022-11-05)
 
 ### Bug Fixes
 
 - **LocalView**: Properly handle add/remove actor
   ([`85ee285`](https://github.com/Kitware/trame-vtk/commit/85ee285f67cf08438d37bae0bfd8d84ffe34db35))
+
 
 ## v2.0.8 (2022-10-20)
 
@@ -1170,12 +1235,14 @@ fix #9
 - Improve VTK mapper and scalar bar serializers
   ([`fb94e81`](https://github.com/Kitware/trame-vtk/commit/fb94e81ef86c152f207e4fd442747c0d318a8dde))
 
+
 ## v2.0.7 (2022-10-05)
 
 ### Bug Fixes
 
 - **VtkLocalView**: Automatically register update on_server_ready
   ([`5b5d296`](https://github.com/Kitware/trame-vtk/commit/5b5d296cc67518801c5ebff9397d55f99461c822))
+
 
 ## v2.0.6 (2022-09-01)
 
@@ -1218,6 +1285,7 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
+
 ## v2.0.5 (2022-06-01)
 
 ### Bug Fixes
@@ -1225,12 +1293,14 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **paraview**: Replace invalid import path
   ([`bd33f2a`](https://github.com/Kitware/trame-vtk/commit/bd33f2a2c71f80792a3039271d70b32f100aeed0))
 
+
 ## v2.0.4 (2022-05-31)
 
 ### Bug Fixes
 
 - **widgets**: Expose more props
   ([`2fa0156`](https://github.com/Kitware/trame-vtk/commit/2fa01565461f62f96d3a18b2f649b5484981e5bf))
+
 
 ## v2.0.3 (2022-05-29)
 
@@ -1241,6 +1311,7 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 
+
 ## v2.0.2 (2022-05-27)
 
 ### Bug Fixes
@@ -1248,11 +1319,11 @@ Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
 - **paraview**: Remove unnecessary check for import
   ([`301b684`](https://github.com/Kitware/trame-vtk/commit/301b684378f30d46e93939da67ebd11f2027bf41))
 
-It is okay to check the servermanager import at the time of instantiating the
-Helper class, and we do not need to check for the servermanager when the module
-is imported.
+It is okay to check the servermanager import at the time of instantiating the Helper class, and we
+  do not need to check for the servermanager when the module is imported.
 
 Signed-off-by: Patrick Avery <patrick.avery@kitware.com>
+
 
 ## v2.0.1 (2022-05-27)
 
