@@ -3,8 +3,6 @@ import logging
 import os
 import sys
 
-from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter
-
 from .cache import cache_properties
 from .registry import class_name
 from .serialize import serialize
@@ -12,6 +10,9 @@ from .utils import reference_id, wrap_id
 
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter  # noqa: E402
+
 logger = logging.getLogger(__name__)
 
 

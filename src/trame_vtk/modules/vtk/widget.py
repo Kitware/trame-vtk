@@ -5,13 +5,14 @@ from functools import partialmethod
 from typing import Callable, Optional
 
 from vtk_module.vtkCommonCore import vtkCommand
-from vtk_module.vtkInteractionWidgets import (
-    vtkAbstractWidget,
-    vtkWidgetRepresentation,
-)
 
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkInteractionWidgets import (  # noqa: E402
+    vtkAbstractWidget,
+    vtkWidgetRepresentation,
+)
 
 EventCallback = Callable[[vtkCommand.EventIds, Optional["VtkWidget"]], None]
 

@@ -3,18 +3,18 @@ import logging
 import os
 import sys
 
-from vtk_module.vtkFiltersGeometry import (
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkFiltersGeometry import (  # noqa: E402
     vtkCompositeDataGeometryFilter,
     vtkDataSetSurfaceFilter,
 )
 
-from .helpers import extract_required_fields, get_array_description
-from .registry import class_name
-from .serialize import serialize
-from .utils import get_js_array_type, reference_id, wrap_id
-
-vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
-sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+from .helpers import extract_required_fields, get_array_description  # noqa: E402
+from .registry import class_name  # noqa: E402
+from .serialize import serialize  # noqa: E402
+from .utils import get_js_array_type, reference_id, wrap_id  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
