@@ -3,13 +3,13 @@ import math
 import os
 import sys
 
-from vtk_module.vtkWebCore import vtkWebInteractionEvent
-from wslink import register as export_rpc
-
-from .web_protocol import vtkWebProtocol
-
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkWebCore import vtkWebInteractionEvent  # noqa: E402
+from wslink import register as export_rpc  # noqa: E402
+
+from .web_protocol import vtkWebProtocol  # noqa: E402
 
 
 def apply_modifiers(event, interactor):

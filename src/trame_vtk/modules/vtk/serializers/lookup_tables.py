@@ -3,8 +3,6 @@ import os
 import sys
 from contextlib import suppress
 
-from vtk_module.vtkRenderingCore import vtkColorTransferFunction
-
 from .cache import cache_properties
 from .helpers import data_table_to_list, linspace
 from .registry import class_name
@@ -12,6 +10,8 @@ from .utils import reference_id
 
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkRenderingCore import vtkColorTransferFunction  # noqa: E402
 
 
 def lookup_table_serializer(parent, lookup_table, lookup_table_id, context, _depth):

@@ -4,11 +4,12 @@ import os
 import sys
 
 import numpy as np
-from vtk_module.util.numpy_support import vtk_to_numpy
-from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter
 
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.util.numpy_support import vtk_to_numpy  # noqa: E402
+from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter  # noqa: E402
 
 
 def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
@@ -83,17 +84,10 @@ def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
 
 
 def mesh_array(array):
-    if not array:
-        msg = "array cannot be None or empty"
-        raise ValueError(msg)
     return b64_encode_numpy(vtk_to_numpy(array.GetData()))
 
 
 def data_array(data_array, location="PointData", name=None):
-    if not data_array:
-        msg = "data array cannot be None or empty"
-        raise ValueError(msg)
-
     data_range = data_array.GetRange(-1)
     nb_comp = data_array.GetNumberOfComponents()
     values = vtk_to_numpy(data_array)

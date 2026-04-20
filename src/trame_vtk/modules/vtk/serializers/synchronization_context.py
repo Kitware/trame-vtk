@@ -6,12 +6,17 @@ import sys
 import time
 import zipfile
 
-from vtk_module.vtkCommonCore import vtkDoubleArray, vtkFloatArray, vtkTypeUInt32Array
-
 from .utils import base64_encode, wrap_id
 
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkCommonCore import (  # noqa: E402
+    vtkDoubleArray,
+    vtkFloatArray,
+    vtkTypeUInt32Array,
+)
+
 logger = logging.getLogger(__name__)
 
 JS_VTK_ARRAY = {
