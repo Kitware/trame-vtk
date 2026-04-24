@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v2.11.8 (2026-04-24)
+
+### Bug Fixes
+
+- **vtk9.7**: Replace GetSize() call by GetNumberOfValues()
+  ([`eed8a5a`](https://github.com/Kitware/trame-vtk/commit/eed8a5a3bb7f36b56bf625d849c484d6a86468d5))
+
+fix #111
+
+
 ## v2.11.7 (2026-04-13)
 
 ### Bug Fixes
