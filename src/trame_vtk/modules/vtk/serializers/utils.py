@@ -4,7 +4,7 @@ import sys
 
 
 def rgb_float_to_hex(r, g, b):
-    return f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
+    return f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}"
 
 
 array_types_mapping = [
@@ -56,7 +56,7 @@ def hash_data_array(data_array):
             memoryview(data_array), usedforsecurity=False
         ).hexdigest()
     type_code = array_types_mapping[data_array.GetDataType()]
-    return "%s_%d%s" % (hashed_bit, data_array.GetSize(), type_code)
+    return "%s_%d%s" % (hashed_bit, data_array.GetNumberOfValues(), type_code)
 
 
 def get_js_array_type(data_array):
