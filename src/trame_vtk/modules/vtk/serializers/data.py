@@ -135,7 +135,7 @@ def imagedata_serializer(
     dataset_id,
     context,
     _depth,
-    _requested_fields,
+    requested_fields,  # noqa: ARG001
 ):
     if hasattr(dataset, "GetDirectionMatrix"):
         direction = [dataset.GetDirectionMatrix().GetElement(0, i) for i in range(9)]
