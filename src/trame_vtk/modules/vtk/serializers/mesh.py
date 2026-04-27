@@ -84,10 +84,12 @@ def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
 
 
 def mesh_array(array):
-    return b64_encode_numpy(vtk_to_numpy(array.GetData()))
+    return b64_encode_numpy(vtk_to_numpy(array.GetData())) if array else None
 
 
 def data_array(data_array, location="PointData", name=None):
+    if data_array is None:
+        return None
     data_range = data_array.GetRange(-1)
     nb_comp = data_array.GetNumberOfComponents()
     values = vtk_to_numpy(data_array)
