@@ -50,7 +50,7 @@ def base64_encode(x):
 def hash_data_array(data_array):
     hashed_bit = hashlib.md5(memoryview(data_array), usedforsecurity=False).hexdigest()
     type_code = array_types_mapping[data_array.GetDataType()]
-    return f"{hashed_bit}_{data_array.GetSize()}{type_code}"
+    return f"{hashed_bit}_{data_array.GetNumberOfValues()}{type_code}"
 
 
 def get_js_array_type(data_array):
