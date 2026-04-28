@@ -2,14 +2,16 @@
 
 import os
 import sys
+
 import pyvista as pv
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, html
-from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 # Just for using this script in testing
 from trame_client.utils.testing import enable_testing
+
+from trame.widgets import html, vuetify
+from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 if os.environ.get("PYTEST_CURRENT_TEST") or "--test" in sys.argv:
     server = enable_testing(get_server(), "local_rendering_ready")
@@ -48,24 +50,26 @@ with SinglePageLayout(server) as layout:
         html.Div("{{ local_rendering_ready }}", classes="readyCount")
         vuetify.VBtn("Update", click=update_local_rendering)
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vuetify.VCol(classes="fill-height"):
-                view = VtkLocalView(
-                    plotter.ren_win,
-                    ref="local",
-                    on_ready="local_rendering_ready++",
-                )
-                ctrl.view_update = view.update
-                ctrl.view_reset_camera = view.reset_camera
-            with vuetify.VCol(classes="fill-height"):
-                VtkRemoteView(
-                    plotter.ren_win,
-                    ref="remote",
-                )
+        ),
+    ):
+        with vuetify.VCol(classes="fill-height"):
+            view = VtkLocalView(
+                plotter.ren_win,
+                ref="local",
+                on_ready="local_rendering_ready++",
+            )
+            ctrl.view_update = view.update
+            ctrl.view_reset_camera = view.reset_camera
+        with vuetify.VCol(classes="fill-height"):
+            VtkRemoteView(
+                plotter.ren_win,
+                ref="remote",
+            )
 
     # hide footer
     layout.footer.hide()

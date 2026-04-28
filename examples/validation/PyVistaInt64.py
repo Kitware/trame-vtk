@@ -1,14 +1,15 @@
 """Validate Int64 usage with VTK.js."""
 
-import pyvista as pv
 import numpy as np
+import pyvista as pv
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, html
-from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 # Just for using this script in testing
 from trame_client.utils.testing import enable_testing
+
+from trame.widgets import html, vuetify
+from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 server = enable_testing(get_server(), "local_rendering_ready")
 server.client_type = "vue2"
@@ -39,20 +40,22 @@ with SinglePageLayout(server) as layout:
         vuetify.VSpacer()
         html.Div("{{ local_rendering_ready }}", classes="readyCount")
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vuetify.VCol(classes="fill-height"):
-                view = VtkLocalView(
-                    plotter.ren_win,
-                    on_ready="local_rendering_ready++",
-                )
-                ctrl.view_update = view.update
-                ctrl.view_reset_camera = view.reset_camera
-            with vuetify.VCol(classes="fill-height"):
-                VtkRemoteView(plotter.ren_win)
+        ),
+    ):
+        with vuetify.VCol(classes="fill-height"):
+            view = VtkLocalView(
+                plotter.ren_win,
+                on_ready="local_rendering_ready++",
+            )
+            ctrl.view_update = view.update
+            ctrl.view_reset_camera = view.reset_camera
+        with vuetify.VCol(classes="fill-height"):
+            VtkRemoteView(plotter.ren_win)
 
     # hide footer
     layout.footer.hide()

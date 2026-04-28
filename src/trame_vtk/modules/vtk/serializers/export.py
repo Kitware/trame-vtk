@@ -9,11 +9,11 @@ def handle_property(hash_list, prop_value):
 
     if "vtkClass" in prop_value and "hash" in prop_value:
         hash_list.append(
-            dict(
-                hash=prop_value.get("hash"),
-                type=prop_value.get("dataType"),
-                vtk=prop_value.get("vtkClass"),
-            )
+            {
+                "hash": prop_value.get("hash"),
+                "type": prop_value.get("dataType"),
+                "vtk": prop_value.get("vtkClass"),
+            }
         )
 
 

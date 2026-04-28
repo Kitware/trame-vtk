@@ -7,8 +7,8 @@ from .actors import (
     scalar_bar_actor_serializer,
 )
 from .data import (
-    imagedata_serializer,
     generic_volume_serializer,
+    imagedata_serializer,
     merge_to_polydata_serializer,
     polydata_serializer,
 )
@@ -25,30 +25,57 @@ from .properties import property_serializer, volume_property_serializer
 from .registry import register_instance_serializer, register_js_class
 from .render_windows import (
     camera_serializer,
-    renderer_serializer,
     render_window_serializer,
+    renderer_serializer,
 )
 from .textures import texture_serializer
 
 logger = logging.getLogger(__name__)
 
-CONVERT_LUT = False
-SKIP_LIGHT = False
+
+class LUTConfig:
+    """Configuration globale pour les sérialiseurs VTK"""
+
+    def __init__(self):
+        self._convert_lut = False
+        self._skip_light = False
+
+    @property
+    def convert_lut(self):
+        return self._convert_lut
+
+    @convert_lut.setter
+    def convert_lut(self, value):
+        self._convert_lut = value
+
+    @property
+    def skip_light(self):
+        return self._skip_light
+
+    @skip_light.setter
+    def skip_light(self, value):
+        self._skip_light = value
+
+    def encode_lut(self, value=True):
+        self._convert_lut = value
+
+    def skip_light(self, value=True):
+        self._skip_light = value
+
+
+vtk_config = LUTConfig()
 
 
 def encode_lut(value=True):
-    global CONVERT_LUT
-    CONVERT_LUT = value
+    vtk_config.convert_lut = value
 
 
 def skip_light(value=True):
-    global SKIP_LIGHT
-    SKIP_LIGHT = value
+    vtk_config.skip_light = value
 
 
 def lookup_table_serializer_selector(*args, **kwargs):
-    global CONVERT_LUT
-    if CONVERT_LUT:
+    if vtk_config.convert_lut:
         return lookup_table_serializer2(*args, **kwargs)
     return lookup_table_serializer(*args, **kwargs)
 
@@ -133,7 +160,7 @@ def initialize_serializers():
         ],
         # Lights
         light_serializer: []
-        if SKIP_LIGHT
+        if vtk_config.skip_light
         else [
             "vtkLight",
             "vtkPVLight",
@@ -167,15 +194,14 @@ def initialize_serializers():
     }
 
     for serializer, names in serializers.items():
-        if not isinstance(names, (list, tuple)):
-            names = [names]
+        names_list = [names] if not isinstance(names, (list, tuple)) else names
 
-        for name in names:
+        for name in names_list:
             register_instance_serializer(name, serializer)
 
     for js_class, vtk_classes in js_classes.items():
-        if not isinstance(vtk_classes, (list, tuple)):
-            vtk_classes = [vtk_classes]
-
-        for vtk_class in vtk_classes:
+        vtk_classes_list = (
+            [vtk_classes] if not isinstance(vtk_classes, (list, tuple)) else vtk_classes
+        )
+        for vtk_class in vtk_classes_list:
             register_js_class(vtk_class, js_class)

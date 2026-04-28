@@ -1,14 +1,15 @@
 from trame.app import get_server
 from trame.ui.html import DivLayout
-from trame.widgets import html, client, vtk as vtk_widgets
-
 from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
 from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkPolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
-    vtkPolyDataMapper,
-    vtkActor,
 )
+
+from trame.widgets import client, html
+from trame.widgets import vtk as vtk_widgets
 
 
 class PickingExample:

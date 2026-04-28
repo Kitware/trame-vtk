@@ -3,8 +3,8 @@ import inspect
 
 import pytest
 import pyvista as pv
-
 from trame.app import get_server
+
 from trame.widgets import vtk as vtk_widgets
 
 # pytest_plugins = ('pytest_asyncio',)

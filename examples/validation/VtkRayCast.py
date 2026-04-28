@@ -1,25 +1,22 @@
 #!/usr/bin/env python
 
 # Web imports
-from trame.app import get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vtk, vuetify
-
 # -----------------------------------------------------------------------------
 # Example:    SimpleRayCast
 # taken from: https://kitware.github.io/vtk-examples/site/Python/
 # -----------------------------------------------------------------------------
-
 # noinspection PyUnresolvedReferences
-import vtkmodules.vtkInteractionStyle  # noqa
+import vtkmodules.vtkInteractionStyle  # noqa: F401
+from trame.app import get_server
+from trame.ui.vuetify import SinglePageLayout
 from vtkmodules.vtkCommonColor import vtkNamedColors
 from vtkmodules.vtkCommonDataModel import vtkPiecewiseFunction
 from vtkmodules.vtkIOLegacy import vtkStructuredPointsReader
 from vtkmodules.vtkRenderingCore import (
     vtkColorTransferFunction,
+    vtkRenderer,
     vtkRenderWindow,
     vtkRenderWindowInteractor,
-    vtkRenderer,
     vtkVolume,
     vtkVolumeProperty,
 )
@@ -27,8 +24,10 @@ from vtkmodules.vtkRenderingVolume import vtkFixedPointVolumeRayCastMapper
 
 # noinspection PyUnresolvedReferences
 from vtkmodules.vtkRenderingVolumeOpenGL2 import (
-    vtkOpenGLRayCastImageDisplayHelper,  # noqa
+    vtkOpenGLRayCastImageDisplayHelper,  # noqa: F401
 )
+
+from trame.widgets import vtk, vuetify
 
 # FIXME
 DATA_FILE = "/Users/sebastien.jourdain/Documents/code/web/trame-suite/trame-tutorial/data/ironProt.vtk"
@@ -105,13 +104,15 @@ ctrl = server.controller
 with SinglePageLayout(server) as layout:
     layout.title.set_text("Hello trame")
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            # view = vtk.VtkRemoteView(renWin)
-            view = vtk.VtkLocalView(renWin)
+        ),
+    ):
+        # view = vtk.VtkRemoteView(renWin)
+        view = vtk.VtkLocalView(renWin)
 
 
 # -----------------------------------------------------------------------------
