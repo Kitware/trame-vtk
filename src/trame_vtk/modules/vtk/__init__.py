@@ -30,7 +30,7 @@ See https://github.com/conda-forge/vtk-feedstock/pull/258
 """
 
 
-def has_capabilities(*_):
+def has_capabilities(*_features):
     if not HAS_VTK_WEB:
         raise ImportError(IMPROPER_VTK_MSG)
 
@@ -76,7 +76,7 @@ class Helper:
         new_state=False,
         widgets=None,
         orientation_axis=0,
-        **_,
+        **_kwargs,
     ):
         scene_state = self._trame_server.protocol_call(
             "viewport.geometry.view.get.state",
@@ -89,7 +89,7 @@ class Helper:
             scene_state.setdefault("extra", {})["resetCamera"] = 1
         return scene_state
 
-    def export(self, render_window, widgets=None, orientation_axis=0, **_):
+    def export(self, render_window, widgets=None, orientation_axis=0, **_kwargs):
         return self._trame_server.protocol_call(
             "viewport.geometry.view.get.export",
             self.id(render_window),
@@ -196,7 +196,7 @@ class Helper:
         still_ratio=1,
         still_quality=98,
         force_replace=False,
-        **_,
+        **_kwargs,
     ):
         if name in self._hybrid_views:
             if force_replace:
@@ -234,7 +234,7 @@ class Helper:
 HELPERS_PER_SERVER = {}
 
 
-def setup(trame_server, **_):
+def setup(trame_server, **_kwargs):
     if HAS_VTK_WEB:
         HELPERS_PER_SERVER[trame_server.name] = Helper(trame_server)
 

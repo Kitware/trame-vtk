@@ -56,12 +56,6 @@ class LUTConfig:
     def skip_light(self, value):
         self._skip_light = value
 
-    def encode_lut(self, value=True):
-        self._convert_lut = value
-
-    def skip_light(self, value=True):
-        self._skip_light = value
-
 
 vtk_config = LUTConfig()
 

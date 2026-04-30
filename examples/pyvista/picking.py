@@ -46,7 +46,7 @@ def on_box_selection(event): ...
 
 
 @state.change("selection_mode")
-def on_mode_change(selection_mode, **_):
+def on_mode_change(selection_mode, **_kwargs):
     # Use box for selection
     state.box_selection = selection_mode in [
         "select_surface_point",

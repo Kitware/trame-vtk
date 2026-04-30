@@ -75,7 +75,7 @@ renderWindow.Render()
 
 
 @state.change("resolution")
-def update_resolution(resolution=DEFAULT_RESOLUTION, **_):
+def update_resolution(resolution=DEFAULT_RESOLUTION, **_kwargs):
     cone_source.SetResolution(resolution)
     ctrl.view_update()
 
@@ -85,7 +85,7 @@ def update_reset_resolution():
 
 
 @state.change("show_cone")
-def update_cone(show_cone, **_):
+def update_cone(show_cone, **_kwargs):
     if show_cone:
         renderer.AddActor(cone_actor)
     else:
@@ -94,7 +94,7 @@ def update_cone(show_cone, **_):
 
 
 @state.change("show_sphere")
-def update_sphere(show_sphere, **_):
+def update_sphere(show_sphere, **_kwargs):
     if show_sphere:
         renderer.AddActor(sphere_actor)
     else:

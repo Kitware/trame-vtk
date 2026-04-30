@@ -61,7 +61,7 @@ lut.SetVectorSize(3)
 
 
 @state.change("component_idx")
-def color_by_array(component_idx, **_):
+def color_by_array(component_idx, **_kwargs):
     lut.SetVectorComponent(component_idx)
     ctrl.remote_view_update()
     ctrl.local_view_update()

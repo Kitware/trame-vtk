@@ -45,13 +45,13 @@ pl.camera_position = cpos
 
 
 @state.change("cmap")
-def update_cmap(cmap="viridis", **_):
+def update_cmap(cmap="viridis", **_kwargs):
     actor.mapper.lookup_table.cmap = cmap
     ctrl.view_update()
 
 
 @state.change("phase_index")
-def update_phase(phase_index=0, **_):
+def update_phase(phase_index=0, **_kwargs):
     phase = phases[phase_index]
     # feel free to change this to visualize different mode shapes
     mode_shape = "disp_6"
@@ -62,7 +62,7 @@ def update_phase(phase_index=0, **_):
 
 @state.change("play")
 @asynchronous.task
-async def update_play(**_):
+async def update_play(**_kwargs):
     while state.play:
         with state:
             if state.phase_index >= len(phases):

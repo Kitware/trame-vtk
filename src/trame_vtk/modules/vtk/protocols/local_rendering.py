@@ -18,7 +18,7 @@ class vtkWebLocalRendering(vtkWebProtocol):
     client-side rendering capability we have in vtk.js
     """
 
-    def __init__(self, **_):
+    def __init__(self, **_kwargs):
         super().__init__()
         initialize_serializers()
         self.context = SynchronizationContext()
@@ -99,7 +99,7 @@ class vtkWebLocalRendering(vtkWebProtocol):
         new_subscription=False,
         widgets=None,
         orientation_axis=0,
-        **_,
+        **_kwargs,
     ):
         s_view = self.get_view(view_id)
         if not s_view:

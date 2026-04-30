@@ -494,7 +494,7 @@ class VtkRemoteLocalView(HtmlElement):
         self.__view.GetInteractor().AddObserver(45, self._push_camera)
 
     def update_geometry(
-        self, _reset_camera=False, widgets=None, orientation_axis=0, **_
+        self, _reset_camera=False, widgets=None, orientation_axis=0, **_kwargs
     ):
         """
         Force update to geometry
@@ -521,7 +521,9 @@ class VtkRemoteLocalView(HtmlElement):
         )
         self.server.state[self.__scene_id] = full_state
 
-    def export_geometry(self, widgets=None, orientation_axis=0, format="zip", **_):
+    def export_geometry(
+        self, widgets=None, orientation_axis=0, format="zip", **_kwargs
+    ):
         """Export standalone scene for OfflineViewer
 
         :param format: Can be either be "zip" or "json".
@@ -560,13 +562,13 @@ class VtkRemoteLocalView(HtmlElement):
         if self.server.protocol:
             self._helper.push_image(self.__view, reset_camera)
 
-    def set_local_rendering(self, local=True, **_):
+    def set_local_rendering(self, local=True, **_kwargs):
         self.server.state[self.__mode_key] = "local" if local else "remote"
 
-    def set_remote_rendering(self, remote=True, **_):
+    def set_remote_rendering(self, remote=True, **_kwargs):
         self.server.state[self.__mode_key] = "remote" if remote else "local"
 
-    def update(self, reset_camera=False, widgets=None, orientation_axis=0, **_):
+    def update(self, reset_camera=False, widgets=None, orientation_axis=0, **_kwargs):
         # need to do both to keep things in sync
         if self.__rendering:
             self.update_image(reset_camera)
@@ -583,10 +585,10 @@ class VtkRemoteLocalView(HtmlElement):
                 self._helper.camera(self.__view),
             )
 
-    def _push_camera(self, *_, **_kwargs):
+    def _push_camera(self, *_args, **_kwargs):
         self.push_camera()
 
-    def push_camera(self, camera=None, center_of_rotation=None, **_):
+    def push_camera(self, camera=None, center_of_rotation=None, **_kwargs):
         if camera is None:
             if hasattr(self.__view, "GetRenderers"):  # VTK
                 camera = self.__view.GetRenderers().GetFirstRenderer().GetActiveCamera()
@@ -614,7 +616,7 @@ class VtkRemoteLocalView(HtmlElement):
             camera_params,
         )
 
-    def replace_view(self, new_view, **_):
+    def replace_view(self, new_view, **_kwargs):
         self.server.state[self.__view_key_id] = self._helper.id(new_view)
         _mode = self.server.state[self.__mode_key]
         self.__view = new_view
@@ -624,10 +626,10 @@ class VtkRemoteLocalView(HtmlElement):
         self.update()
         self.resize()
 
-    def reset_camera(self, **_):
+    def reset_camera(self, **_kwargs):
         self.server.js_call(ref=self.__ref, method="resetCamera")
 
-    def resize(self, **_):
+    def resize(self, **_kwargs):
         self.server.js_call(ref=self.__ref, method="resize")
 
     @property
@@ -760,7 +762,7 @@ class VtkRemoteView(HtmlElement):
             "EndInteraction",
         ]
 
-    def update(self, **_):
+    def update(self, **_kwargs):
         """
         Force image to be pushed to client
         """
@@ -790,16 +792,16 @@ class VtkRemoteView(HtmlElement):
         self._helper.stop_animation(self.__view)
         self.update()
 
-    def reset_camera(self, **_):
+    def reset_camera(self, **_kwargs):
         self.server.js_call(ref=self.__ref, method="resetCamera")
 
-    def replace_view(self, new_view, **_):
+    def replace_view(self, new_view, **_kwargs):
         self.__view = new_view
         self.server.state[self.__view_key_id] = self._helper.id(new_view)
         self.update()
         self.resize()
 
-    def resize(self, **_):
+    def resize(self, **_kwargs):
         self.server.js_call(ref=self.__ref, method="resize")
 
     def capture_image(self, format="image/png", opts=None):
@@ -947,7 +949,7 @@ class VtkLocalView(HtmlElement):
         self._widgets = value
         self.update()
 
-    def update(self, widgets=None, orientation_axis=0, **_):
+    def update(self, widgets=None, orientation_axis=0, **_kwargs):
         """
         Force geometry to be pushed
         """
@@ -973,7 +975,7 @@ class VtkLocalView(HtmlElement):
         )
         self.server.state[self.__scene_id] = full_state
 
-    def export(self, widgets=None, orientation_axis=0, format="zip", **_):
+    def export(self, widgets=None, orientation_axis=0, format="zip", **_kwargs):
         """Export standalone scene for OfflineViewer
 
         :param format: Can be either be "zip" or "json".
@@ -1005,23 +1007,23 @@ class VtkLocalView(HtmlElement):
 
         return None
 
-    def reset_camera(self, **_):
+    def reset_camera(self, **_kwargs):
         """
         Move camera to center actors within the frame
         """
         self.server.js_call(ref=self.__ref, method="resetCamera")
 
-    def replace_view(self, new_view, **_):
+    def replace_view(self, new_view, **_kwargs):
         self.__view = new_view
         self.server.js_call(
             self.__ref, "setSynchronizedViewId", self._helper.id(new_view)
         )
         self.update()
 
-    def resize(self, **_):
+    def resize(self, **_kwargs):
         self.server.js_call(ref=self.__ref, method="resize")
 
-    def push_camera(self, camera=None, center_of_rotation=None, **_):
+    def push_camera(self, camera=None, center_of_rotation=None, **_kwargs):
         if camera is None:
             if hasattr(self.__view, "GetRenderers"):  # VTK
                 camera = self.__view.GetRenderers().GetFirstRenderer().GetActiveCamera()

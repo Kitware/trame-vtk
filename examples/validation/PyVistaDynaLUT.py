@@ -27,7 +27,7 @@ actor = plotter.add_mesh(mesh, cmap="viridis")
 
 
 @state.change("cmap")
-def update_cmap(cmap="viridis", **_):
+def update_cmap(cmap="viridis", **_kwargs):
     actor.mapper.lookup_table.cmap = cmap
     ctrl.view_update()
 

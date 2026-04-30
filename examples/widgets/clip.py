@@ -76,12 +76,12 @@ widget_manager = WidgetManager(renderer)
 plane_widget = widget_manager.add_widget(vtkImplicitPlaneWidget2)
 
 
-def on_widget_interaction(*_):
+def on_widget_interaction(*_args):
     if state.live_update:
         plane_widget.GetPlane(clip_plane)
 
 
-def on_widget_done(*_):
+def on_widget_done(*_args):
     plane_widget.GetPlane(clip_plane)
 
 
@@ -101,7 +101,7 @@ state, ctrl = server.state, server.controller
 
 
 @state.change("show_widget")
-def on_widget_show(show_widget, **_):
+def on_widget_show(show_widget, **_kwargs):
     if show_widget:
         plane_widget.enable()
     else:

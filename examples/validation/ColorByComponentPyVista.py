@@ -45,7 +45,7 @@ plotter.reset_camera()
 
 
 @state.change("component_idx")
-def color_by_array(component_idx, **_):
+def color_by_array(component_idx, **_kwargs):
     lut.SetVectorModeToComponent()
     lut.SetVectorSize(3)
     lut.SetVectorComponent(component_idx)
@@ -55,7 +55,7 @@ def color_by_array(component_idx, **_):
 
 
 @state.change("cmap")
-def color_preset(cmap, **_):
+def color_preset(cmap, **_kwargs):
     lut.cmap = cmap
     ctrl.remote_view_update()
     ctrl.local_view_update()

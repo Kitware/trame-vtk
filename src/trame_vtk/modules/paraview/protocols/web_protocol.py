@@ -100,7 +100,7 @@ class ParaViewWebProtocol(vtkWebProtocol):
 
         # Make sure the cleaned_path is part of the allowed ones
         if self.multi_root:
-            for _, value in self.base_directory_map.items():
+            for _key, value in self.base_directory_map.items():
                 if cleaned_path.startswith(value):
                     return cleaned_path
         elif cleaned_path.startswith(self.base_directory):

@@ -57,7 +57,7 @@ renderWindow.Render()
 
 
 @state.change("resolution")
-def update_resolution(resolution, **_):
+def update_resolution(resolution, **_kwargs):
     cone_source.SetResolution(resolution)
     ctrl.view_update()
 

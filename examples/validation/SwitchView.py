@@ -113,7 +113,7 @@ state.vtk_window_height = 300
 
 
 @asynchronous.task
-async def refresh_function(**_):
+async def refresh_function(**_kwargs):
     counter = 1
     while True:
         with state:

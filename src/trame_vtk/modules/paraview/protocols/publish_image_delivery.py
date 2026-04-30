@@ -19,7 +19,7 @@ def apply_modifiers(event, interactor):
 
 
 class ParaViewWebPublishImageDelivery(ParaViewWebProtocol):
-    def __init__(self, decode=True, **_):
+    def __init__(self, decode=True, **_kwargs):
         super().__init__()
         self.tracking_views = {}
         self.last_stale_time = {}

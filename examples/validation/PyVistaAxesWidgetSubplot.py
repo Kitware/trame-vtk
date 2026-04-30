@@ -33,7 +33,7 @@ axes_widget_1 = plotter.renderer.axes_widget
 
 
 @state.change("show_widget_a")
-def toggle_axes_widget_a(show_widget_a, **_):
+def toggle_axes_widget_a(show_widget_a, **_kwargs):
     plotter.subplot(0, 0)
     if show_widget_a:
         plotter.renderer.show_axes()
@@ -43,7 +43,7 @@ def toggle_axes_widget_a(show_widget_a, **_):
 
 
 @state.change("show_widget_b")
-def toggle_axes_widget_b(show_widget_b, **_):
+def toggle_axes_widget_b(show_widget_b, **_kwargs):
     plotter.subplot(0, 1)
     if show_widget_b:
         plotter.renderer.show_axes()

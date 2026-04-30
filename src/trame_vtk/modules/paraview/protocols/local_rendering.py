@@ -14,7 +14,7 @@ from .web_protocol import ParaViewWebProtocol
 
 
 class ParaViewWebLocalRendering(ParaViewWebProtocol):
-    def __init__(self, **_):
+    def __init__(self, **_kwargs):
         super().__init__()
         initialize_serializers()
         self.context = SynchronizationContext()
@@ -96,7 +96,7 @@ class ParaViewWebLocalRendering(ParaViewWebProtocol):
         new_subscription=False,
         widgets=None,
         orientation_axis=0,
-        **_,
+        **_kwargs,
     ):
         s_view = self.get_view(view_id)
         if not s_view:

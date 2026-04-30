@@ -20,7 +20,7 @@ cone_generator = vtkConeSource()
 
 
 @state.change("resolution")
-def update_cone(resolution, **_):
+def update_cone(resolution, **_kwargs):
     cone_generator.SetResolution(resolution)
     ctrl.mesh_update()
 

@@ -114,7 +114,7 @@ def reset_active_view():
 
 
 @state.change("active_view")
-def active_view_change(active_view, **_):
+def active_view_change(active_view, **_kwargs):
     pipeline = VIEWS[active_view]
     state.show_cone = pipeline.get("show_cone")
     state.show_sphere = pipeline.get("show_sphere")
@@ -123,12 +123,12 @@ def active_view_change(active_view, **_):
 
 
 @state.change("widget_on")
-def toggle_view(widget_on, active_view, **_):
+def toggle_view(widget_on, active_view, **_kwargs):
     state[f"widget_on_{active_view}"] = widget_on
 
 
 @state.change("resolution")
-def update_resolution(resolution, active_view, **_):
+def update_resolution(resolution, active_view, **_kwargs):
     pipeline = VIEWS[active_view]
     pipeline.get("cone").SetResolution(resolution)
     pipeline["resolution"] = resolution
@@ -140,7 +140,7 @@ def update_reset_resolution():
 
 
 @state.change("show_cone")
-def update_cone(active_view, show_cone, **_):
+def update_cone(active_view, show_cone, **_kwargs):
     pipeline = VIEWS[active_view]
     renderer = pipeline.get("renderer")
     cone_actor = pipeline.get("cone_actor")
@@ -153,7 +153,7 @@ def update_cone(active_view, show_cone, **_):
 
 
 @state.change("show_sphere")
-def update_sphere(active_view, show_sphere, **_):
+def update_sphere(active_view, show_sphere, **_kwargs):
     pipeline = VIEWS[active_view]
     renderer = pipeline.get("renderer")
     sphere_actor = pipeline.get("sphere_actor")

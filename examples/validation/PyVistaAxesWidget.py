@@ -26,7 +26,7 @@ axes_widget = plotter.renderer.axes_widget
 
 
 @state.change("show_widget")
-def toggle_axes_widget(show_widget, **_):
+def toggle_axes_widget(show_widget, **_kwargs):
     if show_widget:
         plotter.renderer.show_axes()
     else:

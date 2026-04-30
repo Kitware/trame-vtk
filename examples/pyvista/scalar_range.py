@@ -847,7 +847,7 @@ actor = pl.add_mesh(mesh, scalars="foo", opacity=opac, use_transparency=True)
 
 
 @state.change("scalar_range")
-def set_scalar_range(scalar_range=None, **_):
+def set_scalar_range(scalar_range=None, **_kwargs):
     if scalar_range is None:
         scalar_range = mesh.get_data_range("foo")
     actor.mapper.scalar_range = scalar_range

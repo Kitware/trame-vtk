@@ -30,7 +30,7 @@ plotter.add_light(light)
 
 
 @state.change("color")
-def color(color="lightblue", **_):
+def color(color="lightblue", **_kwargs):
     actor.prop.color = color
     ctrl.view_update()
 

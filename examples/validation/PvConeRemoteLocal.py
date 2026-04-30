@@ -27,7 +27,7 @@ view = simple.Render()
 
 
 @state.change("resolution")
-def update_cone(resolution, **_):
+def update_cone(resolution, **_kwargs):
     cone.Resolution = resolution
     ctrl.view_update()
 

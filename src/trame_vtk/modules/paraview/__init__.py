@@ -70,7 +70,7 @@ class Helper:
         new_state=False,
         widgets=None,
         orientation_axis=0,
-        **_,
+        **_kwargs,
     ):
         # flush data without requiring a render/picture
         tmp = view_proxy.SuppressRendering
@@ -91,7 +91,7 @@ class Helper:
             scene_state.setdefault("extra", {})["resetCamera"] = 1
         return scene_state
 
-    def export(self, render_window, widgets=None, orientation_axis=0, **_):
+    def export(self, render_window, widgets=None, orientation_axis=0, **_kwargs):
         return self._trame_server.protocol_call(
             "viewport.geometry.view.get.export",
             self.id(render_window),
@@ -205,7 +205,7 @@ class Helper:
         still_ratio=1,
         still_quality=98,
         force_replace=False,
-        **_,
+        **_kwargs,
     ):
         if name in self._hybrid_views:
             if force_replace:
@@ -239,7 +239,7 @@ class Helper:
 HELPERS_PER_SERVER = {}
 
 
-def setup(trame_server, **_):
+def setup(trame_server, **_kwargs):
     HELPERS_PER_SERVER[trame_server.name] = Helper(trame_server)
 
 

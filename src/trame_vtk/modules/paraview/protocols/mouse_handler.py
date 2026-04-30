@@ -5,7 +5,7 @@ from .web_protocol import ParaViewWebProtocol
 
 
 class ParaViewWebMouseHandler(ParaViewWebProtocol):
-    def __init__(self, **_):
+    def __init__(self, **_kwargs):
         super().__init__()
         self.last_action = "up"
 

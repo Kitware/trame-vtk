@@ -7,7 +7,7 @@ from .web_protocol import ParaViewWebProtocol
 
 
 class ParaViewWebViewPort(ParaViewWebProtocol):
-    def __init__(self, scale=1.0, max_width=2560, max_height=1440, **_):
+    def __init__(self, scale=1.0, max_width=2560, max_height=1440, **_kwargs):
         super().__init__()
         self.scale = scale
         self.max_width = max_width
