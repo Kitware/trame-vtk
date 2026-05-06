@@ -1,14 +1,17 @@
 from trame.app import get_server
 from trame.ui.html import DivLayout
-from trame.widgets import html, client, vtk as vtk_widgets
-
+from vtk import mutable
+from vtkmodules.vtkCommonDataModel import vtkCellLocator
 from vtkmodules.vtkFiltersSources import vtkConeSource, vtkSphereSource
 from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkPolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
-    vtkPolyDataMapper,
-    vtkActor,
 )
+
+from trame.widgets import client, html
+from trame.widgets import vtk as vtk_widgets
 
 
 class PickingExample:
@@ -47,11 +50,39 @@ class PickingExample:
             self.get_scene_object_id(sphere_actor): "Sphere",
         }
 
+        self.remote_id_to_actor = {
+            self.get_scene_object_id(cone_actor): cone_actor,
+            self.get_scene_object_id(sphere_actor): sphere_actor,
+        }
+
+        self.actor_remote_id_to_locator = {}
+
     def on_click(self, event):
         if event is None:
             print("Click on: --nothing--")
         else:
-            print(f"Click on: {self.vtk_mapping.get(event.get('remoteId'))}")
+            remote_id = event.get("remoteId")
+            print(f"Click on: {self.vtk_mapping.get(remote_id)}")
+
+            cell_locator = self.actor_remote_id_to_locator.get(remote_id)
+
+            if not cell_locator:
+                cell_locator = vtkCellLocator()
+                self.actor_remote_id_to_locator[remote_id] = cell_locator
+                actor = self.remote_id_to_actor[remote_id]
+                cell_locator.SetDataSet(actor.GetMapper().GetInputDataObject(0, 0))
+
+            world_position = event.get("worldPosition")
+            closes_point = [0.0, 0.0, 0.0]
+
+            _subId = mutable(0)
+            _dist2 = mutable(0.0)
+            cell_id = mutable(-1)
+            cell_locator.FindClosestPoint(
+                world_position, closes_point, cell_id, _subId, _dist2
+            )
+
+            print(f"picked {cell_id=}")
 
     def on_select(self, event):
         print(
