@@ -1,8 +1,8 @@
+coverage
+pytest-asyncio
+pytest-playwright
+pyvista[all]==0.45.2
 trame
 trame-client[test]
 trame-vuetify
 vtk==9.4.2
-pyvista[all]==0.45.2
-pytest-asyncio
-pytest-playwright
-coverage
