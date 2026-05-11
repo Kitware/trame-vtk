@@ -146,7 +146,7 @@ def volume(dataset):
     return state
 
 
-# Numpy to JS TypedArray
+# numpy to JS TypedArray
 to_js_type = {
     "int8": "Int8Array",
     "uint8": "Uint8Array",

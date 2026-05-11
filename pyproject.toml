@@ -46,7 +46,7 @@ build_command = """
   python -m build .
 """
 
-[semantic_release.publish]
+[tool.semantic_release.publish]
 dist_glob_patterns = ["dist/*"]
 upload_to_vcs_release = true
 
@@ -76,5 +76,5 @@ docstring-code-line-length = "dynamic"
 [tool.ruff.lint.pycodestyle]
 max-line-length = 120
 
-[lint.pydocstyle]
+[tool.lint.pydocstyle]
 convention = "google"
