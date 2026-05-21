@@ -1,6 +1,11 @@
 PROP_CACHE = {}
 
 
+def remove_from_cache(obj_id):
+    if obj_id in PROP_CACHE:
+        del PROP_CACHE[obj_id]
+
+
 def get_cached_property(obj_id, prop):
     return PROP_CACHE.get(obj_id, {}).get(prop, None)
 
