@@ -2,8 +2,8 @@
 
 import pyvista as pv
 from trame.app import get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, html, vtk as vtk_widgets
+from trame.ui.vuetify3 import SinglePageLayout
+from trame.widgets import vuetify3 as vuetify, html, vtk as vtk_widgets
 
 # Just for using this script in testing
 from trame_client.utils.testing import enable_testing

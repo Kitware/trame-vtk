@@ -3,8 +3,8 @@
 import pyvista as pv
 import numpy as np
 from trame.app import get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, html
+from trame.ui.vuetify3 import SinglePageLayout
+from trame.widgets import vuetify3 as vuetify, html
 from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 # Just for using this script in testing

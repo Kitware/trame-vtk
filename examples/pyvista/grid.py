@@ -1,5 +1,5 @@
 from trame.app import get_server
-from trame.ui.vuetify import SinglePageLayout
+from trame.ui.vuetify3 import SinglePageLayout
 from trame.widgets import grid
 
 server = get_server()
