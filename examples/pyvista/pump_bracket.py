@@ -3,8 +3,8 @@ import asyncio
 import matplotlib.pyplot as plt
 import numpy as np
 from trame.app import asynchronous, get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify
+from trame.ui.vuetify3 import SinglePageLayout
+from trame.widgets import vuetify3 as vuetify
 
 import pyvista as pv
 from pyvista import examples

@@ -2,8 +2,8 @@
 import paraview.web.venv
 
 from trame.app import get_server
-from trame.widgets import vuetify, paraview
-from trame.ui.vuetify import SinglePageLayout
+from trame.widgets import vuetify3 as vuetify, paraview
+from trame.ui.vuetify3 import SinglePageLayout
 
 from paraview import simple
 

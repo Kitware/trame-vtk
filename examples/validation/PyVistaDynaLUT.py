@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from trame.app import get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify
+from trame.ui.vuetify3 import SinglePageLayout
+from trame.widgets import vuetify3 as vuetify
 
 import pyvista as pv
 from pyvista import examples

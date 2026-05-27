@@ -1,8 +1,8 @@
 """Validate Int64 usage with VTK.js."""
 
 from trame.app import get_server
-from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify
+from trame.ui.vuetify3 import SinglePageLayout
+from trame.widgets import vuetify3 as vuetify
 from trame.widgets.vtk import VtkLocalView, VtkRemoteView
 
 import pyvista as pv
