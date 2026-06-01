@@ -192,10 +192,9 @@ class vtkWebPublishImageDelivery(vtkWebProtocol):
         app = self.app
         if t == 0:
             app.InvalidateCache(view)
-        if self.decode:
-            still_render = app.StillRenderToString
-        else:
-            still_render = app.StillRenderToBuffer
+        still_render = (
+            app.StillRenderToString if self.decode else app.StillRenderToBuffer
+        )
         reply_image = still_render(view, t, quality)
 
         # Check that we are getting image size we have set if not wait until we

@@ -129,10 +129,11 @@ def generic_volume_mapper_serializer(parent, mapper, mapper_id, context, depth):
             calls.append(["setInputData", [wrap_id(data_object_id)]])
 
     if data_object_instance:
-        if hasattr(mapper, "GetImageSampleDistance"):
-            image_sample_distance = mapper.GetImageSampleDistance()
-        else:
-            image_sample_distance = 1.0
+        image_sample_distance = (
+            mapper.GetImageSampleDistance()
+            if hasattr(mapper, "GetImageSampleDistance")
+            else 1.0
+        )
         return {
             "parent": reference_id(parent),
             "id": mapper_id,
