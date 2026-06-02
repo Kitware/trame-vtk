@@ -1,10 +1,10 @@
+from .cache import cache_properties
 from .registry import class_name
 from .serialize import serialize
 from .utils import reference_id, wrap_id
-from .cache import cache_properties
 
 
-def property_serializer(parent, prop_obj, prop_obj_id, context, depth):
+def property_serializer(parent, prop_obj, prop_obj_id, context, _depth):
     representation = (
         prop_obj.GetRepresentation() if hasattr(prop_obj, "GetRepresentation") else 2
     )

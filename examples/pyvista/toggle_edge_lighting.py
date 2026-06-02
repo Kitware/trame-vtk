@@ -1,11 +1,11 @@
 """Validate Int64 usage with VTK.js."""
 
+import pyvista as pv
 from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
+
 from trame.widgets import vuetify
 from trame.widgets.vtk import VtkLocalView, VtkRemoteView
-
-import pyvista as pv
 
 server = get_server()
 state, ctrl = server.state, server.controller
@@ -38,17 +38,19 @@ with SinglePageLayout(server) as layout:
         vuetify.VSpacer()
         vuetify.VBtn("Toggle edges", click=toggle_edges)
 
-    with layout.content:
-        with vuetify.VContainer(
+    with (
+        layout.content,
+        vuetify.VContainer(
             fluid=True,
             classes="pa-0 fill-height",
-        ):
-            with vuetify.VCol(classes="fill-height"):
-                view = VtkLocalView(plotter.ren_win)
-                ctrl.view_update = view.update
-                ctrl.view_reset_camera = view.reset_camera
-            with vuetify.VCol(classes="fill-height"):
-                VtkRemoteView(plotter.ren_win)
+        ),
+    ):
+        with vuetify.VCol(classes="fill-height"):
+            view = VtkLocalView(plotter.ren_win)
+            ctrl.view_update = view.update
+            ctrl.view_reset_camera = view.reset_camera
+        with vuetify.VCol(classes="fill-height"):
+            VtkRemoteView(plotter.ren_win)
 
     # hide footer
     layout.footer.hide()

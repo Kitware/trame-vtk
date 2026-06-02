@@ -8,7 +8,5 @@ def reference_id(ref):
         try:
             return ref.__this__[1:17]
         except Exception:
-            id_str = str(ref)[-12:-1]
-            # print('====> fallback ID %s for %s' % (id_str, ref))
-            return id_str
+            return str(ref)[-12:-1]
     return "0x0"
