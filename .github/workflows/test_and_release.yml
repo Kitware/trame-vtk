@@ -110,6 +110,7 @@ jobs:
     permissions:
       id-token: write # IMPORTANT: mandatory for trusted publishing
       contents: write # IMPORTANT: mandatory for making GitHub Releases
+      attestations: write # IMPORTANT: mandatory for attest build provenance
 
     steps:
       - name: Checkout
