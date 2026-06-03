@@ -97,10 +97,8 @@ version_variables = [
 ]
 
 build_command = """
-    python -m pip install -e '.[build]'
-    uv lock --upgrade-package "$PACKAGE_NAME"
-    git add uv.lock
-    uv build
+    pip install build
+    python -m build
 """
 
 [tool.ruff.lint.pycodestyle]
