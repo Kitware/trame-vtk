@@ -1,5 +1,6 @@
 coverage
 pytest-asyncio
+pytest-cov
 pytest-playwright
 pyvista[all]==0.47.3
 trame
