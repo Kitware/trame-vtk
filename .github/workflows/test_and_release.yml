@@ -81,10 +81,12 @@ jobs:
 
       - name: Install and Run Tests
         run: |
-          uv sync --dev
+          uv sync --all-extras --dev
+          source .venv/bin/activate
           uv pip install -r tests/requirements.txt
-          uv run playwright install
-          uv run pytest -s ./tests --cov=src --cov-report=xml
+          uv pip install . # pyvista revert trame-vtk to another version
+          playwright install
+          pytest -s ./tests --cov=src --cov-report=xml
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v3
