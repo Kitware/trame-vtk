@@ -20,7 +20,9 @@ def write_html(data: bytes, output: TextIO):
                 output.write("<script>\n")
                 output.write("var container = document.querySelector('#vtk-root');\n")
                 output.write(f'var base64Str = "{base64Content}";\n\n')
-                output.write("OfflineLocalView.load(container, { base64Str });\n")
+                output.write(
+                    "setTimeout(() => OfflineLocalView.load(container, { base64Str }),0);\n"
+                )
                 output.write("</script>\n")
 
             output.write(line)
