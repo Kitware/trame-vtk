@@ -322,6 +322,23 @@ Examples
 - `API <https://trame.readthedocs.io/en/latest/trame.widgets.vtk.html>`_
 - `06_vtk/02_ContourGeometry/DynamicLocalRemoteRendering <https://github.com/Kitware/trame/blob/master/examples/06_vtk/02_ContourGeometry/DynamicLocalRemoteRendering.py>`_
 
+Development
+-----------------------------------------------------------
+
+Install the library
+
+.. code-block:: console
+
+    # Create venv and install all dependencies
+    uv sync --all-extras --dev
+
+    # Activate environment
+    source .venv/bin/activate
+
+    # Install commit analysis
+    pre-commit install
+    pre-commit install --hook-type commit-msg
+
 
 JavaScript dependency
 -----------------------------------------------------------

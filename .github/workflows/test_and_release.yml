@@ -118,9 +118,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install trame-vtk.js
-        run: |
-          bash .fetch_externals.sh
+      # -----------------------------------------------------------------------
+      # Make that step a manual one and pushing files to the repo
+      # -----------------------------------------------------------------------
+      # - name: Install trame-vtk.js
+      #   run: |
+      #     bash .fetch_externals.sh
+      # -----------------------------------------------------------------------
 
       - name: Python Semantic Release
         id: release

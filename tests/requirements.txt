@@ -1,9 +1,1 @@
-coverage
-pytest-asyncio
-pytest-cov
-pytest-playwright
 pyvista[all]==0.47.3
-trame
-trame-client[test]
-trame-vuetify
-vtk==9.6.1

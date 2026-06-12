@@ -24,8 +24,15 @@ dev = [
     "pre-commit",
     "ruff",
     "pytest >=6",
+    "pytest-asyncio",
     "pytest-cov >=3",
     "nox",
+    "coverage",
+    "pytest-playwright",
+    "trame",
+    "trame-client[test]",
+    "trame-vuetify",
+    "vtk"
 ]
 
 [build-system]
