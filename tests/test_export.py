@@ -6,7 +6,11 @@ import pyvista as pv
 from playwright.async_api import async_playwright
 from pyvista import examples
 
-EXPECTED_SCREENSHOT = Path(__file__).with_name("baseline-scene-export.png")
+EXPECTED_SCREENSHOTS = [
+    Path(__file__).with_name(f)
+    for f in ("baseline-scene-export.png", "baseline-scene-export-github.png")
+]
+
 TEST_BASE = (Path(__file__).with_name("refs") / "test_export").resolve()
 TEST_BASE.mkdir(exist_ok=True, parents=True)
 
@@ -46,5 +50,11 @@ async def test_export():
         await browser.close()
 
     # Test image
-    error = pv.compare_images(screenshot_export_file, EXPECTED_SCREENSHOT)
-    assert error < 200
+    for expected in EXPECTED_SCREENSHOTS:
+        if (
+            expected.exists()
+            and pv.compare_images(screenshot_export_file, expected) < 200
+        ):
+            return
+
+    pytest.fail("No matching baseline")
