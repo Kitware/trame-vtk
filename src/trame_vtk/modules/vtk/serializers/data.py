@@ -10,6 +10,7 @@ from vtk_module.vtkFiltersGeometry import (  # noqa: E402
     vtkCompositeDataGeometryFilter,
     vtkDataSetSurfaceFilter,
 )
+from vtkmodules.vtkCommonCore import vtkIdTypeArray  # noqa: E402
 
 from .helpers import extract_required_fields, get_array_description  # noqa: E402
 from .registry import class_name  # noqa: E402
@@ -47,32 +48,25 @@ def polydata_serializer(
         points["vtkClass"] = "vtkPoints"
         properties["points"] = points
 
-        # Verts
-        if dataset.GetVerts() and dataset.GetVerts().GetData().GetNumberOfTuples() > 0:
-            _verts = get_array_description(dataset.GetVerts().GetData(), context)
-            properties["verts"] = _verts
-            properties["verts"]["vtkClass"] = "vtkCellArray"
+        # Cells
+        for key, cells in [
+            ("verts", dataset.GetVerts()),
+            ("lines", dataset.GetLines()),
+            ("polys", dataset.GetPolys()),
+            ("strips", dataset.GetStrips()),
+        ]:
+            if not cells or cells.GetNumberOfCells() == 0:
+                continue
 
-        # Lines
-        if dataset.GetLines() and dataset.GetLines().GetData().GetNumberOfTuples() > 0:
-            _lines = get_array_description(dataset.GetLines().GetData(), context)
-            properties["lines"] = _lines
-            properties["lines"]["vtkClass"] = "vtkCellArray"
+            cell_array = None
+            if hasattr(cells, "ExportLegacyFormat"):
+                cell_array = vtkIdTypeArray()
+                cells.ExportLegacyFormat(cell_array)
+            else:
+                cell_array = cells.GetData()
 
-        # Polys
-        if dataset.GetPolys() and dataset.GetPolys().GetData().GetNumberOfTuples() > 0:
-            _polys = get_array_description(dataset.GetPolys().GetData(), context)
-            properties["polys"] = _polys
-            properties["polys"]["vtkClass"] = "vtkCellArray"
-
-        # Strips
-        if (
-            dataset.GetStrips()
-            and dataset.GetStrips().GetData().GetNumberOfTuples() > 0
-        ):
-            _strips = get_array_description(dataset.GetStrips().GetData(), context)
-            properties["strips"] = _strips
-            properties["strips"]["vtkClass"] = "vtkCellArray"
+            properties[key] = get_array_description(cell_array, context)
+            properties[key]["vtkClass"] = "vtkCellArray"
 
         # Fields
         properties["fields"] = []

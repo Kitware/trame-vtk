@@ -9,6 +9,7 @@ vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
 
 from vtk_module.util.numpy_support import vtk_to_numpy  # noqa: E402
+from vtk_module.vtkCommonCore import vtkIdTypeArray  # noqa: E402
 from vtk_module.vtkFiltersGeometry import vtkDataSetSurfaceFilter  # noqa: E402
 
 
@@ -84,7 +85,15 @@ def mesh(dataset, field_to_keep=None, point_arrays=None, cell_arrays=None):
 
 
 def mesh_array(array):
-    return b64_encode_numpy(vtk_to_numpy(array.GetData())) if array else None
+    if array is None:
+        return None
+
+    if array.IsA("vtkCellArray") and hasattr(array, "ExportLegacyFormat"):
+        new_array = vtkIdTypeArray()
+        array.ExportLegacyFormat(new_array)
+        return b64_encode_numpy(vtk_to_numpy(new_array))
+
+    return b64_encode_numpy(vtk_to_numpy(array.GetData()))
 
 
 def data_array(data_array, location="PointData", name=None):
