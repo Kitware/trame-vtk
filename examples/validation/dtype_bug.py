@@ -131,7 +131,7 @@ class App(TrameApp):
     def _build_ui(self, use_wasm):
         with VAppLayout(self.server) as self.ui:
             if use_wasm:
-                vtklocal.LocalView(self.renderWindow)
+                vtklocal.LocalView(self.renderWindow, config=["{mode: 'wasm64'}"])
             else:
                 vtk.VtkLocalView(self.renderWindow)
 
