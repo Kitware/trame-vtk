@@ -14,6 +14,10 @@
 # url = "https://wheels.vtk.org"
 # ///
 
+# ---------------------------------------------------------
+# Read for context
+# https://github.com/Kitware/trame/issues/900
+# ---------------------------------------------------------
 # Required for rendering initialization
 import vtkmodules.vtkRenderingOpenGL2  # noqa: F401
 from trame.app import TrameApp
