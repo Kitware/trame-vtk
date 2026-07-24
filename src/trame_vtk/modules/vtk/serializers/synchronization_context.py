@@ -14,6 +14,7 @@ sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
 from vtk_module.vtkCommonCore import (  # noqa: E402
     vtkDoubleArray,
     vtkFloatArray,
+    vtkTypeInt32Array,
     vtkTypeUInt32Array,
 )
 
@@ -66,6 +67,13 @@ class SynchronizationContext:
                 new_array.SetValue(
                     i, -1 if array.GetValue(i) < 0 else array.GetValue(i)
                 )
+            p_buffer = memoryview(new_array)
+        elif array.GetDataType() == 8:
+            # vtkLongArray need to be converted to Int32
+            array_size = array.GetNumberOfTuples() * array.GetNumberOfComponents()
+            new_array = vtkTypeInt32Array()
+            new_array.SetNumberOfTuples(array_size)
+            new_array.DeepCopy(array)
             p_buffer = memoryview(new_array)
         else:
             p_buffer = memoryview(array)
