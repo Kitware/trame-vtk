@@ -58,6 +58,7 @@ class SynchronizationContext:
             new_array = JS_VTK_ARRAY[array_js_datatype]()
             new_array.DeepCopy(array)
             p_buffer = memoryview(new_array)
+            cache_obj["prevent_gc"] = new_array
         elif array.GetDataType() == 12:
             # IdType need to be converted to Uint32
             array_size = array.GetNumberOfTuples() * array.GetNumberOfComponents()
@@ -68,6 +69,7 @@ class SynchronizationContext:
                     i, -1 if array.GetValue(i) < 0 else array.GetValue(i)
                 )
             p_buffer = memoryview(new_array)
+            cache_obj["prevent_gc"] = new_array
         elif array.GetDataType() == 8:
             # vtkLongArray need to be converted to Int32
             array_size = array.GetNumberOfTuples() * array.GetNumberOfComponents()
@@ -75,6 +77,7 @@ class SynchronizationContext:
             new_array.SetNumberOfTuples(array_size)
             new_array.DeepCopy(array)
             p_buffer = memoryview(new_array)
+            cache_obj["prevent_gc"] = new_array
         else:
             p_buffer = memoryview(array)
 
