@@ -11,9 +11,11 @@ from .utils import base64_encode, wrap_id
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
 
+from vtk_module.util import numpy_support  # noqa: E402
 from vtk_module.vtkCommonCore import (  # noqa: E402
     vtkDoubleArray,
     vtkFloatArray,
+    vtkTypeInt32Array,
     vtkTypeUInt32Array,
 )
 
@@ -46,6 +48,7 @@ class SynchronizationContext:
         array = cache_obj["array"]
         cache_time = cache_obj["mTime"]
         array_js_datatype = cache_obj.get("dataType")
+        np_type = str(numpy_support.vtk_to_numpy(array).dtype)
 
         if cache_time != array.GetMTime():
             logger.debug(" ***** ERROR: you asked for an old cache key! ***** ")
@@ -58,15 +61,12 @@ class SynchronizationContext:
             new_array.DeepCopy(array)
             p_buffer = memoryview(new_array)
             cache_obj["prevent_gc"] = new_array
-        elif array.GetDataType() == 12:
-            # IdType need to be converted to Uint32
-            array_size = array.GetNumberOfTuples() * array.GetNumberOfComponents()
-            new_array = vtkTypeUInt32Array()
-            new_array.SetNumberOfTuples(array_size)
-            for i in range(array_size):
-                new_array.SetValue(
-                    i, -1 if array.GetValue(i) < 0 else array.GetValue(i)
-                )
+        elif "int64" in np_type:
+            # need to convert to 32 bits
+            new_array = (
+                vtkTypeUInt32Array() if np_type[0] == "u" else vtkTypeInt32Array()
+            )
+            new_array.DeepCopy(array)
             p_buffer = memoryview(new_array)
             cache_obj["prevent_gc"] = new_array
         else:
