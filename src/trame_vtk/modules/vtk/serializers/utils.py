@@ -69,10 +69,11 @@ def hash_data_array(data_array):
 
 
 def get_js_array_type(data_array):
-    if data_array.GetDataType() == 12:
-        # (cells) IdType converted to uint32
-        return numpy_to_js["uint32"]
-    return numpy_to_js[str(numpy_support.vtk_to_numpy(data_array).dtype)]
+    np_type = str(numpy_support.vtk_to_numpy(data_array).dtype)
+    if "int64" in np_type:
+        # (u)int64 don't work well in JS so always convert to 32 bits
+        np_type = np_type.replace("64", "32")
+    return numpy_to_js[np_type]
 
 
 def wrap_id(id_str):
