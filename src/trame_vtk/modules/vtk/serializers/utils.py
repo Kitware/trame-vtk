@@ -1,7 +1,13 @@
 import base64
 import hashlib
+import importlib
+import os
+import sys
 
-from vtkmodules.util import numpy_support
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.util import numpy_support  # noqa: E402
 
 
 def rgb_float_to_hex(r, g, b):

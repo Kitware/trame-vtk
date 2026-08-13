@@ -1,6 +1,12 @@
+import importlib
 import logging
+import os
+import sys
 
-import vtk
+vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
+sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
+
+from vtk_module.vtkCommonCore import vtkCommand  # noqa: E402
 
 from .cache import remove_from_cache
 from .registry import SERIALIZERS, class_name
@@ -20,7 +26,7 @@ def serialize(parent, instance, instance_id, context, depth):
     serializer = SERIALIZERS.get(instance_type, None)
     if instance_id not in DELETE_CALLBACKS:
         instance.AddObserver(
-            vtk.vtkCommand.DeleteEvent, lambda *_a, **_k: remove(instance_id)
+            vtkCommand.DeleteEvent, lambda *_a, **_k: remove(instance_id)
         )
         DELETE_CALLBACKS.append(instance_id)
 
