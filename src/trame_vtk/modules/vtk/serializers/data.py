@@ -6,11 +6,11 @@ import sys
 vtk_module_name = os.environ.get("VTK_MODULE_NAME", "vtkmodules")
 sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
 
+from vtk_module.vtkCommonCore import vtkIdTypeArray  # noqa: E402
 from vtk_module.vtkFiltersGeometry import (  # noqa: E402
     vtkCompositeDataGeometryFilter,
     vtkDataSetSurfaceFilter,
 )
-from vtkmodules.vtkCommonCore import vtkIdTypeArray  # noqa: E402
 
 from .helpers import extract_required_fields, get_array_description  # noqa: E402
 from .registry import class_name  # noqa: E402
