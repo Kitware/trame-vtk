@@ -8,9 +8,9 @@ sys.modules["vtk_module"] = importlib.import_module(vtk_module_name)
 
 from vtk_module.vtkCommonCore import vtkCommand  # noqa: E402
 
-from .cache import remove_from_cache
-from .registry import SERIALIZERS, class_name
-from .widgets import handle_widget
+from .cache import remove_from_cache  # noqa: E402
+from .registry import SERIALIZERS, class_name  # noqa: E402
+from .widgets import handle_widget  # noqa: E402
 
 __all__ = ["serialize", "serialize_widget"]
 
