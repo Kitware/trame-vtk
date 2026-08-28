@@ -103,7 +103,7 @@ jobs:
           retention-days: 1
 
   release:
-    needs: [pre-commit, pytest]
+    needs: [pre-commit, pytest, test-npm-build]
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     environment:
@@ -144,3 +144,18 @@ jobs:
       - name: Publish package distributions to PyPI
         if: steps.release.outputs.released == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  test-npm-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Build React Components
+        run: |
+          cd react-components
+          npm ci
+          npm run typecheck
+          npm run lint
+          npm run build
