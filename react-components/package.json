@@ -1,0 +1,29 @@
+{
+  "name": "trame-vtk-react-components",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "lint": "eslint src --ext .ts,.tsx,.js --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "dependencies": {
+    "@kitware/vtk.js": "36.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "prettier": "^3.8.3",
+    "react": "^19.1.0",
+    "typescript": "^5.9.3",
+    "vite": "^6.3.5"
+  }
+}
