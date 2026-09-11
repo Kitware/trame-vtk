@@ -1,4 +1,4 @@
-.. |pypi_download| image:: https://img.shields.io/pypi/dm/trame-vtk
+.. |pypi_download| image:: https://kitware.github.io/trame/downloads/trame-vtk.svg
 
 VTK/ParaView widgets for trame |pypi_download|
 ===========================================================
