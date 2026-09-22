@@ -3,7 +3,7 @@ name = "trame-vtk"
 version = "2.11.16"
 description = "VTK widgets for trame"
 authors = [{ name = "Kitware Inc." }]
-dependencies = ["trame-client>=3.4,<4"]
+dependencies = ["trame-client>=3.4,<5"]
 requires-python = ">=3.9"
 readme = "README.rst"
 license = { text = "BSD License" }
